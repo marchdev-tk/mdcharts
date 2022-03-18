@@ -36,16 +36,98 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LineChart(
-        data: LineChartData(
-          data: {
-            DateTime(2022, 03, 2): 10,
-            DateTime(2022, 03, 4): 15,
-            DateTime(2022, 03, 5): 29,
-            DateTime(2022, 03, 20): 83,
-          },
+      backgroundColor: Colors.blue,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: _Grid(
+          rows: 2,
+          columns: 2,
+          children: [
+            LineChart(
+              data: LineChartData(
+                gridType: LineChartGridType.undefined,
+                data: {
+                  DateTime(2022, 03, 2): 10,
+                  DateTime(2022, 03, 4): 15,
+                  DateTime(2022, 03, 5): 29,
+                  DateTime(2022, 03, 20): 83,
+                },
+              ),
+            ),
+            LineChart(
+              data: LineChartData(
+                gridType: LineChartGridType.monthly,
+                dataType: LineChartDataType.bidirectional,
+                data: {
+                  DateTime(2022, 03, 2): 10,
+                  DateTime(2022, 03, 4): 15,
+                  DateTime(2022, 03, 5): 29,
+                  DateTime(2022, 03, 20): 83,
+                },
+              ),
+            ),
+            LineChart(
+              data: LineChartData(
+                gridType: LineChartGridType.monthly,
+                dataType: LineChartDataType.unidirectional,
+                data: {
+                  DateTime(2022, 03, 2): 10,
+                  DateTime(2022, 03, 4): 15,
+                  DateTime(2022, 03, 5): 29,
+                  DateTime(2022, 03, 20): 83,
+                },
+              ),
+            ),
+            LineChart(
+              data: LineChartData(
+                gridType: LineChartGridType.monthly,
+                dataType: LineChartDataType.unidirectional,
+                data: {
+                  DateTime(2022, 03, 2): 83,
+                  DateTime(2022, 03, 4): 29,
+                  DateTime(2022, 03, 5): 15,
+                  DateTime(2022, 03, 20): 10,
+                },
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class _Grid extends StatelessWidget {
+  const _Grid({
+    Key? key,
+    required this.rows,
+    required this.columns,
+    required this.children,
+  }) : super(key: key);
+
+  final int rows;
+  final int columns;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < rows; i++)
+          Expanded(
+            child: Row(
+              children: [
+                for (var j = 0; j < columns; j++)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: children[i + j + (i > 0 ? 1 : 0)],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
