@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library mdcharts;
-
-export 'src/line.dart';
+/// Contains various customization options for the [LineChart].
+class LineChartStyle {
+  /// Constructs an instance of [LineChartStyle].
+  const LineChartStyle();
+}

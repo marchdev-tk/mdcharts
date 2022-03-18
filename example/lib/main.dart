@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:mdcharts/mdcharts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: create example
-    return Container();
+    return Scaffold(
+      body: LineChart(
+        data: LineChartData(
+          data: {
+            DateTime(2022, 03, 2): 10,
+            DateTime(2022, 03, 4): 15,
+            DateTime(2022, 03, 5): 29,
+            DateTime(2022, 03, 20): 83,
+          },
+        ),
+      ),
+    );
   }
 }
