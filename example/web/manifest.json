@@ -1,11 +1,11 @@
 {
-    "name": "flutter_package_template_example",
-    "short_name": "flutter_package_template_example",
+    "name": "mdcharts_example",
+    "short_name": "mdcharts_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Demonstrates how to use the flutter_package_template package.",
+    "description": "Demonstrates how to use the mdcharts package.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

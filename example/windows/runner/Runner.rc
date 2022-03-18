@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "march.dev" "\0"
-            VALUE "FileDescription", "flutter_package_template_example" "\0"
+            VALUE "FileDescription", "mdcharts_example" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_package_template_example" "\0"
+            VALUE "InternalName", "mdcharts_example" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 march.dev. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_package_template_example.exe" "\0"
-            VALUE "ProductName", "flutter_package_template_example" "\0"
+            VALUE "OriginalFilename", "mdcharts_example.exe" "\0"
+            VALUE "ProductName", "mdcharts_example" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

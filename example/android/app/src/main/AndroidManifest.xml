@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="marchdev.tk.flutter_package_template_example">
+    package="marchdev.tk.mdcharts_example">
    <application
-        android:label="flutter_package_template_example"
+        android:label="mdcharts_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

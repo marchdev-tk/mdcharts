@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(example LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_package_template_example")
+set(BINARY_NAME "mdcharts_example")
 
 cmake_policy(SET CMP0063 NEW)
 

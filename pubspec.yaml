@@ -1,9 +1,9 @@
-name: flutter_package_template
+name: mdcharts
 version: 1.0.0
-homepage: https://github.com/marchdev-tk/flutter_package_template
-repository: https://github.com/marchdev-tk/flutter_package_template
-issue_tracker: https://github.com/marchdev-tk/flutter_package_template/issues
-description: flutter_package_template description
+homepage: https://github.com/marchdev-tk/mdcharts
+repository: https://github.com/marchdev-tk/mdcharts
+issue_tracker: https://github.com/marchdev-tk/mdcharts/issues
+description: mdcharts description
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
