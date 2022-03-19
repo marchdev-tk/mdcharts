@@ -18,7 +18,7 @@ import '../utils.dart';
 /// **Please note**, if [unidirectional] is set, then [LineChartData.data]
 /// will be validated to satisfy the [unidirectional] rule.
 ///
-/// **Alse please note**, if [LineChartGridType.undefined] is set, then this
+/// **Also please note**, if [LineChartGridType.undefined] is set, then this
 /// value will be omitted.
 enum LineChartDataType {
   /// No restrictions on values.
@@ -36,7 +36,7 @@ enum LineChartDataType {
 
 /// Data directionality of line chart.
 ///
-/// **Note**, tt works only in conjunction with
+/// **Note**, it works only in conjunction with
 /// [LineChartDataType.unidirectional] data type.
 enum LineChartDataDirection {
   /// Each subsequent value is greater than or equal to previous.
@@ -76,9 +76,17 @@ class LineChartData {
   const LineChartData({
     required this.data,
     this.limit,
+    this.maxValueFactor = 0.05,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
-  }) : assert(data.length > 1);
+  })  : assert(
+          data.length >= 2,
+          '[data] must contain at least 2 entries!',
+        ),
+        assert(
+          maxValueFactor >= 0 && maxValueFactor <= 1,
+          '[maxValueFactor] must be in inclusive range between 0 and 1!',
+        );
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -92,8 +100,17 @@ class LineChartData {
   final Map<DateTime, double> data;
 
   /// Optional limit, corresponds to the limit line on the chart. It is
-  /// designed to be as a notifier of overuse/overdue.
+  /// designed to be as a notifier of overuse.
   final double? limit;
+
+  /// This factor is a multiplier of [maxValue].
+  ///
+  /// Values must be in range [0..1].
+  ///
+  /// Sometimes it is needed to make largest value in chart at the top with
+  /// some padding from top border. So this factor could be used to create top
+  /// padding.
+  final double maxValueFactor;
 
   /// Grid type of the line chart.
   ///
@@ -159,8 +176,32 @@ class LineChartData {
     );
   }
 
-  /// Gets max value from [data].
-  double get maxValue => data.values.max;
+  /// Determines max value for chart to draw.
+  ///
+  /// If [limit] is not set, then max value will be retrieved from [data].
+  /// Otherwise it will be one of [limit] or max value from [data], depending
+  /// on which one is greater.
+  ///
+  /// **Note** that resulting max value will be increased by
+  /// `1 + [maxValueFactor]`.
+  double get maxValue {
+    final max = data.values.max;
+    if (limit == null || max > limit!) {
+      return max * (1 + maxValueFactor);
+    }
+
+    return limit! * (1 + maxValueFactor);
+  }
+
+  /// Determines whether max value from [data] is greater than limit.
+  /// If so - [limit] is overused. Otherwise - no.
+  ///
+  /// **Note** that [limit] must not be null in order to call this.
+  bool get limitOverused {
+    assert(limit != null);
+
+    return limit! > data.values.max;
+  }
 
   /// Gets divisions of the X axis.
   int get xAxisDivisions {

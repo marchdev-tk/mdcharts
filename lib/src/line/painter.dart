@@ -7,6 +7,32 @@ import 'package:flutter/material.dart';
 import 'data.dart';
 import 'style.dart';
 
+class _TextPainter {
+  _TextPainter(TextSpan textSpan) {
+    textPainter = TextPainter(
+      text: textSpan,
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    );
+  }
+
+  late TextPainter textPainter;
+  bool _needsLayout = true;
+
+  Size get size {
+    textPainter.layout();
+    _needsLayout = false;
+    return textPainter.size;
+  }
+
+  void paint(Canvas canvas, Offset offset) {
+    if (_needsLayout) {
+      textPainter.layout();
+    }
+    textPainter.paint(canvas, offset);
+  }
+}
+
 class LineChartPainter extends CustomPainter {
   const LineChartPainter(
     this.data,
@@ -32,7 +58,7 @@ class LineChartPainter extends CustomPainter {
 
   double normalize(double value) {
     final max = data.maxValue;
-    return value / (max * 1.05);
+    return 1 - value / max;
   }
 
   void paintGrid(Canvas canvas, Size size) {
@@ -79,10 +105,9 @@ class LineChartPainter extends CustomPainter {
 
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
-      final normalizedValue = normalize(value);
 
       final x = widthFraction * (i + 1);
-      final y = size.height - size.height * normalizedValue;
+      final y = normalize(value) * size.height;
 
       path.lineTo(x, y);
       if (i == map.length - 1) {
@@ -93,10 +118,81 @@ class LineChartPainter extends CustomPainter {
     canvas.drawPath(path, pathPaint);
   }
 
+  void paintChartLimitLine(Canvas canvas, Size size) {
+    if (data.limit == null) {
+      return;
+    }
+
+    final limitPathPaint = Paint()
+      ..color = Colors.white.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.butt;
+    final path = Path();
+
+    final y = normalize(data.limit!) * size.height;
+
+    path.moveTo(0, y);
+
+    const dashWidth = 2.0;
+    const gapWidth = 2.0;
+    final count = (size.width / (dashWidth + gapWidth)).round();
+    for (var i = 1; i <= count; i++) {
+      path.relativeLineTo(dashWidth, 0);
+      path.relativeMoveTo(gapWidth, 0);
+    }
+
+    canvas.drawPath(path, limitPathPaint);
+  }
+
+  void paintChartLimitLabel(Canvas canvas, Size size) {
+    if (data.limit == null) {
+      return;
+    }
+
+    final limitLabelPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final yCenter = normalize(data.limit!) * size.height;
+
+    final textSpan = TextSpan(
+      text: '10 000 \$',
+      style: TextStyle(
+        height: 1.33,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: data.limitOverused ? Colors.red : Colors.black,
+      ),
+    );
+    final textPainter = _TextPainter(textSpan);
+    final textSize = textPainter.size;
+    const textPaddings = EdgeInsets.fromLTRB(11, 3, 14, 3);
+    final textOffset = Offset(textPaddings.left, yCenter - textSize.height / 2);
+    final labelHeight = textPaddings.vertical + textSize.height;
+    final labelRadius = labelHeight / 2;
+
+    canvas.drawRRect(
+      RRect.fromLTRBAndCorners(
+        0,
+        yCenter - labelHeight / 2,
+        textPaddings.horizontal + textSize.width,
+        yCenter + labelHeight / 2,
+        topRight: Radius.circular(labelRadius),
+        bottomRight: Radius.circular(labelRadius),
+      ),
+      limitLabelPaint,
+    );
+
+    textPainter.paint(canvas, textOffset);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
-    paintGrid(canvas, size);
+    // paintGrid(canvas, size);
     paintChartLine(canvas, size);
+    paintChartLimitLine(canvas, size);
+    paintChartLimitLabel(canvas, size);
   }
 
   @override

@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
             LineChart(
               data: LineChartData(
                 gridType: LineChartGridType.undefined,
+                limit: 50,
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
               data: LineChartData(
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.bidirectional,
+                limit: 90,
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,
@@ -70,6 +72,7 @@ class _HomePageState extends State<HomePage> {
               data: LineChartData(
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
+                limit: 80,
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,
