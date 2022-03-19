@@ -44,6 +44,13 @@ class _HomePageState extends State<HomePage> {
           columns: 2,
           children: [
             LineChart(
+              style: LineChartStyle(
+                limitStyle: LineChartLimitStyle(
+                  labelStyle: LineChartLimitStyle.defaultStyle.copyWith(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
               data: LineChartData(
                 gridType: LineChartGridType.undefined,
                 limit: 50,
