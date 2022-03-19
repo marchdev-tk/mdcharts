@@ -87,8 +87,8 @@ class LineChartPainter extends CustomPainter {
 
   void paintChartLine(Canvas canvas, Size size) {
     final pathPaint = Paint()
-      ..color = Colors.white
       ..style = PaintingStyle.stroke
+      ..color = Colors.white
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
     final map = data.typedData;
@@ -124,9 +124,9 @@ class LineChartPainter extends CustomPainter {
     }
 
     final limitPathPaint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
+      ..color = style.limitStyle.dashColor
+      ..strokeWidth = style.limitStyle.dashStroke
       ..strokeCap = StrokeCap.butt;
     final path = Path();
 
@@ -134,8 +134,8 @@ class LineChartPainter extends CustomPainter {
 
     path.moveTo(0, y);
 
-    const dashWidth = 2.0;
-    const gapWidth = 2.0;
+    final dashWidth = style.limitStyle.dashSize;
+    final gapWidth = style.limitStyle.gapSize;
     final count = (size.width / (dashWidth + gapWidth)).round();
     for (var i = 1; i <= count; i++) {
       path.relativeLineTo(dashWidth, 0);
@@ -151,23 +151,20 @@ class LineChartPainter extends CustomPainter {
     }
 
     final limitLabelPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
+      ..style = PaintingStyle.fill
+      ..color = style.limitStyle.labelColor;
 
     final yCenter = normalize(data.limit!) * size.height;
 
     final textSpan = TextSpan(
-      text: '10 000 \$',
-      style: TextStyle(
-        height: 1.33,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: data.limitOverused ? Colors.red : Colors.black,
-      ),
+      text: data.limitText ?? data.limit.toString(),
+      style: data.limitOverused
+          ? style.limitStyle.labelOveruseStyle
+          : style.limitStyle.labelStyle,
     );
     final textPainter = _TextPainter(textSpan);
     final textSize = textPainter.size;
-    const textPaddings = EdgeInsets.fromLTRB(11, 3, 14, 3);
+    final textPaddings = style.limitStyle.labelTextPadding;
     final textOffset = Offset(textPaddings.left, yCenter - textSize.height / 2);
     final labelHeight = textPaddings.vertical + textSize.height;
     final labelRadius = labelHeight / 2;

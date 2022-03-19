@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
               data: LineChartData(
                 gridType: LineChartGridType.undefined,
                 limit: 50,
+                limitText: 'Custom label text',
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.bidirectional,
                 limit: 90,
+                limitText: '90 ₴',
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,

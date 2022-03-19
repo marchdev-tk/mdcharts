@@ -76,6 +76,7 @@ class LineChartData {
   const LineChartData({
     required this.data,
     this.limit,
+    this.limitText,
     this.maxValueFactor = 0.05,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
@@ -102,6 +103,12 @@ class LineChartData {
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.
   final double? limit;
+
+  /// Optional limit text that will be printed on the limit label if [limit]
+  /// is set.
+  ///
+  /// If this value is omitted - [limit] will be used as a fallback.
+  final String? limitText;
 
   /// This factor is a multiplier of [maxValue].
   ///
