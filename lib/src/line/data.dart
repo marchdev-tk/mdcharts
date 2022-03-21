@@ -207,7 +207,7 @@ class LineChartData {
   bool get limitOverused {
     assert(limit != null);
 
-    return limit! > data.values.max;
+    return limit! < data.values.max;
   }
 
   /// Gets divisions of the X axis.
@@ -250,10 +250,15 @@ class LineChartData {
     final map = <DateTime, double>{};
     final startOfMonth = data.keys.first.startOfMonth;
     final endOfMonthDay = data.keys.first.endOfMonth.day;
+    final lastDate = data.keys.max.date;
     for (var i = 0; i < endOfMonthDay; i++) {
       final date = startOfMonth.add(Duration(days: i));
-      final value = data[date] ?? _getDefaultValue(map, date);
 
+      if (date.isAfter(lastDate)) {
+        break;
+      }
+
+      final value = data[date] ?? _getDefaultValue(map, date);
       map[date] = value;
     }
 

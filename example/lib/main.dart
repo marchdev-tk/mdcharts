@@ -49,6 +49,9 @@ class _HomePageState extends State<HomePage> {
                   labelStyle: LineChartLimitStyle.defaultStyle.copyWith(
                     fontSize: 20,
                   ),
+                  labelOveruseStyle: LineChartLimitStyle.defaultStyle.copyWith(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               data: LineChartData(
