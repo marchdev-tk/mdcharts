@@ -85,12 +85,42 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
+  void paintAxis(Canvas canvas, Size size) {
+    final axisPaint = style.axisStyle.paint;
+
+    const topLeft = Offset.zero;
+    final bottomLeft = Offset(0, size.height);
+    final bottomRight = Offset(size.width, size.height);
+
+    // x axis
+    canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+    // y axis
+    canvas.drawLine(topLeft, bottomLeft, axisPaint);
+  }
+
   void paintChartLine(Canvas canvas, Size size) {
     final pathPaint = Paint()
       ..style = PaintingStyle.stroke
       ..color = Colors.white
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
+    final gradientPaint = Paint()..style = PaintingStyle.fill;
+    const gradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0x4DFFFFFF),
+        Color(0x33FFFFFF),
+        Color(0x1AFFFFFF),
+        Color(0x01FFFFFF),
+      ],
+      stops: [0, 0.1675, 0.5381, 1],
+    );
+    final altitudeLinePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = const Color(0x33FFFFFF);
+
     final map = data.typedData;
 
     final widthFraction = getWidthFraction(size);
@@ -103,11 +133,13 @@ class LineChartPainter extends CustomPainter {
       path.moveTo(0, size.height);
     }
 
+    double x = 0;
+    double y = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
 
-      final x = widthFraction * (i + 1);
-      final y = normalize(value) * size.height;
+      x = widthFraction * (i + 1);
+      y = normalize(value) * size.height;
 
       path.lineTo(x, y);
       if (i == map.length - 1) {
@@ -115,7 +147,30 @@ class LineChartPainter extends CustomPainter {
       }
     }
 
+    canvas.drawLine(
+      Offset(x, y),
+      Offset(x, size.height),
+      altitudeLinePaint,
+    );
+
     canvas.drawPath(path, pathPaint);
+    // TODO: not working as it should
+    // canvas.drawShadow(
+    //   path,
+    //   const Color(0x33000000),
+    //   4,
+    //   false,
+    // );
+    path.lineTo(x, size.height);
+    path.lineTo(0, size.height);
+    if (isDescending) {
+      path.lineTo(0, 0);
+    }
+
+    canvas.drawPath(
+      path,
+      gradientPaint..shader = gradient.createShader(path.getBounds()),
+    );
   }
 
   void paintChartLimitLine(Canvas canvas, Size size) {
@@ -123,13 +178,8 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final limitPathPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = style.limitStyle.dashColor
-      ..strokeWidth = style.limitStyle.dashStroke
-      ..strokeCap = StrokeCap.butt;
+    final limitLinePaint = style.limitStyle.linePaint;
     final path = Path();
-
     final y = normalize(data.limit!) * size.height;
 
     path.moveTo(0, y);
@@ -142,7 +192,7 @@ class LineChartPainter extends CustomPainter {
       path.relativeMoveTo(gapWidth, 0);
     }
 
-    canvas.drawPath(path, limitPathPaint);
+    canvas.drawPath(path, limitLinePaint);
   }
 
   void paintChartLimitLabel(Canvas canvas, Size size) {
@@ -150,12 +200,8 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final limitLabelPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = style.limitStyle.labelColor;
-
+    final limitLabelPaint = style.limitStyle.labelPaint;
     final yCenter = normalize(data.limit!) * size.height;
-
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused
@@ -187,6 +233,7 @@ class LineChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // paintGrid(canvas, size);
+    paintAxis(canvas, size);
     paintChartLine(canvas, size);
     paintChartLimitLine(canvas, size);
     paintChartLimitLabel(canvas, size);
