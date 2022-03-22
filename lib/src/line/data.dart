@@ -229,9 +229,6 @@ class LineChartData {
     return divisions - 1;
   }
 
-  /// Gets divisions of the Y axis.
-  int get yAxisDivisions => 10;
-
   /// Gets map that contains all days in the month as keys.
   ///
   /// Values where possible are copied from [data] map. If value wasn't present

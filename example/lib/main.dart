@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
           columns: 2,
           children: [
             LineChart(
+              settings: const LineChartSettings.gridless(),
               style: LineChartStyle(
                 limitStyle: LineChartLimitStyle(
                   labelStyle: LineChartLimitStyle.defaultStyle.copyWith(
@@ -86,8 +87,15 @@ class _HomePageState extends State<HomePage> {
                   DateTime(2022, 03, 20): 83,
                 },
               ),
+              style: const LineChartStyle(
+                lineStyle: LineChartLineStyle(
+                  fillColor: Colors.white24,
+                  fillGradient: null,
+                ),
+              ),
             ),
             LineChart(
+              settings: const LineChartSettings.gridless(),
               data: LineChartData(
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
@@ -105,13 +113,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             LineChart(
+              settings: const LineChartSettings.gridless(),
               data: LineChartData(
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
                 data: {
                   DateTime(2022, 03, 2): 83,
-                  DateTime(2022, 03, 4): 29,
-                  DateTime(2022, 03, 5): 15,
+                  DateTime(2022, 03, 4): 76,
+                  DateTime(2022, 03, 6): 65,
+                  DateTime(2022, 03, 9): 29,
+                  DateTime(2022, 03, 11): 15,
                   DateTime(2022, 03, 20): 10,
                 },
               ),

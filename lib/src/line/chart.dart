@@ -6,17 +6,27 @@ import 'package:flutter/widgets.dart';
 
 import 'data.dart';
 import 'painter.dart';
+import 'settings.dart';
 import 'style.dart';
 
+/// TODO
 class LineChart extends StatelessWidget {
+  /// Constructs an instance of [LineChart].
   const LineChart({
     Key? key,
     required this.data,
     this.style = const LineChartStyle(),
+    this.settings = const LineChartSettings(),
   }) : super(key: key);
 
+  /// TODO
   final LineChartData data;
+
+  /// TODO
   final LineChartStyle style;
+
+  /// TODO
+  final LineChartSettings settings;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +34,7 @@ class LineChart extends StatelessWidget {
       painter: LineChartPainter(
         data,
         style,
+        settings,
       ),
       foregroundPainter: null,
       size: Size.infinite,

@@ -10,11 +10,15 @@ import 'package:flutter/painting.dart';
 class LineChartStyle {
   /// Constructs an instance of [LineChartStyle].
   const LineChartStyle({
+    this.gridStyle = const LineChartGridStyle(),
     this.axisStyle = const LineChartAxisStyle(),
     this.lineStyle = const LineChartLineStyle(),
     this.limitStyle = const LineChartLimitStyle(),
     this.pointStyle = const LineChartPointStyle(),
   });
+
+  /// Style of the grid lines.
+  final LineChartGridStyle gridStyle;
 
   /// Style of the axis lines.
   final LineChartAxisStyle axisStyle;
@@ -33,6 +37,21 @@ class LineChartStyle {
   /// It contains customizaiton for the point itself, drop line, tooltip and
   /// bottom margin.
   final LineChartPointStyle pointStyle;
+}
+
+/// Contains various customization options for the grid lines of the chart.
+class LineChartGridStyle {
+  /// Constructs an instance of [LineChartGridStyle].
+  const LineChartGridStyle({
+    this.color = const Color(0x33FFFFFF),
+  });
+
+  /// Color of the grid lines.
+  ///
+  /// Defaults to `0x33FFFFFF`.
+  final Color color;
+
+  Paint get paint => Paint()..color = color;
 }
 
 /// Contains various customization options for the axis of the chart.

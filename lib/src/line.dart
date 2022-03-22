@@ -4,5 +4,5 @@
 
 export 'line/chart.dart';
 export 'line/data.dart';
-export 'line/painter.dart';
+export 'line/settings.dart';
 export 'line/style.dart';

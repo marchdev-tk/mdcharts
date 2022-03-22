@@ -4,57 +4,22 @@
 
 import 'package:flutter/rendering.dart';
 
+import '../utils.dart';
 import 'data.dart';
+import 'settings.dart';
 import 'style.dart';
 
-class _TextPainter {
-  _TextPainter(TextSpan textSpan) {
-    textPainter = TextPainter(
-      text: textSpan,
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    );
-  }
-
-  late TextPainter textPainter;
-  bool _needsLayout = true;
-
-  Size get size {
-    textPainter.layout();
-    _needsLayout = false;
-    return textPainter.size;
-  }
-
-  void paint(Canvas canvas, Offset offset) {
-    if (_needsLayout) {
-      textPainter.layout();
-    }
-    textPainter.paint(canvas, offset);
-  }
-}
-
 class LineChartPainter extends CustomPainter {
+  /// Constructs an instance of [LineChartPainter].
   const LineChartPainter(
     this.data,
     this.style,
+    this.settings,
   );
 
   final LineChartData data;
   final LineChartStyle style;
-
-  double getWidthFraction(Size size) {
-    final xDivisions = data.xAxisDivisions;
-    final widthFraction = size.width / xDivisions;
-
-    return widthFraction;
-  }
-
-  double getHeightFraction(Size size) {
-    final yDivisions = data.yAxisDivisions;
-    final heightFraction = size.height / yDivisions;
-
-    return heightFraction;
-  }
+  final LineChartSettings settings;
 
   double normalize(double value) {
     final max = data.maxValue;
@@ -62,9 +27,13 @@ class LineChartPainter extends CustomPainter {
   }
 
   void paintGrid(Canvas canvas, Size size) {
-    final gridPaint = Paint()..color = const Color(0x90FFFFFF);
+    if (settings.xAxisDivisions == 0 && settings.yAxisDivisions == 0) {
+      return;
+    }
 
-    final xDivisions = data.xAxisDivisions;
+    final gridPaint = style.gridStyle.paint;
+
+    final xDivisions = settings.xAxisDivisions + 1;
     final widthFraction = size.width / xDivisions;
     for (var i = 1; i < xDivisions; i++) {
       canvas.drawLine(
@@ -74,7 +43,7 @@ class LineChartPainter extends CustomPainter {
       );
     }
 
-    final yDivisions = data.yAxisDivisions;
+    final yDivisions = settings.yAxisDivisions + 1;
     final heightFraction = size.height / yDivisions;
     for (var i = 1; i < yDivisions; i++) {
       canvas.drawLine(
@@ -86,6 +55,10 @@ class LineChartPainter extends CustomPainter {
   }
 
   void paintAxis(Canvas canvas, Size size) {
+    if (!settings.showAxisX && !settings.showAxisY) {
+      return;
+    }
+
     final axisPaint = style.axisStyle.paint;
 
     const topLeft = Offset.zero;
@@ -93,14 +66,18 @@ class LineChartPainter extends CustomPainter {
     final bottomRight = Offset(size.width, size.height);
 
     // x axis
-    canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+    if (settings.showAxisX) {
+      canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+    }
     // y axis
-    canvas.drawLine(topLeft, bottomLeft, axisPaint);
+    if (settings.showAxisY) {
+      canvas.drawLine(topLeft, bottomLeft, axisPaint);
+    }
   }
 
   void paintChartLine(Canvas canvas, Size size) {
     final map = data.typedData;
-    final widthFraction = getWidthFraction(size);
+    final widthFraction = size.width / data.xAxisDivisions;
     final path = Path();
 
     final isDescending = data.dataType == LineChartDataType.unidirectional &&
@@ -131,30 +108,33 @@ class LineChartPainter extends CustomPainter {
       }
     }
 
-    final gradientPath = Path.from(path);
-    final shadowPath = path.shift(const Offset(0, 2));
+    if (settings.lineFilling) {
+      final gradientPath = Path.from(path);
 
-    // finishing path to create valid gradient/color fill
-    gradientPath.lineTo(x, size.height);
-    gradientPath.lineTo(0, size.height);
-    if (isDescending) {
-      gradientPath.lineTo(0, 0);
-    } else {
+      // finishing path to create valid gradient/color fill
+      gradientPath.lineTo(x, size.height);
+      gradientPath.lineTo(0, size.height);
       gradientPath.lineTo(0, firstY);
+
+      canvas.drawPath(
+        gradientPath,
+        style.lineStyle.getFillPaint(gradientPath.getBounds()),
+      );
     }
 
-    canvas.drawPath(
-      gradientPath,
-      style.lineStyle.getFillPaint(gradientPath.getBounds()),
-    );
+    if (settings.altitudeLine) {
+      canvas.drawLine(
+        Offset(x, y),
+        Offset(x, size.height),
+        style.lineStyle.altitudeLinePaint,
+      );
+    }
 
-    canvas.drawLine(
-      Offset(x, y),
-      Offset(x, size.height),
-      style.lineStyle.altitudeLinePaint,
-    );
+    if (settings.lineShadow) {
+      final shadowPath = path.shift(const Offset(0, 2));
+      canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
+    }
 
-    canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
     canvas.drawPath(path, style.lineStyle.linePaint);
   }
 
@@ -191,7 +171,7 @@ class LineChartPainter extends CustomPainter {
           ? style.limitStyle.labelOveruseStyle
           : style.limitStyle.labelStyle,
     );
-    final textPainter = _TextPainter(textSpan);
+    final textPainter = MDTextPainter(textSpan);
     final textSize = textPainter.size;
     final textPaddings = style.limitStyle.labelTextPadding;
     final textOffset = Offset(textPaddings.left, yCenter - textSize.height / 2);
@@ -215,7 +195,7 @@ class LineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // paintGrid(canvas, size);
+    paintGrid(canvas, size);
     paintAxis(canvas, size);
     paintChartLine(canvas, size);
     paintChartLimitLine(canvas, size);
