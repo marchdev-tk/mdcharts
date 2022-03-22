@@ -37,8 +37,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue,
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF418FDE), Color(0xFF00468C)],
+          ),
+        ),
         child: _Grid(
           rows: 2,
           columns: 2,
@@ -86,9 +93,13 @@ class _HomePageState extends State<HomePage> {
                 dataType: LineChartDataType.unidirectional,
                 limit: 80,
                 data: {
-                  DateTime(2022, 03, 2): 10,
-                  DateTime(2022, 03, 4): 15,
-                  DateTime(2022, 03, 5): 29,
+                  DateTime(2022, 03, 1): 10,
+                  DateTime(2022, 03, 2): 15,
+                  DateTime(2022, 03, 3): 18,
+                  DateTime(2022, 03, 5): 21,
+                  DateTime(2022, 03, 7): 28,
+                  DateTime(2022, 03, 11): 33,
+                  DateTime(2022, 03, 16): 38,
                   DateTime(2022, 03, 20): 83,
                 },
               ),

@@ -225,7 +225,8 @@ class LineChartData {
         break;
     }
 
-    return divisions;
+    // minus 1 due to first point that lies on the Y axis
+    return divisions - 1;
   }
 
   /// Gets divisions of the Y axis.

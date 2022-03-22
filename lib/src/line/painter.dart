@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'data.dart';
@@ -104,6 +106,12 @@ class LineChartPainter extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
+    final shadowPathPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = const Color(0x33000000)
+      ..imageFilter = ImageFilter.blur(sigmaX: 4, sigmaY: 4)
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
     final gradientPaint = Paint()..style = PaintingStyle.fill;
     const gradient = LinearGradient(
       begin: Alignment.topCenter,
@@ -133,19 +141,43 @@ class LineChartPainter extends CustomPainter {
       path.moveTo(0, size.height);
     }
 
+    double firstY = 0;
     double x = 0;
     double y = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
 
-      x = widthFraction * (i + 1);
+      x = widthFraction * i;
       y = normalize(value) * size.height;
 
-      path.lineTo(x, y);
+      if (i == 0) {
+        firstY = y;
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+
       if (i == map.length - 1) {
         path.moveTo(x, y);
       }
     }
+
+    final gradientPath = Path.from(path);
+    final shadowPath = path.shift(const Offset(0, 2));
+
+    // finishing path to create valid gradient/color fill
+    gradientPath.lineTo(x, size.height);
+    gradientPath.lineTo(0, size.height);
+    if (isDescending) {
+      gradientPath.lineTo(0, 0);
+    } else {
+      gradientPath.lineTo(0, firstY);
+    }
+
+    canvas.drawPath(
+      gradientPath,
+      gradientPaint..shader = gradient.createShader(gradientPath.getBounds()),
+    );
 
     canvas.drawLine(
       Offset(x, y),
@@ -153,24 +185,8 @@ class LineChartPainter extends CustomPainter {
       altitudeLinePaint,
     );
 
+    canvas.drawPath(shadowPath, shadowPathPaint);
     canvas.drawPath(path, pathPaint);
-    // TODO: not working as it should
-    // canvas.drawShadow(
-    //   path,
-    //   const Color(0x33000000),
-    //   4,
-    //   false,
-    // );
-    path.lineTo(x, size.height);
-    path.lineTo(0, size.height);
-    if (isDescending) {
-      path.lineTo(0, 0);
-    }
-
-    canvas.drawPath(
-      path,
-      gradientPaint..shader = gradient.createShader(path.getBounds()),
-    );
   }
 
   void paintChartLimitLine(Canvas canvas, Size size) {
