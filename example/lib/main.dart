@@ -16,7 +16,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'mdcharts Demo',
+      title: 'MDCharts Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

@@ -9,6 +9,7 @@ import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
 
+/// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {
   /// Constructs an instance of [LineChartPainter].
   const LineChartPainter(
@@ -17,15 +18,28 @@ class LineChartPainter extends CustomPainter {
     this.settings,
   );
 
+  /// Set of required (and optional) data to construct the line chart.
   final LineChartData data;
+
+  /// Provides various customizations for the line chart.
   final LineChartStyle style;
+
+  /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
+  /// Normalization method.
+  ///
+  /// Converts provided [value] based on [data.maxValue] into a percentage
+  /// proportion with valid values in inclusive range [0..1].
+  ///
+  /// Returns `1 - result`, where `result` was calculated in the previously
+  /// metioned step.
   double normalize(double value) {
     final max = data.maxValue;
     return 1 - value / max;
   }
 
+  /// Grid painter.
   void paintGrid(Canvas canvas, Size size) {
     if (settings.xAxisDivisions == 0 && settings.yAxisDivisions == 0) {
       return;
@@ -54,6 +68,7 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
+  /// Axis painter.
   void paintAxis(Canvas canvas, Size size) {
     if (!settings.showAxisX && !settings.showAxisY) {
       return;
@@ -75,6 +90,7 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
+  /// Line painter.
   void paintChartLine(Canvas canvas, Size size) {
     final map = data.typedData;
     final widthFraction = size.width / data.xAxisDivisions;
@@ -138,6 +154,7 @@ class LineChartPainter extends CustomPainter {
     canvas.drawPath(path, style.lineStyle.linePaint);
   }
 
+  /// Limit line painter.
   void paintChartLimitLine(Canvas canvas, Size size) {
     if (data.limit == null) {
       return;
@@ -159,6 +176,7 @@ class LineChartPainter extends CustomPainter {
     canvas.drawPath(path, style.limitStyle.linePaint);
   }
 
+  /// Limit label painter.
   void paintChartLimitLabel(Canvas canvas, Size size) {
     if (data.limit == null) {
       return;

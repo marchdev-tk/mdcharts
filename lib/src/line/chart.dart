@@ -9,7 +9,7 @@ import 'painter.dart';
 import 'settings.dart';
 import 'style.dart';
 
-/// TODO
+/// Line chart.
 class LineChart extends StatelessWidget {
   /// Constructs an instance of [LineChart].
   const LineChart({
@@ -19,13 +19,13 @@ class LineChart extends StatelessWidget {
     this.settings = const LineChartSettings(),
   }) : super(key: key);
 
-  /// TODO
+  /// Set of required (and optional) data to construct the line chart.
   final LineChartData data;
 
-  /// TODO
+  /// Provides various customizations for the line chart.
   final LineChartStyle style;
 
-  /// TODO
+  /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
   @override

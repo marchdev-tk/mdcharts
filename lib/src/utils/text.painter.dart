@@ -4,28 +4,32 @@
 
 import 'package:flutter/painting.dart';
 
+/// Text painter utility.
 class MDTextPainter {
+  /// Constructs an instance of [MDTextPainter].
   MDTextPainter(TextSpan textSpan) {
-    textPainter = TextPainter(
+    _textPainter = TextPainter(
       text: textSpan,
       maxLines: 1,
       textDirection: TextDirection.ltr,
     );
   }
 
-  late TextPainter textPainter;
+  late TextPainter _textPainter;
   bool _needsLayout = true;
 
+  /// Gets size of the provided [TextSpan].
   Size get size {
-    textPainter.layout();
+    _textPainter.layout();
     _needsLayout = false;
-    return textPainter.size;
+    return _textPainter.size;
   }
 
+  /// Paints text.
   void paint(Canvas canvas, Offset offset) {
     if (_needsLayout) {
-      textPainter.layout();
+      _textPainter.layout();
     }
-    textPainter.paint(canvas, offset);
+    _textPainter.paint(canvas, offset);
   }
 }
