@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'data.dart';
 import 'style.dart';
@@ -64,7 +62,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   void paintGrid(Canvas canvas, Size size) {
-    final gridPaint = Paint()..color = Colors.white60;
+    final gridPaint = Paint()..color = const Color(0x90FFFFFF);
 
     final xDivisions = data.xAxisDivisions;
     final widthFraction = size.width / xDivisions;
@@ -101,36 +99,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   void paintChartLine(Canvas canvas, Size size) {
-    final pathPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.white
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-    final shadowPathPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = const Color(0x33000000)
-      ..imageFilter = ImageFilter.blur(sigmaX: 4, sigmaY: 4)
-      ..strokeWidth = 4
-      ..strokeCap = StrokeCap.round;
-    final gradientPaint = Paint()..style = PaintingStyle.fill;
-    const gradient = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        Color(0x4DFFFFFF),
-        Color(0x33FFFFFF),
-        Color(0x1AFFFFFF),
-        Color(0x01FFFFFF),
-      ],
-      stops: [0, 0.1675, 0.5381, 1],
-    );
-    final altitudeLinePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = const Color(0x33FFFFFF);
-
     final map = data.typedData;
-
     final widthFraction = getWidthFraction(size);
     final path = Path();
 
@@ -176,17 +145,17 @@ class LineChartPainter extends CustomPainter {
 
     canvas.drawPath(
       gradientPath,
-      gradientPaint..shader = gradient.createShader(gradientPath.getBounds()),
+      style.lineStyle.getFillPaint(gradientPath.getBounds()),
     );
 
     canvas.drawLine(
       Offset(x, y),
       Offset(x, size.height),
-      altitudeLinePaint,
+      style.lineStyle.altitudeLinePaint,
     );
 
-    canvas.drawPath(shadowPath, shadowPathPaint);
-    canvas.drawPath(path, pathPaint);
+    canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
+    canvas.drawPath(path, style.lineStyle.linePaint);
   }
 
   void paintChartLimitLine(Canvas canvas, Size size) {
@@ -194,7 +163,6 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final limitLinePaint = style.limitStyle.linePaint;
     final path = Path();
     final y = normalize(data.limit!) * size.height;
 
@@ -208,7 +176,7 @@ class LineChartPainter extends CustomPainter {
       path.relativeMoveTo(gapWidth, 0);
     }
 
-    canvas.drawPath(path, limitLinePaint);
+    canvas.drawPath(path, style.limitStyle.linePaint);
   }
 
   void paintChartLimitLabel(Canvas canvas, Size size) {
@@ -216,7 +184,6 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final limitLabelPaint = style.limitStyle.labelPaint;
     final yCenter = normalize(data.limit!) * size.height;
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
@@ -240,7 +207,7 @@ class LineChartPainter extends CustomPainter {
         topRight: Radius.circular(labelRadius),
         bottomRight: Radius.circular(labelRadius),
       ),
-      limitLabelPaint,
+      style.limitStyle.labelPaint,
     );
 
     textPainter.paint(canvas, textOffset);

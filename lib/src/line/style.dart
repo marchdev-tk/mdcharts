@@ -181,7 +181,7 @@ class LineChartLineStyle {
     ..strokeWidth = altitudeLineStroke
     ..color = altitudeLineColor;
 
-  Paint getFillPaint(Rect bounds) {
+  Paint getFillPaint([Rect? bounds]) {
     assert(filled);
 
     final gradientPaint = Paint()..style = PaintingStyle.fill;
@@ -190,7 +190,12 @@ class LineChartLineStyle {
       gradientPaint.color = fillColor!;
     }
     if (fillGradient != null) {
-      gradientPaint.shader = fillGradient!.createShader(bounds);
+      assert(
+        bounds != null,
+        'bounds must not be null if fillGradient not null',
+      );
+
+      gradientPaint.shader = fillGradient!.createShader(bounds!);
     }
 
     return gradientPaint;
