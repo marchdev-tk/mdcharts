@@ -78,7 +78,7 @@ class LineChartData {
     required this.data,
     this.limit,
     this.limitText,
-    this.maxValueFactor = 0.05,
+    this.maxValueFactor = 0.1,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   })  : assert(

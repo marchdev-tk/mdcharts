@@ -411,7 +411,9 @@ class LineChartPointStyle {
     this.tooltipSubtitleStyle = defaultTooltipSubtitleStyle,
     this.tooltipPadding = defaultTooltipPadding,
     this.tooltipSpacing = 2,
-    this.bottonMargin = 6,
+    this.tooltipShadowColor = const Color(0xFF000000),
+    this.tooltipShadowElevation = 4,
+    this.tooltopBottomMargin = 6,
   });
 
   static const defaultTooltipTitleStyle = TextStyle(
@@ -424,7 +426,7 @@ class LineChartPointStyle {
     fontSize: 12,
     color: Color(0xFF000000),
   );
-  static const defaultTooltipPadding = EdgeInsets.fromLTRB(12, 4, 12, 9);
+  static const defaultTooltipPadding = EdgeInsets.fromLTRB(12, 4, 12, 4);
 
   /// Color of the inner circle.
   ///
@@ -501,10 +503,20 @@ class LineChartPointStyle {
   /// Defaults to `2`.
   final double tooltipSpacing;
 
+  /// Shadow color of the tooltip.
+  ///
+  /// Defaults to `0xFF000000`.
+  final Color tooltipShadowColor;
+
+  /// Elevation of the tooltip.
+  ///
+  /// Defaults to `4`.
+  final double tooltipShadowElevation;
+
   /// Bottom margin of the tooltip.
   ///
   /// Defaults to `6`.
-  final double bottonMargin;
+  final double tooltopBottomMargin;
 
   /// Gets a [Paint] for the drawing of the inner circle of the point.
   Paint get innerPaint => Paint()
@@ -555,7 +567,9 @@ class LineChartPointStyle {
       tooltipSubtitleStyle.hashCode ^
       tooltipPadding.hashCode ^
       tooltipSpacing.hashCode ^
-      bottonMargin.hashCode;
+      tooltipShadowColor.hashCode ^
+      tooltipShadowElevation.hashCode ^
+      tooltopBottomMargin.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -575,5 +589,7 @@ class LineChartPointStyle {
       tooltipSubtitleStyle == other.tooltipSubtitleStyle &&
       tooltipPadding == other.tooltipPadding &&
       tooltipSpacing == other.tooltipSpacing &&
-      bottonMargin == other.bottonMargin;
+      tooltipShadowColor == other.tooltipShadowColor &&
+      tooltipShadowElevation == other.tooltipShadowElevation &&
+      tooltopBottomMargin == other.tooltopBottomMargin;
 }

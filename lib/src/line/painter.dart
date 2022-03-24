@@ -63,8 +63,8 @@ class LineChartPainter extends CustomPainter {
     return index;
   }
 
-  Offset _getPoint(Size size) {
-    final selectedIndex = _getSelectedIndex(size);
+  Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
+    final selectedIndex = precalculatedSelectedIndex ?? _getSelectedIndex(size);
     final index = selectedIndex ?? data.lastDivisionIndex;
     final entry = selectedIndex == null
         ? data.data.entries.last
@@ -142,6 +142,8 @@ class LineChartPainter extends CustomPainter {
 
     if (!isDescending) {
       path.moveTo(0, size.height);
+    } else {
+      path.moveTo(0, size.height * data.maxValueFactor);
     }
 
     double firstY = 0;
@@ -311,11 +313,86 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    // final path = Path();
+    const triangleWidth = 12.0;
+    const triangleHeight = 5.0;
 
-    // path.moveTo(x, y)
+    final titlePainter = MDTextPainter(TextSpan(
+      text: 'Апрель 11',
+      style: style.pointStyle.tooltipTitleStyle,
+    ));
+    final subtitlePainter = MDTextPainter(TextSpan(
+      text: '1 699,48 ₴',
+      style: style.pointStyle.tooltipSubtitleStyle,
+    ));
 
-    // TODO: implement
+    final selectedIndex = _getSelectedIndex(size)!;
+    final point = _getPoint(size, selectedIndex);
+    final outerRadius = style.pointStyle.outerSize / 2;
+    final bottomMargin =
+        style.pointStyle.tooltopBottomMargin + outerRadius + triangleHeight;
+    final titleSize = titlePainter.size;
+    final subtitleSize = subtitlePainter.size;
+    final spacing = style.pointStyle.tooltipSpacing;
+    final padding = style.pointStyle.tooltipPadding;
+    final contentWidth = math.max(titleSize.width, subtitleSize.width);
+    final tooltipSize = Size(
+      contentWidth + padding.horizontal,
+      titleSize.height + spacing + subtitleSize.height + padding.vertical,
+    );
+    final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
+    final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
+    final xBias = isSelectedIndexFirst
+        ? tooltipSize.width / 2 - triangleWidth / 2
+        : isSelectedIndexLast
+            ? -tooltipSize.width / 2 + triangleWidth / 2
+            : 0;
+    final titleOffset = Offset(
+      point.dx - titleSize.width / 2 + xBias,
+      point.dy -
+          bottomMargin -
+          padding.bottom -
+          subtitleSize.height -
+          spacing -
+          titleSize.height,
+    );
+    final subtitleOffset = Offset(
+      point.dx - subtitleSize.width / 2 + xBias,
+      point.dy - bottomMargin - padding.bottom - subtitleSize.height,
+    );
+    const radius = Radius.circular(8);
+    final rrect = RRect.fromRectAndCorners(
+      Rect.fromCenter(
+        center: Offset(
+          point.dx + xBias,
+          point.dy - bottomMargin - tooltipSize.height / 2,
+        ),
+        width: tooltipSize.width,
+        height: tooltipSize.height,
+      ),
+      topLeft: radius,
+      topRight: radius,
+      bottomLeft: isSelectedIndexFirst ? Radius.zero : radius,
+      bottomRight: isSelectedIndexLast ? Radius.zero : radius,
+    );
+
+    final path = Path();
+    path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
+    path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
+    path.relativeLineTo(triangleWidth, 0);
+    path.relativeLineTo(-triangleWidth / 2, triangleHeight);
+    path.close();
+    path.addRRect(rrect);
+
+    canvas.drawShadow(
+      path,
+      style.pointStyle.tooltipShadowColor,
+      style.pointStyle.tooltipShadowElevation,
+      false,
+    );
+    canvas.drawPath(path, style.pointStyle.tooltipPaint);
+
+    titlePainter.paint(canvas, titleOffset);
+    subtitlePainter.paint(canvas, subtitleOffset);
   }
 
   @override
