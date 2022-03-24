@@ -442,7 +442,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final map = data.xAxisDates;
-    final painters = <MDTextPainter>[];
+    final painters = <MDTextPainter, bool>{};
 
     for (var i = 0; i < map.length; i++) {
       final item = map[i];
@@ -451,52 +451,75 @@ class LineChartXAxisLabelPainter extends CustomPainter {
         text: text,
         style: style.labelStyle,
       ));
-      painters.add(painter);
+      painters[painter] = true;
     }
 
     double totalWidth = 0;
     while (true) {
-      final gapCount = painters.length - 1;
-      totalWidth =
-          painters.map((painter) => painter.size.width).sum.toDouble() +
-              gapCount * style.labelSpacing;
+      final visiblePainters =
+          painters.entries.where((painter) => painter.value);
+      final gapCount = visiblePainters.length - 1;
+      totalWidth = visiblePainters
+              .map((painter) => painter.key.size.width)
+              .sum
+              .toDouble() +
+          gapCount * style.labelSpacing;
 
-      if (totalWidth > size.width) {
-        final isEven = painters.length % 2 == 0;
+      if (totalWidth > size.width && visiblePainters.length > 3) {
+        for (var i = 1; i < visiblePainters.length / 2; i++) {
+          final left = visiblePainters.elementAt(i).key;
+          final right =
+              visiblePainters.elementAt(visiblePainters.length - 1 - i).key;
 
-        if (isEven) {
-          painters.removeAt(painters.length ~/ 2);
+          painters[left] = false;
+          painters[right] = false;
         }
 
-        for (var i = painters.length - 2; i > 0; i -= 2) {
-          painters.removeAt(i);
+        if (painters.length % 2 == 0) {
+          final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
+          final right = painters.entries.elementAt(painters.length ~/ 2);
+
+          if (visiblePainters.length > 4) {
+            if (left.value && right.value) {
+              painters[right.key] = false;
+            } else if (!left.value && !right.value) {
+              painters[right.key] = true;
+            }
+          }
+        } else {
+          final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
+          final center = painters.entries.elementAt(painters.length ~/ 2);
+          final right = painters.entries.elementAt(painters.length ~/ 2 + 1);
+
+          painters[center.key] = !left.value && !right.value;
         }
       } else {
         break;
       }
     }
 
-    final gapWidth =
-        (size.width - totalWidth) / (painters.length - 1) + style.labelSpacing;
+    final widthFactor = size.width / data.xAxisDivisions;
 
-    for (var i = 0, dx = .0; i < painters.length; i++) {
-      final painter = painters[i];
+    for (var i = 0; i < painters.length; i++) {
+      final painter = painters.entries.elementAt(i);
 
-      painter.paint(
-        canvas,
-        Offset(dx, 0),
-      );
+      if (painter.value) {
+        final dxBias = i == 0
+            ? 0
+            : i == painters.length - 1
+                ? -painter.key.size.width
+                : -painter.key.size.width / 2;
+        final dx = widthFactor * i + dxBias;
 
-      dx += painter.size.width;
-      if (i < painters.length - 1) {
-        dx += gapWidth;
+        painter.key.paint(
+          canvas,
+          Offset(dx, 0),
+        );
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    return false;
-  }
+  bool shouldRepaint(covariant LineChartXAxisLabelPainter oldDelegate) =>
+      data != oldDelegate.data || style != oldDelegate.style;
 }
