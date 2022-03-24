@@ -11,17 +11,6 @@ import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
 
-/// Normalization method.
-///
-/// Converts provided [value] based on [maxValue] into a percentage
-/// proportion with valid values in inclusive range [0..1].
-///
-/// Returns `1 - result`, where `result` was calculated in the previously
-/// metioned step.
-double normalize(double value, double maxValue) {
-  return 1 - value / maxValue;
-}
-
 /// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {
   /// Constructs an instance of [LineChartPainter].
@@ -48,7 +37,20 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
-  double _normalize(double value) => normalize(value, data.maxValue);
+  /// Normalization method.
+  ///
+  /// Converts provided [value] based on [maxValue] into a percentage
+  /// proportion with valid values in inclusive range [0..1].
+  ///
+  /// Returns `1 - result`, where `result` was calculated in the previously
+  /// metioned step.
+  double normalize(double value) {
+    return 1 - value / data.maxValue;
+  }
+
+  bool get _isDescendingChart =>
+      data.dataType == LineChartDataType.unidirectional &&
+      data.dataDirection == LineChartDataDirection.descending;
 
   int? _getSelectedIndex(Size size) {
     if (selectedXPosition == null) {
@@ -72,7 +74,7 @@ class LineChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * index;
-    final y = _normalize(entry.value) * size.height;
+    final y = normalize(entry.value) * size.height;
     final point = Offset(x, y);
 
     return point;
@@ -137,13 +139,8 @@ class LineChartPainter extends CustomPainter {
     final map = data.typedData;
     final path = Path();
 
-    final isDescending = data.dataType == LineChartDataType.unidirectional &&
-        data.dataDirection == LineChartDataDirection.descending;
-
-    if (!isDescending) {
+    if (!_isDescendingChart) {
       path.moveTo(0, size.height);
-    } else {
-      path.moveTo(0, size.height * data.maxValueFactor);
     }
 
     double firstY = 0;
@@ -153,7 +150,7 @@ class LineChartPainter extends CustomPainter {
       final value = map.entries.elementAt(i).value;
 
       x = widthFraction * i;
-      y = _normalize(value) * size.height;
+      y = normalize(value) * size.height;
 
       if (i == 0) {
         firstY = y;
@@ -204,7 +201,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y = _normalize(data.limit!) * size.height;
+    final y = normalize(data.limit!) * size.height;
 
     path.moveTo(0, y);
 
@@ -225,7 +222,7 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final yCenter = _normalize(data.limit!) * size.height;
+    final yCenter = normalize(data.limit!) * size.height;
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused

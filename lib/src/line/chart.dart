@@ -18,6 +18,7 @@ class LineChart extends StatefulWidget {
     required this.data,
     this.style = const LineChartStyle(),
     this.settings = const LineChartSettings(),
+    this.padding,
   }) : super(key: key);
 
   /// Set of required (and optional) data to construct the line chart.
@@ -28,6 +29,14 @@ class LineChart extends StatefulWidget {
 
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
+
+  /// Padding around the chart.
+  ///
+  /// If no set, will be used default one:
+  /// - left/right/bottom: `0`;
+  /// - top: dynamic value that depends on the style of the tooltip, more info
+  /// at [LineChartPointStyle.tooltipHeight].
+  final EdgeInsets? padding;
 
   @override
   State<LineChart> createState() => _LineChartState();
@@ -46,7 +55,7 @@ class _LineChartState extends State<LineChart> {
 
   @override
   Widget build(BuildContext context) {
-    final customPaint = CustomPaint(
+    Widget child = CustomPaint(
       painter: LineChartPainter(
         widget.data,
         widget.style,
@@ -57,18 +66,24 @@ class _LineChartState extends State<LineChart> {
     );
 
     if (Platform.isMobile) {
-      return GestureDetector(
+      child = GestureDetector(
         onHorizontalDragCancel: _clearXPosition,
         onHorizontalDragEnd: _clearXPosition,
         onHorizontalDragUpdate: _setXPosition,
-        child: customPaint,
+        child: child,
       );
     } else {
-      return MouseRegion(
+      child = MouseRegion(
         onExit: _clearXPosition,
         onHover: _setXPosition,
-        child: customPaint,
+        child: child,
       );
     }
+
+    return Padding(
+      padding: widget.padding ??
+          EdgeInsets.only(top: widget.style.pointStyle.tooltipHeight),
+      child: child,
+    );
   }
 }

@@ -78,16 +78,11 @@ class LineChartData {
     required this.data,
     this.limit,
     this.limitText,
-    this.maxValueFactor = 0.1,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
-  })  : assert(
+  }) : assert(
           data.length >= 2,
           '[data] must contain at least 2 entries!',
-        ),
-        assert(
-          maxValueFactor >= 0 && maxValueFactor <= 1,
-          '[maxValueFactor] must be in inclusive range between 0 and 1!',
         );
 
   /// Map of the values that corresponds to the dates.
@@ -110,15 +105,6 @@ class LineChartData {
   ///
   /// If this value is omitted - [limit] will be used as a fallback.
   final String? limitText;
-
-  /// This factor is a multiplier of [maxValue].
-  ///
-  /// Values must be in range [0..1].
-  ///
-  /// Sometimes it is needed to make largest value in chart at the top with
-  /// some padding from top border. So this factor could be used to create top
-  /// padding.
-  final double maxValueFactor;
 
   /// Grid type of the line chart.
   ///
@@ -189,16 +175,13 @@ class LineChartData {
   /// If [limit] is not set, then max value will be retrieved from [data].
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
-  ///
-  /// **Note** that resulting max value will be increased by
-  /// `1 + [maxValueFactor]`.
   double get maxValue {
     final max = data.values.max;
     if (limit == null || max > limit!) {
-      return max * (1 + maxValueFactor);
+      return max;
     }
 
-    return limit! * (1 + maxValueFactor);
+    return limit!;
   }
 
   /// Determines whether max value from [data] is greater than limit.
@@ -303,7 +286,6 @@ class LineChartData {
       data.hashCode ^
       limit.hashCode ^
       limitText.hashCode ^
-      maxValueFactor.hashCode ^
       gridType.hashCode ^
       dataType.hashCode;
 
@@ -313,7 +295,6 @@ class LineChartData {
       mapEquals(data, other.data) &&
       limit == other.limit &&
       limitText == other.limitText &&
-      maxValueFactor == other.maxValueFactor &&
       gridType == other.gridType &&
       dataType == other.dataType;
 }

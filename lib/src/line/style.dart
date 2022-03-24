@@ -6,6 +6,8 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
 
+import '../utils.dart';
+
 /// Contains various customization options for the [LineChart].
 class LineChartStyle {
   /// Constructs an instance of [LineChartStyle].
@@ -517,6 +519,29 @@ class LineChartPointStyle {
   ///
   /// Defaults to `6`.
   final double tooltopBottomMargin;
+
+  /// Gets size of the tooltip based on following:
+  /// - [tooltopBottomMargin];
+  /// - [tooltipPadding.vertical];
+  /// - [tooltipSpacing];
+  /// - [tooltipTitleStyle];
+  /// - [tooltipSubtitleStyle].
+  double get tooltipHeight {
+    final titleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: tooltipTitleStyle,
+    )).size.height;
+    final subtitleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: tooltipSubtitleStyle,
+    )).size.height;
+
+    return tooltopBottomMargin +
+        tooltipPadding.vertical +
+        tooltipSpacing +
+        titleHeight +
+        subtitleHeight;
+  }
 
   /// Gets a [Paint] for the drawing of the inner circle of the point.
   Paint get innerPaint => Paint()

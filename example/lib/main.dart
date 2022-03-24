@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                 dataType: LineChartDataType.unidirectional,
                 data: {
                   DateTime(2022, 03, 2): 83,
-                  DateTime(2022, 03, 4): 76,
+                  DateTime(2022, 03, 3): 76,
                   DateTime(2022, 03, 6): 65,
                   DateTime(2022, 03, 9): 29,
                   DateTime(2022, 03, 11): 15,
