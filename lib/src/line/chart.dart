@@ -31,12 +31,8 @@ class LineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: LineChartPainter(
-        data,
-        style,
-        settings,
-      ),
-      foregroundPainter: null,
+      painter: LineChartPainter(data, style, settings),
+      foregroundPainter: LineChartPointPainter(data, style, settings),
       size: Size.infinite,
     );
   }

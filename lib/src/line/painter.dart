@@ -221,7 +221,37 @@ class LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant LineChartPainter oldDelegate) {
+  bool shouldRepaint(covariant LineChartPainter oldDelegate) =>
+      data != oldDelegate.data ||
+      style != oldDelegate.style ||
+      settings != oldDelegate.settings;
+}
+
+/// Point painter of the [LineChart].
+class LineChartPointPainter extends CustomPainter {
+  /// Constructs an instance of [LineChartPointPainter].
+  const LineChartPointPainter(
+    this.data,
+    this.style,
+    this.settings,
+  );
+
+  /// Set of required (and optional) data to construct the line chart.
+  final LineChartData data;
+
+  /// Provides various customizations for the line chart.
+  final LineChartStyle style;
+
+  /// Provides various settings for the line chart.
+  final LineChartSettings settings;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // TODO: implement paint
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
     // TODO: implement shouldRepaint
     return true;
   }
