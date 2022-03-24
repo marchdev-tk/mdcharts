@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
+import 'package:cross_platform/cross_platform.dart';
 
 import 'data.dart';
 import 'painter.dart';
@@ -10,7 +11,7 @@ import 'settings.dart';
 import 'style.dart';
 
 /// Line chart.
-class LineChart extends StatelessWidget {
+class LineChart extends StatefulWidget {
   /// Constructs an instance of [LineChart].
   const LineChart({
     Key? key,
@@ -29,14 +30,45 @@ class LineChart extends StatelessWidget {
   final LineChartSettings settings;
 
   @override
+  State<LineChart> createState() => _LineChartState();
+}
+
+class _LineChartState extends State<LineChart> {
+  double? xPosition;
+
+  void _clearXPosition([dynamic details]) {
+    setState(() => xPosition = null);
+  }
+
+  void _setXPosition(dynamic details) {
+    setState(() => xPosition = details.localPosition.dx);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomPaint(
+    final customPaint = CustomPaint(
       painter: LineChartPainter(
-        data,
-        style,
-        settings,
+        widget.data,
+        widget.style,
+        widget.settings,
+        xPosition,
       ),
       size: Size.infinite,
     );
+
+    if (Platform.isMobile) {
+      return GestureDetector(
+        onHorizontalDragCancel: _clearXPosition,
+        onHorizontalDragEnd: _clearXPosition,
+        onHorizontalDragUpdate: _setXPosition,
+        child: customPaint,
+      );
+    } else {
+      return MouseRegion(
+        onExit: _clearXPosition,
+        onHover: _setXPosition,
+        child: customPaint,
+      );
+    }
   }
 }

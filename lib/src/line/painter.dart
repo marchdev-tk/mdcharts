@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
 
 import '../utils.dart';
@@ -27,6 +29,7 @@ class LineChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.selectedXPosition,
   );
 
   /// Set of required (and optional) data to construct the line chart.
@@ -38,20 +41,44 @@ class LineChartPainter extends CustomPainter {
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
+  /// Selected position on the X axis.
+  ///
+  /// If provided, point with drop line and tooltip will be painted for the nearest point
+  /// of the selected position on the X axis. Otherwise, last point will be
+  /// painted, but without drop line and tooltip.
+  final double? selectedXPosition;
+
   double _normalize(double value) => normalize(value, data.maxValue);
 
-  Offset _getPoint(Size size) {
-    final entry = data.data.entries.last;
+  int? _getSelectedIndex(Size size) {
+    if (selectedXPosition == null) {
+      return null;
+    }
+
     final widthFraction = size.width / data.xAxisDivisions;
 
-    final x = widthFraction * data.lastDivisionIndex;
+    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
+    index = math.min(index, data.typedData.length - 1);
+
+    return index;
+  }
+
+  Offset _getPoint(Size size) {
+    final selectedIndex = _getSelectedIndex(size);
+    final index = selectedIndex ?? data.lastDivisionIndex;
+    final entry = selectedIndex == null
+        ? data.data.entries.last
+        : data.typedData.entries.elementAt(index);
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    final x = widthFraction * index;
     final y = _normalize(entry.value) * size.height;
     final point = Offset(x, y);
 
     return point;
   }
 
-  bool get _showDetails => true;
+  bool get _showDetails => selectedXPosition != null;
 
   /// Grid painter.
   void paintGrid(Canvas canvas, Size size) {
@@ -106,8 +133,8 @@ class LineChartPainter extends CustomPainter {
 
   /// Line painter.
   void paintChartLine(Canvas canvas, Size size) {
-    final map = data.typedData;
     final widthFraction = size.width / data.xAxisDivisions;
+    final map = data.typedData;
     final path = Path();
 
     final isDescending = data.dataType == LineChartDataType.unidirectional &&
@@ -307,5 +334,6 @@ class LineChartPainter extends CustomPainter {
   bool shouldRepaint(covariant LineChartPainter oldDelegate) =>
       data != oldDelegate.data ||
       style != oldDelegate.style ||
-      settings != oldDelegate.settings;
+      settings != oldDelegate.settings ||
+      selectedXPosition != oldDelegate.selectedXPosition;
 }
