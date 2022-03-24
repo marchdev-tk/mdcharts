@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mdcharts/mdcharts.dart';
 
 void main() {
@@ -92,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                   DateTime(2022, 02, 25): 83,
                   DateTime(2022, 02, 26): 81,
                   DateTime(2022, 02, 27): 77,
+                  // DateTime(2022, 02, 28): 70, // TODO: need to fix this case
                 },
               ),
               style: const LineChartStyle(
@@ -107,6 +109,8 @@ class _HomePageState extends State<HomePage> {
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
                 limit: 80,
+                titleBuilder: (key, value) => DateFormat.MMMMd().format(key),
+                subtitleBuilder: (key, value) => '${(value * 1000).toInt()} \$',
                 data: {
                   DateTime(2022, 03, 1): 10,
                   DateTime(2022, 03, 2): 15,

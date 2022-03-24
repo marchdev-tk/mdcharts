@@ -7,6 +7,10 @@ import 'package:flutter/foundation.dart';
 
 import '../utils.dart';
 
+/// Signature for callbacks that build text based on the provided [key] and
+/// [value].
+typedef TooltipBuilder = String Function(DateTime key, double value);
+
 /// Defines how values of the [LineChartData.data] must be represented.
 ///
 /// Main usage of this type comes in periodical types of [LineChartGridType],
@@ -78,12 +82,19 @@ class LineChartData {
     required this.data,
     this.limit,
     this.limitText,
+    this.titleBuilder = defaultTitleBuilder,
+    this.subtitleBuilder = defaultSubtitleBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   }) : assert(
           data.length >= 2,
           '[data] must contain at least 2 entries!',
         );
+
+  static String defaultTitleBuilder(DateTime key, double value) =>
+      '${key.year}-${key.month}-${key.day}';
+  static String defaultSubtitleBuilder(DateTime key, double value) =>
+      value.toString();
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -105,6 +116,16 @@ class LineChartData {
   ///
   /// If this value is omitted - [limit] will be used as a fallback.
   final String? limitText;
+
+  /// Text builder for the tooltip title.
+  ///
+  /// If not set explicitly, [defaultTitleBuilder] will be used.
+  final TooltipBuilder titleBuilder;
+
+  /// Text builder for the tooltip subtitle.
+  ///
+  /// If not set explicitly, [defaultSubtitleBuilder] will be used.
+  final TooltipBuilder subtitleBuilder;
 
   /// Grid type of the line chart.
   ///

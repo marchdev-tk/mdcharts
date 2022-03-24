@@ -325,16 +325,16 @@ class LineChartPainter extends CustomPainter {
     const triangleWidth = 12.0;
     const triangleHeight = 5.0;
 
+    final selectedIndex = _getSelectedIndex(size)!;
+    final entry = data.typedData.entries.elementAt(selectedIndex);
     final titlePainter = MDTextPainter(TextSpan(
-      text: 'Апрель 11',
+      text: data.titleBuilder(entry.key, entry.value),
       style: style.pointStyle.tooltipTitleStyle,
     ));
     final subtitlePainter = MDTextPainter(TextSpan(
-      text: '1 699,48 ₴',
+      text: data.subtitleBuilder(entry.key, entry.value),
       style: style.pointStyle.tooltipSubtitleStyle,
     ));
-
-    final selectedIndex = _getSelectedIndex(size)!;
     final point = _getPoint(size, selectedIndex);
     final outerRadius = style.pointStyle.outerSize / 2;
     final bottomMargin =
