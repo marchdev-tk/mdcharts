@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flinq/flinq.dart';
+import 'package:flutter/foundation.dart';
 
 import '../utils.dart';
 
@@ -279,4 +280,23 @@ class LineChartData {
 
     return map[current.previousDay]!;
   }
+
+  @override
+  int get hashCode =>
+      data.hashCode ^
+      limit.hashCode ^
+      limitText.hashCode ^
+      maxValueFactor.hashCode ^
+      gridType.hashCode ^
+      dataType.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartData &&
+      mapEquals(data, other.data) &&
+      limit == other.limit &&
+      limitText == other.limitText &&
+      maxValueFactor == other.maxValueFactor &&
+      gridType == other.gridType &&
+      dataType == other.dataType;
 }

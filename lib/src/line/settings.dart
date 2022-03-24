@@ -74,4 +74,25 @@ class LineChartSettings {
   ///
   /// Defaults to `true`.
   final bool altitudeLine;
+
+  @override
+  int get hashCode =>
+      xAxisDivisions.hashCode ^
+      yAxisDivisions.hashCode ^
+      showAxisX.hashCode ^
+      showAxisY.hashCode ^
+      lineFilling.hashCode ^
+      lineShadow.hashCode ^
+      altitudeLine.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartSettings &&
+      xAxisDivisions == other.xAxisDivisions &&
+      yAxisDivisions == other.yAxisDivisions &&
+      showAxisX == other.showAxisX &&
+      showAxisY == other.showAxisY &&
+      lineFilling == other.lineFilling &&
+      lineShadow == other.lineShadow &&
+      altitudeLine == other.altitudeLine;
 }

@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:ui';
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
 
@@ -37,6 +37,23 @@ class LineChartStyle {
   /// It contains customizaiton for the point itself, drop line, tooltip and
   /// bottom margin.
   final LineChartPointStyle pointStyle;
+
+  @override
+  int get hashCode =>
+      gridStyle.hashCode ^
+      axisStyle.hashCode ^
+      lineStyle.hashCode ^
+      limitStyle.hashCode ^
+      pointStyle.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartStyle &&
+      gridStyle == other.gridStyle &&
+      axisStyle == other.axisStyle &&
+      lineStyle == other.lineStyle &&
+      limitStyle == other.limitStyle &&
+      pointStyle == other.pointStyle;
 }
 
 /// Contains various customization options for the grid lines of the chart.
@@ -52,6 +69,13 @@ class LineChartGridStyle {
   final Color color;
 
   Paint get paint => Paint()..color = color;
+
+  @override
+  int get hashCode => color.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartGridStyle && color == other.color;
 }
 
 /// Contains various customization options for the axis of the chart.
@@ -96,6 +120,21 @@ class LineChartAxisStyle {
     ..style = PaintingStyle.stroke
     ..strokeWidth = stroke
     ..color = color;
+
+  @override
+  int get hashCode =>
+      stroke.hashCode ^
+      color.hashCode ^
+      labelStyle.hashCode ^
+      labelTopPadding.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartAxisStyle &&
+      stroke == other.stroke &&
+      color == other.color &&
+      labelStyle == other.labelStyle &&
+      labelTopPadding == other.labelTopPadding;
 }
 
 /// Contains various customization options for the line of the chart itself.
@@ -219,6 +258,33 @@ class LineChartLineStyle {
 
     return gradientPaint;
   }
+
+  @override
+  int get hashCode =>
+      color.hashCode ^
+      stroke.hashCode ^
+      shadowColor.hashCode ^
+      shadowStroke.hashCode ^
+      shadowOffset.hashCode ^
+      blurRadius.hashCode ^
+      fillGradient.hashCode ^
+      fillColor.hashCode ^
+      altitudeLineStroke.hashCode ^
+      altitudeLineColor.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartLineStyle &&
+      color == other.color &&
+      stroke == other.stroke &&
+      shadowColor == other.shadowColor &&
+      shadowStroke == other.shadowStroke &&
+      shadowOffset == other.shadowOffset &&
+      blurRadius == other.blurRadius &&
+      fillGradient == other.fillGradient &&
+      fillColor == other.fillColor &&
+      altitudeLineStroke == other.altitudeLineStroke &&
+      altitudeLineColor == other.altitudeLineColor;
 }
 
 /// Contains various customization options for limit line and label.
@@ -300,6 +366,29 @@ class LineChartLimitStyle {
   Paint get labelPaint => Paint()
     ..style = PaintingStyle.fill
     ..color = labelColor;
+
+  @override
+  int get hashCode =>
+      labelStyle.hashCode ^
+      labelOveruseStyle.hashCode ^
+      labelTextPadding.hashCode ^
+      labelColor.hashCode ^
+      dashColor.hashCode ^
+      dashStroke.hashCode ^
+      dashSize.hashCode ^
+      gapSize.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartLimitStyle &&
+      labelStyle == other.labelStyle &&
+      labelOveruseStyle == other.labelOveruseStyle &&
+      labelTextPadding == other.labelTextPadding &&
+      labelColor == other.labelColor &&
+      dashColor == other.dashColor &&
+      dashStroke == other.dashStroke &&
+      dashSize == other.dashSize &&
+      gapSize == other.gapSize;
 }
 
 /// Contains various customization options for the point (last available or
@@ -404,4 +493,61 @@ class LineChartPointStyle {
   ///
   /// Defaults to `6`.
   final double bottonMargin;
+
+  /// Gets a [Paint] for the drawing of the inner circle of the point.
+  Paint get innerPaint => Paint()
+    ..style = PaintingStyle.fill
+    ..color = innerColor;
+
+  /// Gets a [Paint] for the drawing of the outer circle of the point.
+  Paint get outerPaint => Paint()
+    ..style = PaintingStyle.fill
+    ..color = outerColor;
+
+  /// Gets a [Paint] for the drop line drawing.
+  Paint get dropLinePaint => Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = dropLineDashSize
+    ..color = dropLineColor;
+
+  /// Gets a [Paint] for the tooltip drawing.
+  Paint get tooltipPaint => Paint()
+    ..style = PaintingStyle.fill
+    ..color = tooltipColor;
+
+  @override
+  int get hashCode =>
+      innerColor.hashCode ^
+      innerSize.hashCode ^
+      outerColor.hashCode ^
+      outerSize.hashCode ^
+      shadowColor.hashCode ^
+      dropLineColor.hashCode ^
+      dropLineDashSize.hashCode ^
+      dropLineGapSize.hashCode ^
+      tooltipColor.hashCode ^
+      tooltipTitleStyle.hashCode ^
+      tooltipSubtitleStyle.hashCode ^
+      tooltipPadding.hashCode ^
+      tooltipSpacing.hashCode ^
+      bottonMargin.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartPointStyle &&
+      innerColor == other.innerColor &&
+      innerSize == other.innerSize &&
+      outerColor == other.outerColor &&
+      outerSize == other.outerSize &&
+      shadowColor == other.shadowColor &&
+      dropLineColor == other.dropLineColor &&
+      dropLineDashSize == other.dropLineDashSize &&
+      dropLineGapSize == other.dropLineGapSize &&
+      tooltipColor == other.tooltipColor &&
+      tooltipTitleStyle == other.tooltipTitleStyle &&
+      tooltipSubtitleStyle == other.tooltipSubtitleStyle &&
+      tooltipPadding == other.tooltipPadding &&
+      tooltipSpacing == other.tooltipSpacing &&
+      bottonMargin == other.bottonMargin;
 }
