@@ -88,6 +88,7 @@ class LineChartAxisStyle {
     this.stroke = 1,
     this.color = const Color(0x33FFFFFF),
     this.labelStyle = defaultLabelStyle,
+    this.labelSpacing = 16,
     this.labelTopPadding = 8,
   });
 
@@ -113,10 +114,25 @@ class LineChartAxisStyle {
   /// Defaults to [defaultLabelStyle].
   final TextStyle labelStyle;
 
+  /// Spacing between labels.
+  ///
+  /// Defaults to `16`.
+  final double labelSpacing;
+
   /// Top padding of the axis label.
   ///
   /// Defaults to `8`.
   final double labelTopPadding;
+
+  /// Gets height of the label.
+  double get labelHeight {
+    final labelHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: labelStyle,
+    )).size.height;
+
+    return labelHeight;
+  }
 
   /// Gets a [Paint] for the axis drawing.
   Paint get paint => Paint()
@@ -129,6 +145,7 @@ class LineChartAxisStyle {
       stroke.hashCode ^
       color.hashCode ^
       labelStyle.hashCode ^
+      labelSpacing.hashCode ^
       labelTopPadding.hashCode;
 
   @override
@@ -137,6 +154,7 @@ class LineChartAxisStyle {
       stroke == other.stroke &&
       color == other.color &&
       labelStyle == other.labelStyle &&
+      labelSpacing == other.labelSpacing &&
       labelTopPadding == other.labelTopPadding;
 }
 

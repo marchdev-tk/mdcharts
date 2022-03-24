@@ -55,7 +55,7 @@ class _LineChartState extends State<LineChart> {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = CustomPaint(
+    Widget chart = CustomPaint(
       painter: LineChartPainter(
         widget.data,
         widget.style,
@@ -66,24 +66,38 @@ class _LineChartState extends State<LineChart> {
     );
 
     if (Platform.isMobile) {
-      child = GestureDetector(
+      chart = GestureDetector(
         onHorizontalDragCancel: _clearXPosition,
         onHorizontalDragEnd: _clearXPosition,
         onHorizontalDragUpdate: _setXPosition,
-        child: child,
+        child: chart,
       );
     } else {
-      child = MouseRegion(
+      chart = MouseRegion(
         onExit: _clearXPosition,
         onHover: _setXPosition,
-        child: child,
+        child: chart,
       );
     }
+
+    final xAxisLabels = CustomPaint(
+      painter: LineChartXAxisLabelPainter(
+        widget.data,
+        widget.style.axisStyle,
+      ),
+      size: Size.fromHeight(widget.style.axisStyle.labelHeight),
+    );
 
     return Padding(
       padding: widget.padding ??
           EdgeInsets.only(top: widget.style.pointStyle.tooltipHeight),
-      child: child,
+      child: Column(
+        children: [
+          Expanded(child: chart),
+          SizedBox(height: widget.style.axisStyle.labelTopPadding),
+          xAxisLabels,
+        ],
+      ),
     );
   }
 }

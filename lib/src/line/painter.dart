@@ -5,6 +5,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
+import 'package:flinq/flinq.dart';
 
 import '../utils.dart';
 import 'data.dart';
@@ -422,4 +423,80 @@ class LineChartPainter extends CustomPainter {
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||
       selectedXPosition != oldDelegate.selectedXPosition;
+}
+
+/// X axis label painter of the [LineChart].
+class LineChartXAxisLabelPainter extends CustomPainter {
+  /// Constructs an instance of [LineChartPainter].
+  const LineChartXAxisLabelPainter(
+    this.data,
+    this.style,
+  );
+
+  /// Set of required (and optional) data to construct the line chart.
+  final LineChartData data;
+
+  /// Provides various customizations for the chart axis.
+  final LineChartAxisStyle style;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final map = data.xAxisDates;
+    final painters = <MDTextPainter>[];
+
+    for (var i = 0; i < map.length; i++) {
+      final item = map[i];
+      final text = data.xAxisLabelBuilder(item);
+      final painter = MDTextPainter(TextSpan(
+        text: text,
+        style: style.labelStyle,
+      ));
+      painters.add(painter);
+    }
+
+    double totalWidth = 0;
+    while (true) {
+      final gapCount = painters.length - 1;
+      totalWidth =
+          painters.map((painter) => painter.size.width).sum.toDouble() +
+              gapCount * style.labelSpacing;
+
+      if (totalWidth > size.width) {
+        final isEven = painters.length % 2 == 0;
+
+        if (isEven) {
+          painters.removeAt(painters.length ~/ 2);
+        }
+
+        for (var i = painters.length - 2; i > 0; i -= 2) {
+          painters.removeAt(i);
+        }
+      } else {
+        break;
+      }
+    }
+
+    final gapWidth =
+        (size.width - totalWidth) / (painters.length - 1) + style.labelSpacing;
+
+    for (var i = 0, dx = .0; i < painters.length; i++) {
+      final painter = painters[i];
+
+      painter.paint(
+        canvas,
+        Offset(dx, 0),
+      );
+
+      dx += painter.size.width;
+      if (i < painters.length - 1) {
+        dx += gapWidth;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    return false;
+  }
 }

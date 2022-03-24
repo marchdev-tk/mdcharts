@@ -7,9 +7,12 @@ import 'package:flutter/foundation.dart';
 
 import '../utils.dart';
 
-/// Signature for callbacks that build text based on the provided [key] and
-/// [value].
+/// Signature for callbacks that builds tooltip text based on the provided [key]
+/// and [value].
 typedef TooltipBuilder = String Function(DateTime key, double value);
+
+/// Signature for callbacks that builds label text based on the provided [key].
+typedef LabelBuilder<T> = String Function(T value);
 
 /// Defines how values of the [LineChartData.data] must be represented.
 ///
@@ -84,6 +87,7 @@ class LineChartData {
     this.limitText,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
+    this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   }) : assert(
@@ -95,6 +99,8 @@ class LineChartData {
       '${key.year}-${key.month}-${key.day}';
   static String defaultSubtitleBuilder(DateTime key, double value) =>
       value.toString();
+  static String defaultXAxisLabelBuilder(DateTime key) =>
+      '${key.month}-${key.day}';
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -126,6 +132,11 @@ class LineChartData {
   ///
   /// If not set explicitly, [defaultSubtitleBuilder] will be used.
   final TooltipBuilder subtitleBuilder;
+
+  /// Text builder for the X axis label.
+  ///
+  /// If not set explicitly, [defaultXAxisLabelBuilder] will be used.
+  final LabelBuilder<DateTime> xAxisLabelBuilder;
 
   /// Grid type of the line chart.
   ///
@@ -251,10 +262,32 @@ class LineChartData {
     return lastDivision - 1;
   }
 
+  /// Gets list of [DateTime] that is used to build X axis labels.
+  List<DateTime> get xAxisDates {
+    switch (gridType) {
+      case LineChartGridType.undefined:
+        return data.keys.toList();
+      case LineChartGridType.monthly:
+        return _monthlyXAxisDates;
+    }
+  }
+
+  List<DateTime> get _monthlyXAxisDates {
+    final dates = <DateTime>[];
+    final startOfMonth = data.keys.first.startOfMonth;
+    final endOfMonthDay = data.keys.first.endOfMonth.day;
+    for (var i = 0; i < endOfMonthDay; i++) {
+      final date = startOfMonth.add(Duration(days: i));
+      dates.add(date);
+    }
+
+    return dates;
+  }
+
   /// Gets map that contains all days in the month as keys.
   ///
   /// Values where possible are copied from [data] map. If value wasn't present
-  /// at [data] map it defaults to `0`.
+  /// at [data] map, its default value retrieved from [_getDefaultValue].
   Map<DateTime, double> get typedData {
     switch (gridType) {
       case LineChartGridType.undefined:

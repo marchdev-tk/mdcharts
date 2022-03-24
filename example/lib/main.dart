@@ -80,7 +80,6 @@ class _HomePageState extends State<HomePage> {
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.bidirectional,
                 limit: 90,
-                limitText: '90 ₴',
                 data: {
                   DateTime(2022, 02, 2): 10,
                   DateTime(2022, 02, 4): 15,
@@ -109,8 +108,10 @@ class _HomePageState extends State<HomePage> {
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
                 limit: 80,
+                limitText: '80000 ₴',
                 titleBuilder: (key, value) => DateFormat.MMMMd().format(key),
-                subtitleBuilder: (key, value) => '${(value * 1000).toInt()} \$',
+                subtitleBuilder: (key, value) => '${(value * 1000).toInt()} ₴',
+                xAxisLabelBuilder: (value) => DateFormat.MMMd().format(value),
                 data: {
                   DateTime(2022, 03, 1): 10,
                   DateTime(2022, 03, 2): 15,
