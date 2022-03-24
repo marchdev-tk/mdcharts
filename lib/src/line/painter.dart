@@ -135,9 +135,12 @@ class LineChartPainter extends CustomPainter {
 
   /// Line painter.
   void paintChartLine(Canvas canvas, Size size) {
+    final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = data.typedData;
     final path = Path();
+
+    Path? pathSelected;
 
     if (!_isDescendingChart) {
       path.moveTo(0, size.height);
@@ -161,6 +164,10 @@ class LineChartPainter extends CustomPainter {
 
       if (i == map.length - 1) {
         path.moveTo(x, y);
+      }
+
+      if (selectedXPosition != null && selectedIndex! == i) {
+        pathSelected = Path.from(path);
       }
     }
 
@@ -191,7 +198,12 @@ class LineChartPainter extends CustomPainter {
       canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
     }
 
-    canvas.drawPath(path, style.lineStyle.linePaint);
+    if (pathSelected != null) {
+      canvas.drawPath(path, style.lineStyle.lineInactivePaint);
+      canvas.drawPath(pathSelected, style.lineStyle.linePaint);
+    } else {
+      canvas.drawPath(path, style.lineStyle.linePaint);
+    }
   }
 
   /// Limit line painter.

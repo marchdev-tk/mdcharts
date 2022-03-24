@@ -70,6 +70,7 @@ class LineChartGridStyle {
   /// Defaults to `0x33FFFFFF`.
   final Color color;
 
+  /// Gets a [Paint] for the grid drawing.
   Paint get paint => Paint()..color = color;
 
   @override
@@ -147,6 +148,7 @@ class LineChartLineStyle {
   /// explicitly to `null`.
   const LineChartLineStyle({
     this.color = const Color(0xFFFFFFFF),
+    this.colorInactive = const Color(0x4DFFFFFF),
     this.stroke = 3,
     this.shadowColor = const Color(0x33000000),
     this.shadowStroke = 4,
@@ -174,6 +176,11 @@ class LineChartLineStyle {
   ///
   /// Defaults to `0xFFFFFFFF`.
   final Color color;
+
+  /// Color of the chart line.
+  ///
+  /// Defaults to `0x4DFFFFFF`.
+  final Color colorInactive;
 
   /// Stroke of the chart line.
   ///
@@ -220,14 +227,25 @@ class LineChartLineStyle {
   /// Defaults to `0x33FFFFFF`.
   final Color altitudeLineColor;
 
+  /// Gets whether chart between the line and the X axis is needed to be
+  /// filled or not.
   bool get filled => fillGradient != null || fillColor != null;
 
+  /// Gets a [Paint] for the line drawing.
   Paint get linePaint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = stroke
     ..color = color;
 
+  /// Gets a [Paint] for the inactive line drawing.
+  Paint get lineInactivePaint => Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.round
+    ..strokeWidth = stroke
+    ..color = colorInactive;
+
+  /// Gets a [Paint] for the drawing of the shadow beneath the line.
   Paint get shadowPaint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
@@ -235,12 +253,15 @@ class LineChartLineStyle {
     ..color = shadowColor
     ..imageFilter = ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius);
 
+  /// Gets a [Paint] for the altitude line drawing.
   Paint get altitudeLinePaint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = altitudeLineStroke
     ..color = altitudeLineColor;
 
+  /// Gets a [Paint] for the drawing the fill of the chart between the line
+  /// and the X axis.
   Paint getFillPaint([Rect? bounds]) {
     assert(filled);
 
@@ -264,6 +285,7 @@ class LineChartLineStyle {
   @override
   int get hashCode =>
       color.hashCode ^
+      colorInactive.hashCode ^
       stroke.hashCode ^
       shadowColor.hashCode ^
       shadowStroke.hashCode ^
@@ -278,6 +300,7 @@ class LineChartLineStyle {
   bool operator ==(Object other) =>
       other is LineChartLineStyle &&
       color == other.color &&
+      colorInactive == other.colorInactive &&
       stroke == other.stroke &&
       shadowColor == other.shadowColor &&
       shadowStroke == other.shadowStroke &&
