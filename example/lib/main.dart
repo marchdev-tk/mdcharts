@@ -83,7 +83,10 @@ class _HomePageState extends State<HomePage> {
                 data: {
                   DateTime(2022, 03, 2): 10,
                   DateTime(2022, 03, 4): 15,
-                  DateTime(2022, 03, 5): 29,
+                  DateTime(2022, 03, 5): 19,
+                  DateTime(2022, 03, 6): 21,
+                  DateTime(2022, 03, 7): 17,
+                  DateTime(2022, 03, 8): 3,
                   DateTime(2022, 03, 20): 83,
                 },
               ),
