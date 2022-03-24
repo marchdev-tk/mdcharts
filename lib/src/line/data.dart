@@ -226,8 +226,25 @@ class LineChartData {
         break;
     }
 
-    // minus 1 due to first point that lies on the Y axis
+    // minus 1 due to the first point that lies on the Y axis.
     return divisions - 1;
+  }
+
+  /// Gets last division index.
+  int get lastDivisionIndex {
+    int lastDivision;
+
+    switch (gridType) {
+      case LineChartGridType.undefined:
+        lastDivision = data.length;
+        break;
+      case LineChartGridType.monthly:
+        lastDivision = data.entries.last.key.day;
+        break;
+    }
+
+    // minus 1 due to to the first point that lies on the Y axis.
+    return lastDivision - 1;
   }
 
   /// Gets map that contains all days in the month as keys.

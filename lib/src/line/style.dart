@@ -401,6 +401,8 @@ class LineChartPointStyle {
     this.outerColor = const Color(0xFFFFFFFF),
     this.outerSize = 17,
     this.shadowColor = const Color(0x33000000),
+    this.shadowOffset = const Offset(0, 2),
+    this.shadowBlurRadius = 4,
     this.dropLineColor = const Color(0xFFFFFFFF),
     this.dropLineDashSize = 2,
     this.dropLineGapSize = 2,
@@ -448,6 +450,16 @@ class LineChartPointStyle {
   ///
   /// Defaults to `0x33000000`.
   final Color shadowColor;
+
+  /// Offset of the shadow beneath the outer circle.
+  ///
+  /// Defaults to `Offset(0, 2)`.
+  final Offset shadowOffset;
+
+  /// Blur radius of the shadow.
+  ///
+  /// Defaults to `4`.
+  final double shadowBlurRadius;
 
   /// Color of the drop line.
   ///
@@ -504,6 +516,16 @@ class LineChartPointStyle {
     ..style = PaintingStyle.fill
     ..color = outerColor;
 
+  /// Gets a [Paint] for the drawing of the outer circle shadow of the point.
+  Paint get shadowPaint => Paint()
+    ..style = PaintingStyle.fill
+    ..color = shadowColor
+    ..imageFilter = ImageFilter.blur(
+      sigmaX: shadowBlurRadius,
+      sigmaY: shadowBlurRadius,
+      tileMode: TileMode.decal,
+    );
+
   /// Gets a [Paint] for the drop line drawing.
   Paint get dropLinePaint => Paint()
     ..style = PaintingStyle.stroke
@@ -523,6 +545,8 @@ class LineChartPointStyle {
       outerColor.hashCode ^
       outerSize.hashCode ^
       shadowColor.hashCode ^
+      shadowOffset.hashCode ^
+      shadowBlurRadius.hashCode ^
       dropLineColor.hashCode ^
       dropLineDashSize.hashCode ^
       dropLineGapSize.hashCode ^
@@ -541,6 +565,8 @@ class LineChartPointStyle {
       outerColor == other.outerColor &&
       outerSize == other.outerSize &&
       shadowColor == other.shadowColor &&
+      shadowOffset == other.shadowOffset &&
+      shadowBlurRadius == other.shadowBlurRadius &&
       dropLineColor == other.dropLineColor &&
       dropLineDashSize == other.dropLineDashSize &&
       dropLineGapSize == other.dropLineGapSize &&

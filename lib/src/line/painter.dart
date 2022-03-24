@@ -9,6 +9,17 @@ import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
 
+/// Normalization method.
+///
+/// Converts provided [value] based on [maxValue] into a percentage
+/// proportion with valid values in inclusive range [0..1].
+///
+/// Returns `1 - result`, where `result` was calculated in the previously
+/// metioned step.
+double normalize(double value, double maxValue) {
+  return 1 - value / maxValue;
+}
+
 /// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {
   /// Constructs an instance of [LineChartPainter].
@@ -27,17 +38,20 @@ class LineChartPainter extends CustomPainter {
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [data.maxValue] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  ///
-  /// Returns `1 - result`, where `result` was calculated in the previously
-  /// metioned step.
-  double normalize(double value) {
-    final max = data.maxValue;
-    return 1 - value / max;
+  double _normalize(double value) => normalize(value, data.maxValue);
+
+  Offset _getPoint(Size size) {
+    final entry = data.data.entries.last;
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    final x = widthFraction * data.lastDivisionIndex;
+    final y = _normalize(entry.value) * size.height;
+    final point = Offset(x, y);
+
+    return point;
   }
+
+  bool get _showDetails => true;
 
   /// Grid painter.
   void paintGrid(Canvas canvas, Size size) {
@@ -110,7 +124,7 @@ class LineChartPainter extends CustomPainter {
       final value = map.entries.elementAt(i).value;
 
       x = widthFraction * i;
-      y = normalize(value) * size.height;
+      y = _normalize(value) * size.height;
 
       if (i == 0) {
         firstY = y;
@@ -161,7 +175,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y = normalize(data.limit!) * size.height;
+    final y = _normalize(data.limit!) * size.height;
 
     path.moveTo(0, y);
 
@@ -182,7 +196,7 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final yCenter = normalize(data.limit!) * size.height;
+    final yCenter = _normalize(data.limit!) * size.height;
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused
@@ -211,6 +225,72 @@ class LineChartPainter extends CustomPainter {
     textPainter.paint(canvas, textOffset);
   }
 
+  /// Drop line painter.
+  void paintDropLine(Canvas canvas, Size size) {
+    if (!_showDetails) {
+      return;
+    }
+
+    final point = _getPoint(size);
+    final dashWidth = style.pointStyle.dropLineDashSize;
+    final gapWidth = style.pointStyle.dropLineGapSize;
+
+    final pathX = Path();
+    final pathY = Path();
+
+    pathX.moveTo(0, point.dy);
+    pathY.moveTo(point.dx, size.height);
+
+    final countX = (point.dx / (dashWidth + gapWidth)).round();
+    for (var i = 1; i <= countX; i++) {
+      pathX.relativeLineTo(dashWidth, 0);
+      pathX.relativeMoveTo(gapWidth, 0);
+    }
+
+    final countY = ((size.height - point.dy) / (dashWidth + gapWidth)).round();
+    for (var i = 1; i <= countY; i++) {
+      pathY.relativeLineTo(0, -dashWidth);
+      pathY.relativeMoveTo(0, -gapWidth);
+    }
+
+    canvas.drawPath(pathX, style.pointStyle.dropLinePaint);
+    canvas.drawPath(pathY, style.pointStyle.dropLinePaint);
+  }
+
+  /// Point painter.
+  void paintPoint(Canvas canvas, Size size) {
+    final point = _getPoint(size);
+
+    canvas.drawCircle(
+      point + style.pointStyle.shadowOffset,
+      style.pointStyle.outerSize / 2,
+      style.pointStyle.shadowPaint,
+    );
+    canvas.drawCircle(
+      point,
+      style.pointStyle.outerSize / 2,
+      style.pointStyle.outerPaint,
+    );
+    canvas.drawCircle(
+      point,
+      style.pointStyle.innerSize / 2,
+      style.pointStyle.innerPaint,
+    );
+  }
+
+  /// Tooltip painter.
+  void paintTooltip(Canvas canvas, Size size) {
+    if (!_showDetails) {
+      return;
+    }
+
+    // final path = Path();
+
+    // path.moveTo(x, y)
+
+    // TODO: implement
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     paintGrid(canvas, size);
@@ -218,6 +298,9 @@ class LineChartPainter extends CustomPainter {
     paintChartLine(canvas, size);
     paintChartLimitLine(canvas, size);
     paintChartLimitLabel(canvas, size);
+    paintDropLine(canvas, size);
+    paintPoint(canvas, size);
+    paintTooltip(canvas, size);
   }
 
   @override
@@ -225,34 +308,4 @@ class LineChartPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
-}
-
-/// Point painter of the [LineChart].
-class LineChartPointPainter extends CustomPainter {
-  /// Constructs an instance of [LineChartPointPainter].
-  const LineChartPointPainter(
-    this.data,
-    this.style,
-    this.settings,
-  );
-
-  /// Set of required (and optional) data to construct the line chart.
-  final LineChartData data;
-
-  /// Provides various customizations for the line chart.
-  final LineChartStyle style;
-
-  /// Provides various settings for the line chart.
-  final LineChartSettings settings;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    return true;
-  }
 }
