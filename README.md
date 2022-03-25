@@ -5,7 +5,7 @@
 ![GitHub](https://img.shields.io/github/license/marchdev-tk/mdcharts)
 ![GitHub stars](https://img.shields.io/github/stars/marchdev-tk/mdcharts?style=social)
 
-Charts library from march.dev
+march.dev charts library. Provides highly customizable and configurable charts.
 
 ## Getting Started
 
