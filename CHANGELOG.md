@@ -1,5 +1,9 @@
 # Changelog
 
-## 1.0.0
+## 1.0.1 - 25.03.2022
 
-* Add changes here
+* Added changelog.
+
+## 1.0.0 - 25.03.2022
+
+* Added `LineChart`.
