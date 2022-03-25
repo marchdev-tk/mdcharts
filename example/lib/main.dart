@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   DateTime(2022, 02, 25): 83,
                   DateTime(2022, 02, 26): 81,
                   DateTime(2022, 02, 27): 77,
-                  // DateTime(2022, 02, 28): 70, // TODO: need to fix this case
+                  DateTime(2022, 02, 28): 70,
                 },
               ),
               style: const LineChartStyle(

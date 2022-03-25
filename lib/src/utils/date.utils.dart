@@ -11,7 +11,7 @@ extension DateTimeExtension on DateTime {
   DateTime get startOfMonth => DateTime(year, month);
 
   /// Gets end of the month omitting time part.
-  DateTime get endOfMonth => DateTime(year, month + 1, -1);
+  DateTime get endOfMonth => DateTime(year, month + 1, 0);
 
   /// Gets previous day omitting time part.
   DateTime get previousDay => add(const Duration(days: -1));
