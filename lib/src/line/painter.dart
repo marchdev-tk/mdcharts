@@ -173,12 +173,13 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.lineFilling) {
-      final gradientPath = Path.from(path);
+      final dy = style.lineStyle.stroke / 2;
+      final gradientPath = path.shift(Offset(0, -dy));
 
       // finishing path to create valid gradient/color fill
       gradientPath.lineTo(x, size.height);
       gradientPath.lineTo(0, size.height);
-      gradientPath.lineTo(0, firstY);
+      gradientPath.lineTo(0, firstY - dy);
 
       canvas.drawPath(
         gradientPath,
