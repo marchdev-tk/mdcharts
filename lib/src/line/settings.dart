@@ -8,6 +8,8 @@ class LineChartSettings {
   const LineChartSettings({
     this.xAxisDivisions = 3,
     this.yAxisDivisions = 2,
+    this.showFirstAxisYDivision = false,
+    this.showLastAxisXDivision = false,
     this.showAxisX = true,
     this.showAxisY = true,
     this.lineFilling = true,
@@ -25,7 +27,9 @@ class LineChartSettings {
     this.altitudeLine = true,
     this.showAxisXLabels = true,
   })  : xAxisDivisions = 0,
-        yAxisDivisions = 0;
+        yAxisDivisions = 0,
+        showFirstAxisYDivision = false,
+        showLastAxisXDivision = false;
 
   /// Divisions of the X axis or the quantity of the grid lines on X axis.
   ///
@@ -50,6 +54,16 @@ class LineChartSettings {
   /// and [yAxisDivisions] to `0` or consider using [LineChartSettings.gridless]
   /// constructor.
   final int yAxisDivisions;
+
+  /// Whether to show first Y axis grid line (on the top of the chart).
+  ///
+  /// Defaults to `false`.
+  final bool showFirstAxisYDivision;
+
+  /// Whether to show last X axis grid line (on the right of the chart).
+  ///
+  /// Defaults to `false`.
+  final bool showLastAxisXDivision;
 
   /// Whether to show X axis or not.
   ///

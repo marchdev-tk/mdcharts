@@ -62,23 +62,70 @@ class LineChartStyle {
 class LineChartGridStyle {
   /// Constructs an instance of [LineChartGridStyle].
   const LineChartGridStyle({
-    this.color = const Color(0x33FFFFFF),
+    this.xAxisColor = const Color(0x33FFFFFF),
+    this.xAxisStroke = 1,
+    this.yAxisColor = const Color(0x33FFFFFF),
+    this.yAxisStroke = 1,
   });
 
-  /// Color of the grid lines.
+  /// Constructs an instance of [LineChartGridStyle] for same color and stroke
+  /// for both axis.
+  const LineChartGridStyle.same({
+    Color color = const Color(0x33FFFFFF),
+    double stroke = 1,
+  })  : xAxisColor = color,
+        xAxisStroke = stroke,
+        yAxisColor = color,
+        yAxisStroke = stroke;
+
+  /// Color of the X axis grid lines.
   ///
   /// Defaults to `0x33FFFFFF`.
-  final Color color;
+  final Color xAxisColor;
 
-  /// Gets a [Paint] for the grid drawing.
-  Paint get paint => Paint()..color = color;
+  /// Stroke of the X axis grid lines.
+  ///
+  /// Defaults to `1`.
+  final double xAxisStroke;
+
+  /// Color of the Y axis grid lines.
+  ///
+  /// Defaults to `0x33FFFFFF`.
+  final Color yAxisColor;
+
+  /// Stroke of the Y axis grid lines.
+  ///
+  /// Defaults to `1`.
+  final double yAxisStroke;
+
+  /// Gets a [Paint] for the X axis grid drawing.
+  Paint get xAxisPaint => Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = xAxisStroke
+    ..color = xAxisColor;
+
+  /// Gets a [Paint] for the Y axis grid drawing.
+  Paint get yAxisPaint => Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = yAxisStroke
+    ..color = yAxisColor;
 
   @override
-  int get hashCode => color.hashCode;
+  int get hashCode =>
+      xAxisColor.hashCode ^
+      xAxisStroke.hashCode ^
+      yAxisColor.hashCode ^
+      yAxisStroke.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      other is LineChartGridStyle && color == other.color;
+      other is LineChartGridStyle &&
+      xAxisColor == other.xAxisColor &&
+      xAxisStroke == other.xAxisStroke &&
+      yAxisColor == other.yAxisColor &&
+      yAxisStroke == other.yAxisStroke;
 }
 
 /// Contains various customization options for the axis of the chart.
@@ -171,7 +218,7 @@ class LineChartLineStyle {
     this.shadowColor = const Color(0x33000000),
     this.shadowStroke = 4,
     this.shadowOffset = const Offset(0, 2),
-    this.blurRadius = 4,
+    this.shadowBlurRadius = 4,
     this.fillGradient = defaultGradient,
     this.fillColor,
     this.altitudeLineStroke = 1,
@@ -223,7 +270,7 @@ class LineChartLineStyle {
   /// Blur radius of the shadow beneath the chart line.
   ///
   /// Defaults to `4`.
-  final double blurRadius;
+  final double shadowBlurRadius;
 
   /// Fill gradient of the chart between X axis and chart line.
   ///
@@ -269,7 +316,10 @@ class LineChartLineStyle {
     ..strokeCap = StrokeCap.round
     ..strokeWidth = shadowStroke
     ..color = shadowColor
-    ..imageFilter = ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius);
+    ..imageFilter = ImageFilter.blur(
+      sigmaX: shadowBlurRadius,
+      sigmaY: shadowBlurRadius,
+    );
 
   /// Gets a [Paint] for the altitude line drawing.
   Paint get altitudeLinePaint => Paint()
@@ -308,7 +358,7 @@ class LineChartLineStyle {
       shadowColor.hashCode ^
       shadowStroke.hashCode ^
       shadowOffset.hashCode ^
-      blurRadius.hashCode ^
+      shadowBlurRadius.hashCode ^
       fillGradient.hashCode ^
       fillColor.hashCode ^
       altitudeLineStroke.hashCode ^
@@ -323,7 +373,7 @@ class LineChartLineStyle {
       shadowColor == other.shadowColor &&
       shadowStroke == other.shadowStroke &&
       shadowOffset == other.shadowOffset &&
-      blurRadius == other.blurRadius &&
+      shadowBlurRadius == other.shadowBlurRadius &&
       fillGradient == other.fillGradient &&
       fillColor == other.fillColor &&
       altitudeLineStroke == other.altitudeLineStroke &&

@@ -89,25 +89,25 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final gridPaint = style.gridStyle.paint;
-
     final xDivisions = settings.xAxisDivisions + 1;
     final widthFraction = size.width / xDivisions;
-    for (var i = 1; i < xDivisions; i++) {
+    final additionalLength = settings.showLastAxisXDivision ? 1 : 0;
+    for (var i = 1; i < xDivisions + additionalLength; i++) {
       canvas.drawLine(
         Offset(widthFraction * i, 0),
         Offset(widthFraction * i, size.height),
-        gridPaint,
+        style.gridStyle.xAxisPaint,
       );
     }
 
     final yDivisions = settings.yAxisDivisions + 1;
     final heightFraction = size.height / yDivisions;
-    for (var i = 1; i < yDivisions; i++) {
+    final startIndex = settings.showFirstAxisYDivision ? 0 : 1;
+    for (var i = startIndex; i < yDivisions; i++) {
       canvas.drawLine(
         Offset(0, heightFraction * i),
         Offset(size.width, heightFraction * i),
-        gridPaint,
+        style.gridStyle.yAxisPaint,
       );
     }
   }
