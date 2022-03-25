@@ -100,6 +100,11 @@ class _HomePageState extends State<HomePage> {
                   fillColor: Colors.white24,
                   fillGradient: null,
                 ),
+                pointStyle: LineChartPointStyle(
+                  tooltipRadius: 20,
+                  tooltipTriangleWidth: 16,
+                  tooltipTriangleHeight: 12,
+                ),
               ),
             ),
             LineChart(

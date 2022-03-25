@@ -323,9 +323,6 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    const triangleWidth = 12.0;
-    const triangleHeight = 5.0;
-
     final selectedIndex = _getSelectedIndex(size)!;
     final entry = data.typedData.entries.elementAt(selectedIndex);
     final titlePainter = MDTextPainter(TextSpan(
@@ -338,6 +335,8 @@ class LineChartPainter extends CustomPainter {
     ));
     final point = _getPoint(size, selectedIndex);
     final outerRadius = style.pointStyle.outerSize / 2;
+    final triangleWidth = style.pointStyle.tooltipTriangleWidth;
+    final triangleHeight = style.pointStyle.tooltipTriangleHeight;
     final bottomMargin =
         style.pointStyle.tooltopBottomMargin + outerRadius + triangleHeight;
     final titleSize = titlePainter.size;
@@ -349,12 +348,13 @@ class LineChartPainter extends CustomPainter {
       contentWidth + padding.horizontal,
       titleSize.height + spacing + subtitleSize.height + padding.vertical,
     );
+    final radius = Radius.circular(style.pointStyle.tooltipRadius);
     final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
     final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
     final xBias = isSelectedIndexFirst
-        ? tooltipSize.width / 2 - triangleWidth / 2
+        ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
         : isSelectedIndexLast
-            ? -tooltipSize.width / 2 + triangleWidth / 2
+            ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
             : 0;
     final titleOffset = Offset(
       point.dx - titleSize.width / 2 + xBias,
@@ -369,8 +369,7 @@ class LineChartPainter extends CustomPainter {
       point.dx - subtitleSize.width / 2 + xBias,
       point.dy - bottomMargin - padding.bottom - subtitleSize.height,
     );
-    const radius = Radius.circular(8);
-    final rrect = RRect.fromRectAndCorners(
+    final rrect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(
           point.dx + xBias,
@@ -379,10 +378,7 @@ class LineChartPainter extends CustomPainter {
         width: tooltipSize.width,
         height: tooltipSize.height,
       ),
-      topLeft: radius,
-      topRight: radius,
-      bottomLeft: isSelectedIndexFirst ? Radius.zero : radius,
-      bottomRight: isSelectedIndexLast ? Radius.zero : radius,
+      radius,
     );
 
     final path = Path();

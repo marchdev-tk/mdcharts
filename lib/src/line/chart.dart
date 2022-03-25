@@ -88,16 +88,28 @@ class _LineChartState extends State<LineChart> {
       size: Size.fromHeight(widget.style.axisStyle.labelHeight),
     );
 
-    return Padding(
-      padding: widget.padding ??
-          EdgeInsets.only(top: widget.style.pointStyle.tooltipHeight),
-      child: Column(
+    Widget child;
+    if (widget.settings.showAxisXLabels) {
+      child = Column(
         children: [
           Expanded(child: chart),
           SizedBox(height: widget.style.axisStyle.labelTopPadding),
           xAxisLabels,
         ],
-      ),
+      );
+    } else {
+      child = chart;
+    }
+
+    return Padding(
+      padding: widget.padding ??
+          EdgeInsets.fromLTRB(
+            widget.style.pointStyle.tooltipHorizontalOverflowWidth,
+            widget.style.pointStyle.tooltipHeight,
+            widget.style.pointStyle.tooltipHorizontalOverflowWidth,
+            0,
+          ),
+      child: child,
     );
   }
 }

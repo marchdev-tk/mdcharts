@@ -13,6 +13,7 @@ class LineChartSettings {
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
+    this.showAxisXLabels = true,
   });
 
   /// Constructs an instance of [LineChartSettings] without grids.
@@ -22,6 +23,7 @@ class LineChartSettings {
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
+    this.showAxisXLabels = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0;
 
@@ -75,6 +77,11 @@ class LineChartSettings {
   /// Defaults to `true`.
   final bool altitudeLine;
 
+  /// Whether to show X axis labels or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisXLabels;
+
   @override
   int get hashCode =>
       xAxisDivisions.hashCode ^
@@ -83,7 +90,8 @@ class LineChartSettings {
       showAxisY.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
-      altitudeLine.hashCode;
+      altitudeLine.hashCode ^
+      showAxisXLabels.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -94,5 +102,6 @@ class LineChartSettings {
       showAxisY == other.showAxisY &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
-      altitudeLine == other.altitudeLine;
+      altitudeLine == other.altitudeLine &&
+      showAxisXLabels == other.showAxisXLabels;
 }

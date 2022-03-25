@@ -454,6 +454,9 @@ class LineChartPointStyle {
     this.tooltipSubtitleStyle = defaultTooltipSubtitleStyle,
     this.tooltipPadding = defaultTooltipPadding,
     this.tooltipSpacing = 2,
+    this.tooltipRadius = 8,
+    this.tooltipTriangleWidth = 12,
+    this.tooltipTriangleHeight = 5,
     this.tooltipShadowColor = const Color(0xFF000000),
     this.tooltipShadowElevation = 4,
     this.tooltopBottomMargin = 6,
@@ -546,6 +549,21 @@ class LineChartPointStyle {
   /// Defaults to `2`.
   final double tooltipSpacing;
 
+  /// Circular radius of the tooltip.
+  ///
+  /// Defaults to `8`.
+  final double tooltipRadius;
+
+  /// Width of the tooltip triangle.
+  ///
+  /// Defaults to `12`.
+  final double tooltipTriangleWidth;
+
+  /// Height of the tooltip triangle.
+  ///
+  /// Defaults to `5`.
+  final double tooltipTriangleHeight;
+
   /// Shadow color of the tooltip.
   ///
   /// Defaults to `0xFF000000`.
@@ -582,6 +600,13 @@ class LineChartPointStyle {
         tooltipSpacing +
         titleHeight +
         subtitleHeight;
+  }
+
+  /// Gets horizontal overflow width of the tooltip based on following:
+  /// - [tooltipRadius];
+  /// - half size of [tooltipTriangleWidth].
+  double get tooltipHorizontalOverflowWidth {
+    return tooltipRadius + tooltipTriangleWidth / 2;
   }
 
   /// Gets a [Paint] for the drawing of the inner circle of the point.
@@ -633,6 +658,9 @@ class LineChartPointStyle {
       tooltipSubtitleStyle.hashCode ^
       tooltipPadding.hashCode ^
       tooltipSpacing.hashCode ^
+      tooltipRadius.hashCode ^
+      tooltipTriangleWidth.hashCode ^
+      tooltipTriangleHeight.hashCode ^
       tooltipShadowColor.hashCode ^
       tooltipShadowElevation.hashCode ^
       tooltopBottomMargin.hashCode;
@@ -655,6 +683,9 @@ class LineChartPointStyle {
       tooltipSubtitleStyle == other.tooltipSubtitleStyle &&
       tooltipPadding == other.tooltipPadding &&
       tooltipSpacing == other.tooltipSpacing &&
+      tooltipRadius == other.tooltipRadius &&
+      tooltipTriangleWidth == other.tooltipTriangleWidth &&
+      tooltipTriangleHeight == other.tooltipTriangleHeight &&
       tooltipShadowColor == other.tooltipShadowColor &&
       tooltipShadowElevation == other.tooltipShadowElevation &&
       tooltopBottomMargin == other.tooltopBottomMargin;
