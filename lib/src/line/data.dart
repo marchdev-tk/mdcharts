@@ -83,6 +83,7 @@ class LineChartData {
   /// Constructs an instance of [LineChartData].
   const LineChartData({
     required this.data,
+    this.predefinedMaxValue,
     this.limit,
     this.limitText,
     this.titleBuilder = defaultTitleBuilder,
@@ -90,10 +91,7 @@ class LineChartData {
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
-  }) : assert(
-          data.length >= 2,
-          '[data] must contain at least 2 entries!',
-        );
+  });
 
   static String defaultTitleBuilder(DateTime key, double value) =>
       '${key.year}-${key.month}-${key.day}';
@@ -112,6 +110,11 @@ class LineChartData {
   /// If [LineChartGridType.monthly] is set, then [data] must contain entries with
   /// the same month.
   final Map<DateTime, double> data;
+
+  /// Predefined max value for the chart.
+  ///
+  /// By default it will be calculated based on the logic of [maxValue].
+  final double? predefinedMaxValue;
 
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.
@@ -195,12 +198,19 @@ class LineChartData {
       return LineChartDataDirection.descending;
     }
 
-    throw ArgumentError.value(
-      data,
-      'data',
-      '[data] must not be indistinctable!',
-    );
+    // by default assume that chart is ascending
+    return LineChartDataDirection.ascending;
   }
+
+  /// Checks whether chart could be drawned or not.
+  ///
+  /// It checks for [typedData] length to be greater than or equal to 2.
+  bool get canDrawChart => typedData.length >= 2;
+
+  /// Checks whether point could be drawned or not.
+  ///
+  /// It checks for [typedData] length to be greater than or equal to 1.
+  bool get canDrawPoint => typedData.isNotEmpty;
 
   /// Determines max value for chart to draw.
   ///
@@ -208,6 +218,14 @@ class LineChartData {
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
   double get maxValue {
+    if (predefinedMaxValue != null) {
+      return predefinedMaxValue!;
+    }
+
+    if (!canDrawChart) {
+      return 1;
+    }
+
     final max = data.values.max;
     if (limit == null || max > limit!) {
       return max;

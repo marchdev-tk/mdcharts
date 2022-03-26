@@ -67,6 +67,10 @@ class LineChartPainter extends CustomPainter {
   }
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
+    if (!data.canDrawPoint) {
+      return Offset(0, size.height);
+    }
+
     final selectedIndex = precalculatedSelectedIndex ?? _getSelectedIndex(size);
     final index = selectedIndex ?? data.lastDivisionIndex;
     final entry = selectedIndex == null
@@ -136,6 +140,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Line painter.
   void paintChartLine(Canvas canvas, Size size) {
+    if (!data.canDrawChart) {
+      return;
+    }
+
     final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = data.typedData;
@@ -267,7 +275,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Drop line painter.
   void paintDropLine(Canvas canvas, Size size) {
-    if (!_showDetails) {
+    if (!data.canDrawPoint || !_showDetails) {
       return;
     }
 
@@ -299,6 +307,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Point painter.
   void paintPoint(Canvas canvas, Size size) {
+    if (!data.canDrawPoint) {
+      return;
+    }
+
     final point = _getPoint(size);
 
     canvas.drawCircle(
@@ -320,7 +332,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Tooltip painter.
   void paintTooltip(Canvas canvas, Size size) {
-    if (!_showDetails) {
+    if (!data.canDrawPoint || !_showDetails) {
       return;
     }
 
@@ -438,6 +450,10 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (data.gridType == LineChartGridType.undefined && !data.canDrawChart) {
+      return;
+    }
+
     final map = data.xAxisDates;
     final painters = <MDTextPainter, bool>{};
 
