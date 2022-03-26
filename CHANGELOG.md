@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2 - 26.03.2022
+
+* Fixed StackOverflowException for descending unidirectional chart.
+* Fixed `xAxisDates` getter for unidirectional chart with empty data.
+
 ## 1.2.1 - 26.03.2022
 
 * Fixed `typedData` getter when data is empty.

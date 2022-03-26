@@ -218,12 +218,16 @@ class LineChartData {
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
   double get maxValue {
-    if (predefinedMaxValue != null) {
-      return predefinedMaxValue!;
-    }
-
     if (!canDrawChart) {
       return 1;
+    }
+
+    return _maxValue;
+  }
+
+  double get _maxValue {
+    if (predefinedMaxValue != null) {
+      return predefinedMaxValue!;
     }
 
     final max = data.values.max;
@@ -254,8 +258,12 @@ class LineChartData {
         break;
 
       case LineChartGridType.monthly:
-        final endOfMonth = data.keys.first.endOfMonth;
-        divisions = endOfMonth.day;
+        if (data.isNotEmpty) {
+          final endOfMonth = data.keys.first.endOfMonth;
+          divisions = endOfMonth.day;
+        } else {
+          divisions = 1;
+        }
         break;
     }
 
@@ -291,6 +299,10 @@ class LineChartData {
   }
 
   List<DateTime> get _monthlyXAxisDates {
+    if (data.isEmpty) {
+      return [];
+    }
+
     final dates = <DateTime>[];
     final startOfMonth = data.keys.first.startOfMonth;
     final endOfMonthDay = data.keys.first.endOfMonth.day;
@@ -350,7 +362,7 @@ class LineChartData {
         case LineChartDataDirection.ascending:
           return 0;
         case LineChartDataDirection.descending:
-          return maxValue;
+          return _maxValue;
       }
     }
 
