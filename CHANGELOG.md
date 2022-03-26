@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3 - 26.03.2022
+
+* Fixed value normalization if all provided data is 0
+
 ## 1.2.2 - 26.03.2022
 
 * Fixed StackOverflowException for descending unidirectional chart.
