@@ -46,7 +46,8 @@ class LineChartPainter extends CustomPainter {
   /// Returns `1 - result`, where `result` was calculated in the previously
   /// metioned step.
   double normalize(double value) {
-    return 1 - value / data.maxValue;
+    final normalizedValue = 1 - value / data.maxValue;
+    return normalizedValue.isNaN ? 0 : normalizedValue;
   }
 
   bool get _isDescendingChart =>
