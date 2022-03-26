@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 - 26.03.2022
+
+* Allowed chart creation with less then 2 points.
+* Added option to set padded value to max value.
+
 ## 1.1.0 - 25.03.2022
 
 * Fixed color/gradient fill.
