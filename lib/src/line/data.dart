@@ -318,6 +318,10 @@ class LineChartData {
   Map<DateTime, double> get _monthlyData {
     assert(gridType == LineChartGridType.monthly);
 
+    if (data.isEmpty) {
+      return data;
+    }
+
     final map = <DateTime, double>{};
     final startOfMonth = data.keys.first.startOfMonth;
     final endOfMonthDay = data.keys.first.endOfMonth.day;

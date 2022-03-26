@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 - 26.03.2022
+
+* Fixed `typedData` getter when data is empty.
+
 ## 1.2.0 - 26.03.2022
 
 * Allowed chart creation with less then 2 points.
