@@ -389,7 +389,7 @@ class LineChartLimitStyle {
     this.labelTextPadding = defaultTextPadding,
     this.labelColor = const Color(0xFFFFFFFF),
     this.dashColor = const Color(0x80FFFFFF),
-    this.dashStroke = 1,
+    this.stroke = 1,
     this.dashSize = 2,
     this.gapSize = 2,
   });
@@ -436,7 +436,7 @@ class LineChartLimitStyle {
   /// Stroke of a dash line.
   ///
   /// Defaults to `1`.
-  final double dashStroke;
+  final double stroke;
 
   /// Size of dashes.
   ///
@@ -452,7 +452,7 @@ class LineChartLimitStyle {
   Paint get linePaint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
-    ..strokeWidth = dashStroke
+    ..strokeWidth = stroke
     ..color = dashColor;
 
   /// Gets a [Paint] for the limit label drawing.
@@ -467,7 +467,7 @@ class LineChartLimitStyle {
       labelTextPadding.hashCode ^
       labelColor.hashCode ^
       dashColor.hashCode ^
-      dashStroke.hashCode ^
+      stroke.hashCode ^
       dashSize.hashCode ^
       gapSize.hashCode;
 
@@ -479,7 +479,7 @@ class LineChartLimitStyle {
       labelTextPadding == other.labelTextPadding &&
       labelColor == other.labelColor &&
       dashColor == other.dashColor &&
-      dashStroke == other.dashStroke &&
+      stroke == other.stroke &&
       dashSize == other.dashSize &&
       gapSize == other.gapSize;
 }
@@ -497,6 +497,7 @@ class LineChartPointStyle {
     this.shadowOffset = const Offset(0, 2),
     this.shadowBlurRadius = 4,
     this.dropLineColor = const Color(0xFFFFFFFF),
+    this.dropLineStroke = 1,
     this.dropLineDashSize = 2,
     this.dropLineGapSize = 2,
     this.tooltipColor = const Color(0xFFFFFFFF),
@@ -563,6 +564,11 @@ class LineChartPointStyle {
   ///
   /// Defaults to `0xFFFFFFFF`.
   final Color dropLineColor;
+
+  /// Stroke of the drop line.
+  ///
+  /// Defaults to `1`.
+  final double dropLineStroke;
 
   /// Dash size of the drop line.
   ///
@@ -683,7 +689,7 @@ class LineChartPointStyle {
   Paint get dropLinePaint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
-    ..strokeWidth = dropLineDashSize
+    ..strokeWidth = dropLineStroke
     ..color = dropLineColor;
 
   /// Gets a [Paint] for the tooltip drawing.
