@@ -339,7 +339,11 @@ class LineChartData {
     final endOfMonthDay = data.keys.first.endOfMonth.day;
     final lastDate = data.keys.max.date;
     for (var i = 0; i < endOfMonthDay; i++) {
-      final date = startOfMonth.add(Duration(days: i));
+      final date = DateTime(
+        startOfMonth.year,
+        startOfMonth.month,
+        startOfMonth.day + i,
+      );
 
       if (date.isAfter(lastDate)) {
         break;

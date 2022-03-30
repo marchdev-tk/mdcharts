@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                   DateTime(2022, 03, 7): 28,
                   DateTime(2022, 03, 11): 33,
                   DateTime(2022, 03, 16): 38,
-                  DateTime(2022, 03, 20): 83,
+                  DateTime(2022, 03, 30): 83,
                 },
               ),
             ),
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                 gridType: LineChartGridType.monthly,
                 dataType: LineChartDataType.unidirectional,
                 data: {
-                  DateTime(2022, 03, 2): 83,
+                  DateTime(2022, 03, 1): 83,
                   DateTime(2022, 03, 3): 76,
                   DateTime(2022, 03, 6): 65,
                   DateTime(2022, 03, 9): 29,
