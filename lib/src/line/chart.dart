@@ -69,6 +69,7 @@ class _LineChartState extends State<LineChart> {
       chart = GestureDetector(
         onHorizontalDragCancel: _clearXPosition,
         onHorizontalDragEnd: _clearXPosition,
+        onHorizontalDragStart: _setXPosition,
         onHorizontalDragUpdate: _setXPosition,
         child: chart,
       );

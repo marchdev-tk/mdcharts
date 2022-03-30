@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 - 30.03.2022
+
+* Added detection of `horizontal drag start`.
+
 ## 1.3.0 - 30.03.2022
 
 * Redesigned drawing of the first point.
