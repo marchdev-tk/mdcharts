@@ -156,7 +156,6 @@ class LineChartPainter extends CustomPainter {
       path.moveTo(0, size.height);
     }
 
-    double firstY = 0;
     double x = 0;
     double y = 0;
     for (var i = 0; i < map.length; i++) {
@@ -165,12 +164,7 @@ class LineChartPainter extends CustomPainter {
       x = widthFraction * i;
       y = normalize(value) * size.height;
 
-      if (i == 0) {
-        firstY = y;
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
+      path.lineTo(x, y);
 
       if (i == map.length - 1) {
         path.moveTo(x, y);
@@ -182,6 +176,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.lineFilling) {
+      final firstY = _isDescendingChart ? 0 : size.height;
       final dy = style.lineStyle.stroke / 2;
       final gradientPath = path.shift(Offset(0, -dy));
 
