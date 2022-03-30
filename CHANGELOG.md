@@ -1,8 +1,14 @@
 # Changelog
 
+## 1.3.0 - 30.03.2022
+
+* Redesigned drawing of the first point.
+* Fixed timezone issue.
+* Fixed styles for point drop line stroke.
+
 ## 1.2.3 - 26.03.2022
 
-* Fixed value normalization if all provided data is 0
+* Fixed value normalization if all provided data is 0.
 
 ## 1.2.2 - 26.03.2022
 
