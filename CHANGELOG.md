@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.2 - 01.04.2022
+
+* Fixed chart drawing with only 1 data entry.
+
 ## 1.3.1 - 30.03.2022
 
 * Added detection of `horizontal drag start`.
