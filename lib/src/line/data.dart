@@ -202,15 +202,10 @@ class LineChartData {
     return LineChartDataDirection.ascending;
   }
 
-  /// Checks whether chart could be drawned or not.
-  ///
-  /// It checks for [typedData] length to be greater than or equal to 2.
-  bool get canDrawChart => typedData.length >= 2;
-
-  /// Checks whether point could be drawned or not.
+  /// Checks whether chart and point could be drawned or not.
   ///
   /// It checks for [typedData] length to be greater than or equal to 1.
-  bool get canDrawPoint => typedData.isNotEmpty;
+  bool get canDraw => typedData.isNotEmpty;
 
   /// Determines max value for chart to draw.
   ///
@@ -218,7 +213,7 @@ class LineChartData {
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
   double get maxValue {
-    if (!canDrawChart) {
+    if (!canDraw) {
       return 1;
     }
 
@@ -252,18 +247,21 @@ class LineChartData {
   int get xAxisDivisions {
     int divisions;
 
+    if (data.isEmpty) {
+      return 1;
+    }
+
+    if (gridType == LineChartGridType.undefined && data.length == 1) {
+      return 1;
+    }
+
     switch (gridType) {
       case LineChartGridType.undefined:
         divisions = data.length;
         break;
 
       case LineChartGridType.monthly:
-        if (data.isNotEmpty) {
-          final endOfMonth = data.keys.first.endOfMonth;
-          divisions = endOfMonth.day;
-        } else {
-          divisions = 1;
-        }
+        divisions = data.keys.first.endOfMonth.day;
         break;
     }
 

@@ -68,7 +68,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
-    if (!data.canDrawPoint) {
+    if (!data.canDraw) {
       return Offset(0, size.height);
     }
 
@@ -141,7 +141,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Line painter.
   void paintChartLine(Canvas canvas, Size size) {
-    if (!data.canDrawChart) {
+    if (!data.canDraw) {
       return;
     }
 
@@ -271,7 +271,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Drop line painter.
   void paintDropLine(Canvas canvas, Size size) {
-    if (!data.canDrawPoint || !_showDetails) {
+    if (!data.canDraw || !_showDetails) {
       return;
     }
 
@@ -303,7 +303,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Point painter.
   void paintPoint(Canvas canvas, Size size) {
-    if (!data.canDrawPoint) {
+    if (!data.canDraw) {
       return;
     }
 
@@ -328,7 +328,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Tooltip painter.
   void paintTooltip(Canvas canvas, Size size) {
-    if (!data.canDrawPoint || !_showDetails) {
+    if (!data.canDraw || !_showDetails) {
       return;
     }
 
@@ -446,7 +446,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (data.gridType == LineChartGridType.undefined && !data.canDrawChart) {
+    if (data.gridType == LineChartGridType.undefined && !data.canDraw) {
       return;
     }
 
