@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0 - 04.05.2022
+
+* Removed bool parameters `showFirstAxisYDivision` and `showLastAxisXDivision` and added enum `AxisDivisionEdges` that provides more complex customization of axis divisions at the edges of the grid.
+* Added snap position of limit label.
+* Added labels to the Y axis of the chart, that caused redesigning of `maxValue` calculation mechanic.
+
 ## 1.3.2 - 01.04.2022
 
 * Fixed chart drawing with only 1 data entry.
