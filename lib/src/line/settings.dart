@@ -2,19 +2,59 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+/// Axis division edges.
+enum AxisDivisionEdges {
+  /// No edges.
+  ///
+  /// Default option.
+  none,
+
+  /// Left edge.
+  left,
+
+  /// Top edge.
+  top,
+
+  /// Right edge.
+  right,
+
+  /// Bottom edge.
+  bottom,
+
+  /// [left] and [right] edges.
+  horizontal,
+
+  /// [top] and [bottom] edges.
+  vertical,
+
+  /// All edges.
+  all,
+}
+
+/// Snap position options of limit label.
+enum LimitLabelSnapPosition {
+  /// Snap to Y axis.
+  ///
+  /// Default behavior.
+  axis,
+
+  /// Snap to charts left boundary.
+  chartBoundary,
+}
+
 /// Set of settings of the [LineChart].
 class LineChartSettings {
   /// Constructs an instance of [LineChartSettings].
   const LineChartSettings({
     this.xAxisDivisions = 3,
     this.yAxisDivisions = 2,
-    this.showFirstAxisYDivision = false,
-    this.showLastAxisXDivision = false,
+    this.axisDivisionEdges = AxisDivisionEdges.none,
     this.showAxisX = true,
     this.showAxisY = true,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
+    this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
   });
 
@@ -25,11 +65,11 @@ class LineChartSettings {
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
+    this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
-        showFirstAxisYDivision = false,
-        showLastAxisXDivision = false;
+        axisDivisionEdges = AxisDivisionEdges.none;
 
   /// Divisions of the X axis or the quantity of the grid lines on X axis.
   ///
@@ -55,15 +95,10 @@ class LineChartSettings {
   /// constructor.
   final int yAxisDivisions;
 
-  /// Whether to show first Y axis grid line (on the top of the chart).
+  /// Axis division edges to be painted.
   ///
-  /// Defaults to `false`.
-  final bool showFirstAxisYDivision;
-
-  /// Whether to show last X axis grid line (on the right of the chart).
-  ///
-  /// Defaults to `false`.
-  final bool showLastAxisXDivision;
+  /// Defaults to [AxisDivisionEdges.none].
+  final AxisDivisionEdges axisDivisionEdges;
 
   /// Whether to show X axis or not.
   ///
@@ -91,6 +126,11 @@ class LineChartSettings {
   /// Defaults to `true`.
   final bool altitudeLine;
 
+  /// Snap position options of limit label.
+  ///
+  /// Defaults to [LimitLabelSnapPosition.axis].
+  final LimitLabelSnapPosition limitLabelSnapPosition;
+
   /// Whether to show X axis labels or not.
   ///
   /// Defaults to `true`.
@@ -100,11 +140,13 @@ class LineChartSettings {
   int get hashCode =>
       xAxisDivisions.hashCode ^
       yAxisDivisions.hashCode ^
+      axisDivisionEdges.hashCode ^
       showAxisX.hashCode ^
       showAxisY.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
+      limitLabelSnapPosition.hashCode ^
       showAxisXLabels.hashCode;
 
   @override
@@ -112,10 +154,12 @@ class LineChartSettings {
       other is LineChartSettings &&
       xAxisDivisions == other.xAxisDivisions &&
       yAxisDivisions == other.yAxisDivisions &&
+      axisDivisionEdges == other.axisDivisionEdges &&
       showAxisX == other.showAxisX &&
       showAxisY == other.showAxisY &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
+      limitLabelSnapPosition == other.limitLabelSnapPosition &&
       showAxisXLabels == other.showAxisXLabels;
 }

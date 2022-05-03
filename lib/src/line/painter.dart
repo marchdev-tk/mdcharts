@@ -4,8 +4,8 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter/rendering.dart';
 import 'package:flinq/flinq.dart';
+import 'package:flutter/rendering.dart';
 
 import '../utils.dart';
 import 'data.dart';
@@ -96,8 +96,15 @@ class LineChartPainter extends CustomPainter {
 
     final xDivisions = settings.xAxisDivisions + 1;
     final widthFraction = size.width / xDivisions;
-    final additionalLength = settings.showLastAxisXDivision ? 1 : 0;
-    for (var i = 1; i < xDivisions + additionalLength; i++) {
+    final hasLeft = settings.axisDivisionEdges == AxisDivisionEdges.all ||
+        settings.axisDivisionEdges == AxisDivisionEdges.horizontal ||
+        settings.axisDivisionEdges == AxisDivisionEdges.left;
+    final hasRight = settings.axisDivisionEdges == AxisDivisionEdges.all ||
+        settings.axisDivisionEdges == AxisDivisionEdges.horizontal ||
+        settings.axisDivisionEdges == AxisDivisionEdges.right;
+    final xStart = hasLeft ? 0 : 1;
+    final xEnd = hasRight ? xDivisions + 1 : xDivisions;
+    for (var i = xStart; i < xEnd; i++) {
       canvas.drawLine(
         Offset(widthFraction * i, 0),
         Offset(widthFraction * i, size.height),
@@ -107,8 +114,15 @@ class LineChartPainter extends CustomPainter {
 
     final yDivisions = settings.yAxisDivisions + 1;
     final heightFraction = size.height / yDivisions;
-    final startIndex = settings.showFirstAxisYDivision ? 0 : 1;
-    for (var i = startIndex; i < yDivisions; i++) {
+    final hasTop = settings.axisDivisionEdges == AxisDivisionEdges.all ||
+        settings.axisDivisionEdges == AxisDivisionEdges.vertical ||
+        settings.axisDivisionEdges == AxisDivisionEdges.top;
+    final hasBottom = settings.axisDivisionEdges == AxisDivisionEdges.all ||
+        settings.axisDivisionEdges == AxisDivisionEdges.vertical ||
+        settings.axisDivisionEdges == AxisDivisionEdges.bottom;
+    final yStart = hasTop ? 0 : 1;
+    final yEnd = hasBottom ? yDivisions + 1 : yDivisions;
+    for (var i = yStart; i < yEnd; i++) {
       canvas.drawLine(
         Offset(0, heightFraction * i),
         Offset(size.width, heightFraction * i),
@@ -240,6 +254,10 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
+    final snapBias =
+        settings.limitLabelSnapPosition == LimitLabelSnapPosition.chartBoundary
+            ? style.pointStyle.tooltipHorizontalOverflowWidth
+            : .0;
     final yCenter = normalize(data.limit!) * size.height;
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
@@ -250,15 +268,16 @@ class LineChartPainter extends CustomPainter {
     final textPainter = MDTextPainter(textSpan);
     final textSize = textPainter.size;
     final textPaddings = style.limitStyle.labelTextPadding;
-    final textOffset = Offset(textPaddings.left, yCenter - textSize.height / 2);
+    final textOffset =
+        Offset(textPaddings.left - snapBias, yCenter - textSize.height / 2);
     final labelHeight = textPaddings.vertical + textSize.height;
     final labelRadius = labelHeight / 2;
 
     canvas.drawRRect(
       RRect.fromLTRBAndCorners(
-        0,
+        -snapBias,
         yCenter - labelHeight / 2,
-        textPaddings.horizontal + textSize.width,
+        textPaddings.horizontal + textSize.width - snapBias,
         yCenter + labelHeight / 2,
         topRight: Radius.circular(labelRadius),
         bottomRight: Radius.circular(labelRadius),

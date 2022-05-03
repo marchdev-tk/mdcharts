@@ -53,11 +53,13 @@ march.dev charts library. Provides highly customizable and configurable charts.
 
 * `xAxisDivisions` - quantity of the X axis divisions, defaults to `3`.
 * `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
+* `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
 * `showAxisY` - whether to show Y axis or not, defaults to `true`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
 * `lineShadow` - whether to draw shadow beneath the line or not, defaults to `true`.
 * `altitudeLine` - whether to draw the altitude line or not, defaults to `true`.
+* `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
 
 #### Styles
