@@ -89,6 +89,7 @@ class LineChartData {
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
+    this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   });
@@ -99,6 +100,7 @@ class LineChartData {
       value.toString();
   static String defaultXAxisLabelBuilder(DateTime key) =>
       '${key.month}-${key.day}';
+  static String defaultYAxisLabelBuilder(double value) => '$value';
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -140,6 +142,11 @@ class LineChartData {
   ///
   /// If not set explicitly, [defaultXAxisLabelBuilder] will be used.
   final LabelBuilder<DateTime> xAxisLabelBuilder;
+
+  /// Text builder for the Y axis label.
+  ///
+  /// If not set explicitly, [defaultYAxisLabelBuilder] will be used.
+  final LabelBuilder<double> yAxisLabelBuilder;
 
   /// Grid type of the line chart.
   ///

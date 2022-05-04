@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/widgets.dart';
 import 'package:cross_platform/cross_platform.dart';
+import 'package:flutter/widgets.dart';
 
 import 'data.dart';
 import 'painter.dart';
@@ -94,7 +94,7 @@ class _LineChartState extends State<LineChart> {
       child = Column(
         children: [
           Expanded(child: chart),
-          SizedBox(height: widget.style.axisStyle.labelTopPadding),
+          SizedBox(height: widget.style.axisStyle.xAxisLabelTopPadding),
           xAxisLabels,
         ],
       );

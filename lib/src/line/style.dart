@@ -134,12 +134,19 @@ class LineChartAxisStyle {
   const LineChartAxisStyle({
     this.stroke = 1,
     this.color = const Color(0x33FFFFFF),
-    this.labelStyle = defaultLabelStyle,
-    this.labelSpacing = 16,
-    this.labelTopPadding = 8,
+    this.yAxisLabelStyle = defaultYAxisLabelStyle,
+    this.xAxisLabelStyle = defaultXAxisLabelStyle,
+    this.xAxisLabelSpacing = 16,
+    this.xAxisLabelTopPadding = 8,
   });
 
-  static const defaultLabelStyle = TextStyle(
+  static const defaultYAxisLabelStyle = TextStyle(
+    height: 16 / 11,
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    color: Color(0x66FFFFFF),
+  );
+  static const defaultXAxisLabelStyle = TextStyle(
     height: 16 / 11,
     fontSize: 11,
     fontWeight: FontWeight.w700,
@@ -156,26 +163,31 @@ class LineChartAxisStyle {
   /// Defaults to `0x33FFFFFF`.
   final Color color;
 
-  /// Axis label style.
+  /// Y axis label style.
   ///
-  /// Defaults to [defaultLabelStyle].
-  final TextStyle labelStyle;
+  /// Defaults to [defaultYAxisLabelStyle].
+  final TextStyle yAxisLabelStyle;
 
-  /// Spacing between labels.
+  /// X axis label style.
+  ///
+  /// Defaults to [defaultXAxisLabelStyle].
+  final TextStyle xAxisLabelStyle;
+
+  /// Spacing between X axis labels.
   ///
   /// Defaults to `16`.
-  final double labelSpacing;
+  final double xAxisLabelSpacing;
 
-  /// Top padding of the axis label.
+  /// Top padding of the X axis label.
   ///
   /// Defaults to `8`.
-  final double labelTopPadding;
+  final double xAxisLabelTopPadding;
 
   /// Gets height of the label.
   double get labelHeight {
     final labelHeight = MDTextPainter(TextSpan(
       text: '',
-      style: labelStyle,
+      style: xAxisLabelStyle,
     )).size.height;
 
     return labelHeight;
@@ -191,18 +203,20 @@ class LineChartAxisStyle {
   int get hashCode =>
       stroke.hashCode ^
       color.hashCode ^
-      labelStyle.hashCode ^
-      labelSpacing.hashCode ^
-      labelTopPadding.hashCode;
+      yAxisLabelStyle.hashCode ^
+      xAxisLabelStyle.hashCode ^
+      xAxisLabelSpacing.hashCode ^
+      xAxisLabelTopPadding.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is LineChartAxisStyle &&
       stroke == other.stroke &&
       color == other.color &&
-      labelStyle == other.labelStyle &&
-      labelSpacing == other.labelSpacing &&
-      labelTopPadding == other.labelTopPadding;
+      yAxisLabelStyle == other.yAxisLabelStyle &&
+      xAxisLabelStyle == other.xAxisLabelStyle &&
+      xAxisLabelSpacing == other.xAxisLabelSpacing &&
+      xAxisLabelTopPadding == other.xAxisLabelTopPadding;
 }
 
 /// Contains various customization options for the line of the chart itself.

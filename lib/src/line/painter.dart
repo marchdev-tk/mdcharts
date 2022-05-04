@@ -128,6 +128,24 @@ class LineChartPainter extends CustomPainter {
         Offset(size.width, heightFraction * i),
         style.gridStyle.yAxisPaint,
       );
+
+      // force to skip last (beneath axis) division paint of axis label.
+      if (hasBottom && i == yEnd - 1) {
+        continue;
+      }
+
+      final labelValue = data.maxValue * (yDivisions - i) / yDivisions;
+      final textPainter = MDTextPainter(
+        TextSpan(
+          text: data.yAxisLabelBuilder(labelValue),
+          style: style.axisStyle.yAxisLabelStyle,
+        ),
+      );
+
+      textPainter.paint(
+        canvas,
+        Offset(0, heightFraction * i + style.gridStyle.yAxisPaint.strokeWidth),
+      );
     }
   }
 
@@ -477,7 +495,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       final text = data.xAxisLabelBuilder(item);
       final painter = MDTextPainter(TextSpan(
         text: text,
-        style: style.labelStyle,
+        style: style.xAxisLabelStyle,
       ));
       painters[painter] = true;
     }
@@ -491,7 +509,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
               .map((painter) => painter.key.size.width)
               .sum
               .toDouble() +
-          gapCount * style.labelSpacing;
+          gapCount * style.xAxisLabelSpacing;
 
       if (totalWidth > size.width && visiblePainters.length > 3) {
         for (var i = 1; i < visiblePainters.length / 2; i++) {

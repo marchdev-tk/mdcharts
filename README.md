@@ -48,6 +48,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * ##### Label builder
 
   * `xAxisLabelBuilder` - builds X axis label based on `DateTime` value from provided data.
+  * `yAxisLabelBuilder` - builds Y axis label based on `double` value from provided data, `maxValue` specifically.
 
 #### Settings
 
