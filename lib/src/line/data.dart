@@ -84,6 +84,7 @@ class LineChartData {
   const LineChartData({
     required this.data,
     this.predefinedMaxValue,
+    this.maxValueRoundingMap = defaultMaxValueRoundingMap,
     this.limit,
     this.limitText,
     this.titleBuilder = defaultTitleBuilder,
@@ -101,6 +102,13 @@ class LineChartData {
   static String defaultXAxisLabelBuilder(DateTime key) =>
       '${key.month}-${key.day}';
   static String defaultYAxisLabelBuilder(double value) => '$value';
+  static const Map<num, num> defaultMaxValueRoundingMap = {
+    100: 5,
+    1000: 10,
+    10000: 100,
+    100000: 1000,
+    1000000: 10000,
+  };
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -117,6 +125,33 @@ class LineChartData {
   ///
   /// By default it will be calculated based on the logic of [maxValue].
   final double? predefinedMaxValue;
+
+  /// Rounding map of the [maxValue].
+  ///
+  /// Logic of rounding is following:
+  ///
+  /// `key` is compared to [maxValue].
+  ///
+  /// If [maxValue] is less than `key` - `value` of this `key` is used as a
+  /// complement to [maxValue] to find the closest value that will be divided by
+  /// quantity of Y axis divisions to "buitify" Y axis labels.
+  ///
+  /// Otherwise, next `key` is compared to [maxValue]. And so on.
+  ///
+  /// In case of absence of `key` that might satisfy the rule, described above,
+  /// last entry of this map will be used as a fallback.
+  ///
+  /// Example:
+  /// - `yAxisDivisions` = 2 (so 2 division lines results with 3 chunks of chart);
+  /// - `maxValue` = 83 (from data).
+  ///
+  /// So, based on these values maxValue will be rounded to `90`.
+  ///
+  /// **Please note**: it is preferred to provide ascending keys for this map,
+  /// omitting this simple rule may cause malfunctioning of rounding function.
+  /// As a sample of correctly formed map [defaultMaxValueRoundingMap] could be
+  /// used.
+  final Map<num, num> maxValueRoundingMap;
 
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.

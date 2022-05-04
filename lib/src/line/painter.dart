@@ -38,15 +38,43 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
+  /// Rounding method that rounds [data.maxValue] so, it could be divided by
+  /// [settings.yAxisDivisions] with "beautiful" integer chunks.
+  ///
+  /// Example:
+  /// - yAxisDivisions = 2 (so 2 division lines results with 3 chunks of chart);
+  /// - maxValue = 83 (from data).
+  ///
+  /// So, based on these values maxValue will be rounded to `90`.
+  double get roundedMaxValue {
+    final roundingMap = data.maxValueRoundingMap;
+    final initalMaxValue = data.maxValue;
+    final yDivisions =
+        settings.yAxisDivisions == 0 ? 1 : settings.yAxisDivisions + 1;
+    final complement = roundingMap.entries
+        .firstWhere(
+          (entry) => initalMaxValue < entry.key,
+          orElse: () => roundingMap.entries.last,
+        )
+        .value;
+    var rounded = initalMaxValue + complement - initalMaxValue % complement;
+
+    while (rounded % yDivisions != 0) {
+      rounded += complement;
+    }
+
+    return rounded;
+  }
+
   /// Normalization method.
   ///
-  /// Converts provided [value] based on [maxValue] into a percentage
+  /// Converts provided [value] based on [roundedMaxValue] into a percentage
   /// proportion with valid values in inclusive range [0..1].
   ///
   /// Returns `1 - result`, where `result` was calculated in the previously
   /// metioned step.
   double normalize(double value) {
-    final normalizedValue = 1 - value / data.maxValue;
+    final normalizedValue = 1 - value / roundedMaxValue;
     return normalizedValue.isNaN ? 0 : normalizedValue;
   }
 
@@ -129,12 +157,14 @@ class LineChartPainter extends CustomPainter {
         style.gridStyle.yAxisPaint,
       );
 
-      // force to skip last (beneath axis) division paint of axis label.
-      if (hasBottom && i == yEnd - 1) {
+      /// skip paint of y axis labels if [showAxisYLabels] is set to `true`
+      /// or
+      /// force to skip last (beneath axis) division paint of axis label.
+      if (!settings.showAxisYLabels || hasBottom && i == yEnd - 1) {
         continue;
       }
 
-      final labelValue = data.maxValue * (yDivisions - i) / yDivisions;
+      final labelValue = roundedMaxValue * (yDivisions - i) / yDivisions;
       final textPainter = MDTextPainter(
         TextSpan(
           text: data.yAxisLabelBuilder(labelValue),

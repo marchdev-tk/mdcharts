@@ -56,6 +56,7 @@ class LineChartSettings {
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
+    this.showAxisYLabels = true,
   });
 
   /// Constructs an instance of [LineChartSettings] without grids.
@@ -67,6 +68,7 @@ class LineChartSettings {
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
+    this.showAxisYLabels = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
@@ -136,6 +138,11 @@ class LineChartSettings {
   /// Defaults to `true`.
   final bool showAxisXLabels;
 
+  /// Whether to show Y axis labels or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisYLabels;
+
   @override
   int get hashCode =>
       xAxisDivisions.hashCode ^
@@ -147,7 +154,8 @@ class LineChartSettings {
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
-      showAxisXLabels.hashCode;
+      showAxisXLabels.hashCode ^
+      showAxisYLabels.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -161,5 +169,6 @@ class LineChartSettings {
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
-      showAxisXLabels == other.showAxisXLabels;
+      showAxisXLabels == other.showAxisXLabels &&
+      showAxisYLabels == other.showAxisYLabels;
 }

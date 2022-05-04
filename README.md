@@ -33,9 +33,14 @@ march.dev charts library. Provides highly customizable and configurable charts.
 
     Note that `LineChartDataType` is omitted with this type of grid.
 
+* ##### Max Value 
+
+  * `predefinedMaxValue` - predefined max value for the chart.
+  * `maxValueRoundingMap` - rounding map for the maxValue that is used by beautification function of Y axis labels.
+
 * ##### Limits
 
-  * `limit` - if provided will be painted on the chart as a horizontal indication line.
+  * `limit` - if provided, will be painted on the chart as a horizontal indication line.
   * `limitText` - custom text to set to the label of the limit line.
 
   Note that if `limitText` is set without provided `limit`, there will be no limit line.
