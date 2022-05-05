@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 - 05.05.2022
+
+* Fixed `LimitLabelSnapPosition.chartBoundary` bias calculations.
+
 ## 1.4.0 - 04.05.2022
 
 * Removed bool parameters `showFirstAxisYDivision` and `showLastAxisXDivision` and added enum `AxisDivisionEdges` that provides more complex customization of axis divisions at the edges of the grid.
