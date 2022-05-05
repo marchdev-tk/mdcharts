@@ -19,6 +19,7 @@ class LineChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.padding,
     this.selectedXPosition,
   );
 
@@ -30,6 +31,14 @@ class LineChartPainter extends CustomPainter {
 
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
+
+  /// Padding around the chart.
+  ///
+  /// If not set, will be used default one:
+  /// - left/right/bottom: `0`;
+  /// - top: dynamic value that depends on the style of the tooltip, more info
+  /// at [LineChartPointStyle.tooltipHeight].
+  final EdgeInsets? padding;
 
   /// Selected position on the X axis.
   ///
@@ -304,7 +313,7 @@ class LineChartPainter extends CustomPainter {
 
     final snapBias =
         settings.limitLabelSnapPosition == LimitLabelSnapPosition.chartBoundary
-            ? style.pointStyle.tooltipHorizontalOverflowWidth
+            ? (padding?.left ?? style.pointStyle.tooltipHorizontalOverflowWidth)
             : .0;
     final yCenter = normalize(data.limit!) * size.height;
     final textSpan = TextSpan(

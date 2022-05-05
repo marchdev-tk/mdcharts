@@ -32,7 +32,7 @@ class LineChart extends StatefulWidget {
 
   /// Padding around the chart.
   ///
-  /// If no set, will be used default one:
+  /// If not set, will be used default one:
   /// - left/right/bottom: `0`;
   /// - top: dynamic value that depends on the style of the tooltip, more info
   /// at [LineChartPointStyle.tooltipHeight].
@@ -60,6 +60,7 @@ class _LineChartState extends State<LineChart> {
         widget.data,
         widget.style,
         widget.settings,
+        widget.padding,
         xPosition,
       ),
       size: Size.infinite,
