@@ -5,14 +5,12 @@
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 
+import '../common.dart';
 import '../utils.dart';
 
 /// Signature for callbacks that builds tooltip text based on the provided [key]
 /// and [value].
 typedef TooltipBuilder = String Function(DateTime key, double value);
-
-/// Signature for callbacks that builds label text based on the provided [key].
-typedef LabelBuilder<T> = String Function(T value);
 
 /// Defines how values of the [LineChartData.data] must be represented.
 ///
@@ -77,8 +75,6 @@ enum LineChartGridType {
 }
 
 /// Data for the [LineChart].
-///
-/// **Please note** that [data] must contain at least 2 entries.
 class LineChartData {
   /// Constructs an instance of [LineChartData].
   const LineChartData({
@@ -251,6 +247,9 @@ class LineChartData {
 
   /// Determines max value for chart to draw.
   ///
+  /// If [predefinedMaxValue] is set, then it will be used as max value,
+  /// omitting [limit] value.
+  ///
   /// If [limit] is not set, then max value will be retrieved from [data].
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
@@ -413,11 +412,51 @@ class LineChartData {
     return map[current.previousDay]!;
   }
 
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartData copyWith({
+    bool allowNullPredefinedMaxValue = false,
+    bool allowNullLimit = false,
+    bool allowNullLimitText = false,
+    Map<DateTime, double>? data,
+    double? predefinedMaxValue,
+    Map<num, num>? maxValueRoundingMap,
+    double? limit,
+    String? limitText,
+    TooltipBuilder? titleBuilder,
+    TooltipBuilder? subtitleBuilder,
+    LabelBuilder<DateTime>? xAxisLabelBuilder,
+    LabelBuilder<double>? yAxisLabelBuilder,
+    LineChartGridType? gridType,
+    LineChartDataType? dataType,
+  }) =>
+      LineChartData(
+        data: data ?? this.data,
+        predefinedMaxValue: allowNullPredefinedMaxValue
+            ? predefinedMaxValue
+            : predefinedMaxValue ?? this.predefinedMaxValue,
+        maxValueRoundingMap: maxValueRoundingMap ?? this.maxValueRoundingMap,
+        limit: allowNullLimit ? limit : limit ?? this.limit,
+        limitText: allowNullLimitText ? limitText : limitText ?? this.limitText,
+        titleBuilder: titleBuilder ?? this.titleBuilder,
+        subtitleBuilder: subtitleBuilder ?? this.subtitleBuilder,
+        xAxisLabelBuilder: xAxisLabelBuilder ?? this.xAxisLabelBuilder,
+        yAxisLabelBuilder: yAxisLabelBuilder ?? this.yAxisLabelBuilder,
+        gridType: gridType ?? this.gridType,
+        dataType: dataType ?? this.dataType,
+      );
+
   @override
   int get hashCode =>
       data.hashCode ^
+      predefinedMaxValue.hashCode ^
+      maxValueRoundingMap.hashCode ^
       limit.hashCode ^
       limitText.hashCode ^
+      titleBuilder.hashCode ^
+      subtitleBuilder.hashCode ^
+      xAxisLabelBuilder.hashCode ^
+      yAxisLabelBuilder.hashCode ^
       gridType.hashCode ^
       dataType.hashCode;
 
@@ -425,8 +464,15 @@ class LineChartData {
   bool operator ==(Object other) =>
       other is LineChartData &&
       mapEquals(data, other.data) &&
+      predefinedMaxValue == other.predefinedMaxValue &&
+      mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
       limit == other.limit &&
       limitText == other.limitText &&
+      // TODO: need to check whether these functions could be compared normally
+      // titleBuilder == other.titleBuilder &&
+      // subtitleBuilder == other.subtitleBuilder &&
+      // xAxisLabelBuilder == other.xAxisLabelBuilder &&
+      // yAxisLabelBuilder == other.yAxisLabelBuilder &&
       gridType == other.gridType &&
       dataType == other.dataType;
 }

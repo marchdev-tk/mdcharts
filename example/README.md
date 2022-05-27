@@ -2,7 +2,7 @@
 
 Demonstrates how to use the mdcharts package.
 
-## Usage
+## `LineChart` Usage
 
 ### Periodical monthly unidirectional ascending `LineChart` with customizable text
 

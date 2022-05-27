@@ -2,34 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Axis division edges.
-enum AxisDivisionEdges {
-  /// No edges.
-  ///
-  /// Default option.
-  none,
-
-  /// Left edge.
-  left,
-
-  /// Top edge.
-  top,
-
-  /// Right edge.
-  right,
-
-  /// Bottom edge.
-  bottom,
-
-  /// [left] and [right] edges.
-  horizontal,
-
-  /// [top] and [bottom] edges.
-  vertical,
-
-  /// All edges.
-  all,
-}
+import '../common.dart';
 
 /// Snap position options of limit label.
 enum LimitLabelSnapPosition {
@@ -142,6 +115,36 @@ class LineChartSettings {
   ///
   /// Defaults to `true`.
   final bool showAxisYLabels;
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartSettings copyWith({
+    int? xAxisDivisions,
+    int? yAxisDivisions,
+    AxisDivisionEdges? axisDivisionEdges,
+    bool? showAxisX,
+    bool? showAxisY,
+    bool? lineFilling,
+    bool? lineShadow,
+    bool? altitudeLine,
+    LimitLabelSnapPosition? limitLabelSnapPosition,
+    bool? showAxisXLabels,
+    bool? showAxisYLabels,
+  }) =>
+      LineChartSettings(
+        xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
+        yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
+        axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
+        showAxisX: showAxisX ?? this.showAxisX,
+        showAxisY: showAxisY ?? this.showAxisY,
+        lineFilling: lineFilling ?? this.lineFilling,
+        lineShadow: lineShadow ?? this.lineShadow,
+        altitudeLine: altitudeLine ?? this.altitudeLine,
+        limitLabelSnapPosition:
+            limitLabelSnapPosition ?? this.limitLabelSnapPosition,
+        showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
+        showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
+      );
 
   @override
   int get hashCode =>
