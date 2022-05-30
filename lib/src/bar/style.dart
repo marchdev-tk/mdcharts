@@ -56,46 +56,46 @@ class BarChartStyle {
 class BarChartGridStyle {
   /// Constructs an instance of [BarChartGridStyle].
   const BarChartGridStyle({
-    this.xAxisColor = const Color(0x33FFFFFF),
-    this.xAxisStroke = 1,
+    this.color = const Color(0x33FFFFFF),
+    this.stroke = 1,
   });
 
-  /// Color of the X axis grid lines.
+  /// Color of the grid lines.
   ///
   /// Defaults to `0x33FFFFFF`.
-  final Color xAxisColor;
+  final Color color;
 
-  /// Stroke of the X axis grid lines.
+  /// Stroke of the grid lines.
   ///
   /// Defaults to `1`.
-  final double xAxisStroke;
+  final double stroke;
 
   /// Gets a [Paint] for the X axis grid drawing.
-  Paint get xAxisPaint => Paint()
+  Paint get paint => Paint()
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
-    ..strokeWidth = xAxisStroke
-    ..color = xAxisColor;
+    ..strokeWidth = stroke
+    ..color = color;
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartGridStyle copyWith({
-    Color? xAxisColor,
-    double? xAxisStroke,
+    Color? color,
+    double? stroke,
   }) =>
       BarChartGridStyle(
-        xAxisColor: xAxisColor ?? this.xAxisColor,
-        xAxisStroke: xAxisStroke ?? this.xAxisStroke,
+        color: color ?? this.color,
+        stroke: stroke ?? this.stroke,
       );
 
   @override
-  int get hashCode => xAxisColor.hashCode ^ xAxisStroke.hashCode;
+  int get hashCode => color.hashCode ^ stroke.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is BarChartGridStyle &&
-      xAxisColor == other.xAxisColor &&
-      xAxisStroke == other.xAxisStroke;
+      color == other.color &&
+      stroke == other.stroke;
 }
 
 /// Contains various customization options for the axis of the chart.

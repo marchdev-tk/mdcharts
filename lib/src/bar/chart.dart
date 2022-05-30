@@ -5,10 +5,11 @@
 import 'package:flutter/widgets.dart';
 
 import 'data.dart';
+import 'painter.dart';
 import 'settings.dart';
 import 'style.dart';
 
-/// Line chart.
+/// Bar chart.
 class BarChart extends StatelessWidget {
   /// Constructs an instance of [BarChart].
   const BarChart({
@@ -21,15 +22,21 @@ class BarChart extends StatelessWidget {
   /// Set of required (and optional) data to construct the bar chart.
   final BarChartData data;
 
-  /// Provides various customizations for the line chart.
+  /// Provides various customizations for the bar chart.
   final BarChartStyle style;
 
-  /// Provides various settings for the line chart.
+  /// Provides various settings for the bar chart.
   final BarChartSettings settings;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement
-    return Container();
+    return CustomPaint(
+      painter: BarChartPainter(
+        data,
+        style,
+        settings,
+      ),
+      size: Size.infinite,
+    );
   }
 }
