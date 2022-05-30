@@ -34,12 +34,12 @@ class ColorListTile extends StatelessWidget {
 
         onChanged(result);
       },
-      leading: Container(
+      title: title,
+      trailing: Container(
         width: 18,
         height: 18,
         color: value,
       ),
-      title: title,
     );
   }
 }

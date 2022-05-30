@@ -20,7 +20,7 @@ class IntListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: title,
-      leading: Row(
+      trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(

@@ -162,7 +162,7 @@ class _GridTypeSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < LineChartGridType.values.length; i++)
               RadioListTile<LineChartGridType>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.requireData.gridType,
                 value: LineChartGridType.values[i],
                 onChanged: (value) =>
@@ -190,7 +190,7 @@ class _DataTypeSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < LineChartDataType.values.length; i++)
               RadioListTile<LineChartDataType>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.requireData.dataType,
                 value: LineChartDataType.values[i],
                 onChanged: (value) =>
@@ -219,49 +219,49 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
           title: 'General Settings',
           children: [
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.altitudeLine,
               onChanged: (value) =>
                   _settings.add(data.copyWith(altitudeLine: value == true)),
               title: const Text('altitudeLine'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.lineFilling,
               onChanged: (value) =>
                   _settings.add(data.copyWith(lineFilling: value == true)),
               title: const Text('lineFilling'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.lineShadow,
               onChanged: (value) =>
                   _settings.add(data.copyWith(lineShadow: value == true)),
               title: const Text('lineShadow'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisX,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisX: value == true)),
               title: const Text('showAxisX'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisXLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisXLabels: value == true)),
               title: const Text('showAxisXLabels'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisY,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisY: value == true)),
               title: const Text('showAxisY'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisYLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisYLabels: value == true)),
@@ -302,7 +302,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < AxisDivisionEdges.values.length; i++)
               RadioListTile<AxisDivisionEdges>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.axisDivisionEdges,
                 value: AxisDivisionEdges.values[i],
                 onChanged: (value) =>
@@ -332,7 +332,7 @@ class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < LimitLabelSnapPosition.values.length; i++)
               RadioListTile<LimitLabelSnapPosition>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.limitLabelSnapPosition,
                 value: LimitLabelSnapPosition.values[i],
                 onChanged: (value) =>
