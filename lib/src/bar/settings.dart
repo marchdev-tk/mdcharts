@@ -14,7 +14,6 @@ class BarChartSettings {
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
     this.barSpacing = 0,
-    this.zeroBarHeight = 2,
     this.itemSpacing = 12,
     this.showSelection = true,
   });
@@ -25,7 +24,6 @@ class BarChartSettings {
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
     this.barSpacing = 0,
-    this.zeroBarHeight = 2,
     this.itemSpacing = 12,
     this.showSelection = true,
   })  : yAxisDivisions = 0,
@@ -67,16 +65,10 @@ class BarChartSettings {
   final double barSpacing;
 
   // TODO: add docs
-  final double zeroBarHeight;
-
-  // TODO: add docs
   final double itemSpacing;
 
   // TODO: add docs
   final bool showSelection;
-
-  // TODO: add docs
-  bool get showZeroBars => zeroBarHeight > 0;
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.
@@ -87,7 +79,6 @@ class BarChartSettings {
     bool? showAxisXLabels,
     bool? showAxisYLabels,
     double? barSpacing,
-    double? zeroBarHeight,
     double? itemSpacing,
     bool? showSelection,
   }) =>
@@ -98,7 +89,6 @@ class BarChartSettings {
         showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
         showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
         barSpacing: barSpacing ?? this.barSpacing,
-        zeroBarHeight: zeroBarHeight ?? this.zeroBarHeight,
         itemSpacing: itemSpacing ?? this.itemSpacing,
         showSelection: showSelection ?? this.showSelection,
       );
@@ -111,7 +101,6 @@ class BarChartSettings {
       showAxisXLabels.hashCode ^
       showAxisYLabels.hashCode ^
       barSpacing.hashCode ^
-      zeroBarHeight.hashCode ^
       itemSpacing.hashCode ^
       showSelection.hashCode;
 
@@ -124,7 +113,6 @@ class BarChartSettings {
       showAxisXLabels == other.showAxisXLabels &&
       showAxisYLabels == other.showAxisYLabels &&
       barSpacing == other.barSpacing &&
-      zeroBarHeight == other.zeroBarHeight &&
       itemSpacing == other.itemSpacing &&
       showSelection == other.showSelection;
 }

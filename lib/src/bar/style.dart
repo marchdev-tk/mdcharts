@@ -263,6 +263,7 @@ class BarChartBarStyle {
   const BarChartBarStyle({
     this.width = 32,
     this.colors = const [Color(0xFFFFFFFF)],
+    this.zeroBarHeight = 2,
     this.topRadius = 6,
     this.zeroBarTopRadius = 2,
   });
@@ -279,6 +280,11 @@ class BarChartBarStyle {
 
   /// TODO: add docs
   ///
+  /// Defaults to `2`.
+  final double zeroBarHeight;
+
+  /// TODO: add docs
+  ///
   /// Defaults to `6`.
   final double topRadius;
 
@@ -287,17 +293,22 @@ class BarChartBarStyle {
   /// Defaults to `2`.
   final double zeroBarTopRadius;
 
+  /// TODO: add docs
+  bool get showZeroBars => zeroBarHeight > 0;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartBarStyle copyWith({
     double? width,
     List<Color>? colors,
+    double? zeroBarHeight,
     double? topRadius,
     double? zeroBarTopRadius,
   }) =>
       BarChartBarStyle(
         width: width ?? this.width,
         colors: colors ?? this.colors,
+        zeroBarHeight: zeroBarHeight ?? this.zeroBarHeight,
         topRadius: topRadius ?? this.topRadius,
         zeroBarTopRadius: zeroBarTopRadius ?? this.zeroBarTopRadius,
       );
@@ -306,6 +317,7 @@ class BarChartBarStyle {
   int get hashCode =>
       width.hashCode ^
       colors.hashCode ^
+      zeroBarHeight.hashCode ^
       topRadius.hashCode ^
       zeroBarTopRadius.hashCode;
 
@@ -314,6 +326,7 @@ class BarChartBarStyle {
       other is BarChartBarStyle &&
       width == other.width &&
       listEquals(colors, other.colors) &&
+      zeroBarHeight == other.zeroBarHeight &&
       topRadius == other.topRadius &&
       zeroBarTopRadius == other.zeroBarTopRadius;
 }

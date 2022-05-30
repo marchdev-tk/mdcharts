@@ -20,12 +20,12 @@ final _data = BehaviorSubject<BarChartData>.seeded(BarChartData(
     DateTime(2021): [1234, 1000],
     DateTime(2020): [500, 500],
     DateTime(2019): [0, 0],
-    DateTime(2018): [20, 0],
-    DateTime(2017): [0, 20],
+    DateTime(2018): [200, 0],
+    DateTime(2017): [0, 200],
     DateTime(2016): [0, 0],
     DateTime(2015): [0, 0],
-    DateTime(2014): [0, 0],
-    DateTime(2013): [0, 0],
+    DateTime(2014): [20, 0],
+    DateTime(2013): [0, 20],
     DateTime(2012): [0, 0],
   },
 ));
@@ -177,14 +177,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                 _settings.add(data.copyWith(barSpacing: doubleValue));
               },
               title: const Text('barSpacing'),
-            ),
-            IntListTile(
-              value: data.zeroBarHeight.toInt(),
-              onChanged: (value) {
-                final doubleValue = value.toDouble();
-                _settings.add(data.copyWith(zeroBarHeight: doubleValue));
-              },
-              title: const Text('zeroBarHeight'),
             ),
             IntListTile(
               value: data.itemSpacing.toInt(),
@@ -414,6 +406,19 @@ class _BarStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('width'),
+            ),
+            IntListTile(
+              value: data.barStyle.zeroBarHeight.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    barStyle: data.barStyle.copyWith(
+                      zeroBarHeight: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('zeroBarHeight'),
             ),
             IntListTile(
               value: data.barStyle.topRadius.toInt(),

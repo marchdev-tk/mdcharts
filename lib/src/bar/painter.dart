@@ -129,6 +129,7 @@ class BarChartPainter extends CustomPainter {
   /// Bar painter.
   void paintBar(Canvas canvas, Size size) {
     final barTopRadius = Radius.circular(style.barStyle.topRadius);
+    final zeroBarTopRadius = Radius.circular(style.barStyle.zeroBarTopRadius);
 
     final itemLength = data.data.length;
     final barItemQuantity = data.data.values.first.length;
@@ -153,7 +154,11 @@ class BarChartPainter extends CustomPainter {
       for (var j = item.value.length - 1; j >= 0; j--) {
         final barValue = item.value[j];
 
-        final top = normalize(barValue) * size.height;
+        final radius = style.barStyle.showZeroBars && barValue == 0
+            ? zeroBarTopRadius
+            : barTopRadius;
+        final top =
+            normalize(barValue) * size.height - style.barStyle.zeroBarHeight;
 
         final itemOffset = (itemSpacing + itemWidth) * i;
         final barRight = size.width -
@@ -167,8 +172,8 @@ class BarChartPainter extends CustomPainter {
             top,
             barRight - itemOffset,
             size.height,
-            topLeft: barTopRadius,
-            topRight: barTopRadius,
+            topLeft: radius,
+            topRight: radius,
           ),
           Paint()
             ..style = PaintingStyle.fill
