@@ -170,44 +170,26 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   _settings.add(data.copyWith(yAxisDivisions: value)),
               title: const Text('yAxisDivisions'),
             ),
-            DialogListTile(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              value: data.barSpacing.toString(),
+            IntListTile(
+              value: data.barSpacing.toInt(),
               onChanged: (value) {
-                if (value == null) {
-                  _settings.add(data.copyWith(barSpacing: 0));
-                }
-
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = value.toDouble();
                 _settings.add(data.copyWith(barSpacing: doubleValue));
               },
               title: const Text('barSpacing'),
             ),
-            DialogListTile(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              value: data.zeroBarHeight.toString(),
+            IntListTile(
+              value: data.zeroBarHeight.toInt(),
               onChanged: (value) {
-                if (value == null) {
-                  _settings.add(data.copyWith(zeroBarHeight: 0));
-                }
-
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = value.toDouble();
                 _settings.add(data.copyWith(zeroBarHeight: doubleValue));
               },
               title: const Text('zeroBarHeight'),
             ),
-            DialogListTile(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              value: data.itemSpacing.toString(),
+            IntListTile(
+              value: data.itemSpacing.toInt(),
               onChanged: (value) {
-                if (value == null) {
-                  _settings.add(data.copyWith(itemSpacing: 0));
-                }
-
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = value.toDouble();
                 _settings.add(data.copyWith(itemSpacing: doubleValue));
               },
               title: const Text('itemSpacing'),
@@ -264,30 +246,30 @@ class _GridStyleSetupGroup extends StatelessWidget {
           title: 'Grid Style',
           children: [
             IntListTile(
-              value: data.gridStyle.xAxisStroke.toInt(),
+              value: data.gridStyle.stroke.toInt(),
               onChanged: (value) {
                 _style.add(
                   data.copyWith(
                     gridStyle: data.gridStyle.copyWith(
-                      xAxisStroke: value.toDouble(),
+                      stroke: value.toDouble(),
                     ),
                   ),
                 );
               },
-              title: const Text('xAxisStroke'),
+              title: const Text('stroke'),
             ),
             ColorListTile(
-              value: data.gridStyle.xAxisColor,
+              value: data.gridStyle.color,
               onChanged: (value) {
                 _style.add(
                   data.copyWith(
                     gridStyle: data.gridStyle.copyWith(
-                      xAxisColor: value,
+                      color: value,
                     ),
                   ),
                 );
               },
-              title: const Text('xAxisColor'),
+              title: const Text('color'),
             ),
           ],
         );
