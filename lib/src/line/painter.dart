@@ -56,25 +56,11 @@ class LineChartPainter extends CustomPainter {
   /// - maxValue = 83 (from data).
   ///
   /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue {
-    final roundingMap = data.maxValueRoundingMap;
-    final initalMaxValue = data.maxValue;
-    final yDivisions =
-        settings.yAxisDivisions == 0 ? 1 : settings.yAxisDivisions + 1;
-    final complement = roundingMap.entries
-        .firstWhere(
-          (entry) => initalMaxValue < entry.key,
-          orElse: () => roundingMap.entries.last,
-        )
-        .value;
-    var rounded = initalMaxValue + complement - initalMaxValue % complement;
-
-    while (rounded % yDivisions != 0) {
-      rounded += complement;
-    }
-
-    return rounded;
-  }
+  double get roundedMaxValue => getRoundedMaxValue(
+        data.maxValueRoundingMap,
+        data.maxValue,
+        settings.yAxisDivisions,
+      );
 
   /// Normalization method.
   ///

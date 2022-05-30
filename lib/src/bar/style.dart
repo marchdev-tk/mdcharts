@@ -165,17 +165,17 @@ class BarChartAxisStyle {
   /// Defaults to `6`.
   final double xAxisLabelTopMargin;
 
-  /// TODO: add docs
+  /// Padding of the X axis label.
   ///
   /// Defaults to [defaultXAxisLabelPadding].
   final EdgeInsets xAxisLabelPadding;
 
-  /// TODO: add docs
+  /// Background color of the selected X axis label.
   ///
   /// Defaults to `0xFFFFFFFF`.
   final Color xAxisSelectedLabelBackgroundColor;
 
-  /// TODO: add docs
+  /// Border radius of the selected X axis label.
   ///
   /// Defaults to [defaultXAxisSelectedLabelBorderRadius].
   final BorderRadius xAxisSelectedLabelBorderRadius;
@@ -268,32 +268,41 @@ class BarChartBarStyle {
     this.zeroBarTopRadius = 2,
   });
 
-  /// TODO: add docs
+  /// Width of the bar.
   ///
   /// Defautls to `32`.
   final double width;
 
-  /// TODO: add docs
+  /// List of bar colors.
+  ///
+  /// **Please note**, that list of colors must contain either 1 color or
+  /// quantity that is equal to bar quantity in an item.
+  ///
+  /// If only 1 color is provided and bar quantity is greater than 1 - every
+  /// subsequent bar will be using base color with opacity.
   ///
   /// Defaults to `[Color(0xFFFFFFFF)]`.
   final List<Color> colors;
 
-  /// TODO: add docs
+  /// Height of the zero bar.
+  ///
+  /// It is used to show zero values as a lightly visible bars. But note that
+  /// if this value is `"large enough"` it may break charts realism.
   ///
   /// Defaults to `2`.
   final double zeroBarHeight;
 
-  /// TODO: add docs
+  /// Radius of the top part of the bar.
   ///
   /// Defaults to `6`.
   final double topRadius;
 
-  /// TODO: add docs
+  /// Radius of the top part of the zero bar.
   ///
   /// Defaults to `2`.
   final double zeroBarTopRadius;
 
-  /// TODO: add docs
+  /// Whether zero bars are needed to be shown or not.
   bool get showZeroBars => zeroBarHeight > 0;
 
   /// Creates a copy of the current object with new values specified in

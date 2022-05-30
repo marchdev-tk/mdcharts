@@ -61,13 +61,23 @@ class BarChartSettings {
   /// Defaults to `true`.
   final bool showAxisYLabels;
 
-  // TODO: add docs
+  /// Spacing between bars in one item.
+  ///
+  /// If positive value is set - bars will be painted with a given indent.
+  /// If negative value is set - bars will be painted with overlapping on each
+  /// other with a given indent.
+  ///
+  /// Defaults to `0`.
   final double barSpacing;
 
-  // TODO: add docs
+  /// Spacing between group of bars.
+  ///
+  /// Defaults to `12`.
   final double itemSpacing;
 
-  // TODO: add docs
+  /// Whether to show selection of the items or not.
+  ///
+  /// Defaults to `true`.
   final bool showSelection;
 
   /// Creates a copy of the current object with new values specified in
