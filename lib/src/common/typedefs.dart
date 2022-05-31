@@ -2,5 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:flutter/rendering.dart';
+
 /// Signature for callbacks that builds label text based on the provided [key].
 typedef LabelBuilder<T> = String Function(T value);
+
+/// Signature for callbacks that builds label rich text based on the provided
+/// [key].
+typedef RichLabelBuilder<T> = TextSpan Function(T value);

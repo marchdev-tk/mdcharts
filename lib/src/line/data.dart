@@ -468,11 +468,10 @@ class LineChartData {
       mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
       limit == other.limit &&
       limitText == other.limitText &&
-      // TODO: need to check whether these functions could be compared normally
-      // titleBuilder == other.titleBuilder &&
-      // subtitleBuilder == other.subtitleBuilder &&
-      // xAxisLabelBuilder == other.xAxisLabelBuilder &&
-      // yAxisLabelBuilder == other.yAxisLabelBuilder &&
+      titleBuilder == other.titleBuilder &&
+      subtitleBuilder == other.subtitleBuilder &&
+      xAxisLabelBuilder == other.xAxisLabelBuilder &&
+      yAxisLabelBuilder == other.yAxisLabelBuilder &&
       gridType == other.gridType &&
       dataType == other.dataType;
 }

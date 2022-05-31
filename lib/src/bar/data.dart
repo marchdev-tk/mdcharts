@@ -4,6 +4,7 @@
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 
 import '../common.dart';
 
@@ -13,14 +14,15 @@ class BarChartData {
   const BarChartData({
     required this.data,
     this.initialSelectedPeriod,
+    this.onSelectedPeriodChanged,
     this.predefinedMaxValue,
     this.maxValueRoundingMap = defaultMaxValueRoundingMap,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
   });
 
-  static String defaultXAxisLabelBuilder(DateTime key) =>
-      '${key.month}-${key.day}';
+  static TextSpan defaultXAxisLabelBuilder(DateTime key) =>
+      TextSpan(text: '${key.month}-${key.year}');
   static String defaultYAxisLabelBuilder(double value) => '$value';
   static const Map<num, num> defaultMaxValueRoundingMap = {
     100: 5,
@@ -35,8 +37,15 @@ class BarChartData {
   /// It is a main source of [BarChart] data.
   final Map<DateTime, List<double>> data;
 
-  // TODO: add docs
+  /// Initial selected period of the bar chart.
+  ///
+  /// Defaults to `null`.
   final DateTime? initialSelectedPeriod;
+
+  /// Callback that notifies if selected period has changed.
+  ///
+  /// Defaults to `null`.
+  final ValueChanged<DateTime>? onSelectedPeriodChanged;
 
   /// Predefined max value for the chart.
   ///
@@ -73,14 +82,17 @@ class BarChartData {
   /// Text builder for the X axis label.
   ///
   /// If not set explicitly, [defaultXAxisLabelBuilder] will be used.
-  final LabelBuilder<DateTime> xAxisLabelBuilder;
+  final RichLabelBuilder<DateTime> xAxisLabelBuilder;
 
   /// Text builder for the Y axis label.
   ///
   /// If not set explicitly, [defaultYAxisLabelBuilder] will be used.
   final LabelBuilder<double> yAxisLabelBuilder;
 
-  // TODO: add docs
+  /// Selected period of the bar chart.
+  ///
+  /// If [initialSelectedPeriod] is no set, then first key of the [data] will
+  /// be used instead.
   DateTime get selectedPeriod => initialSelectedPeriod ?? data.keys.first;
 
   /// Checks whether chart and point could be drawned or not.
@@ -126,7 +138,7 @@ class BarChartData {
     DateTime? selectedPeriod,
     double? predefinedMaxValue,
     Map<num, num>? maxValueRoundingMap,
-    LabelBuilder<DateTime>? xAxisLabelBuilder,
+    RichLabelBuilder<DateTime>? xAxisLabelBuilder,
     LabelBuilder<double>? yAxisLabelBuilder,
   }) =>
       BarChartData(

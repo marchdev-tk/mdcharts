@@ -2,9 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'data.dart';
 import 'painter.dart';
@@ -12,7 +13,7 @@ import 'settings.dart';
 import 'style.dart';
 
 /// Bar chart.
-class BarChart extends StatelessWidget {
+class BarChart extends StatefulWidget {
   /// Constructs an instance of [BarChart].
   const BarChart({
     Key? key,
@@ -37,10 +38,17 @@ class BarChart extends StatelessWidget {
   /// a scroll padding.
   final EdgeInsetsGeometry? padding;
 
+  @override
+  State<BarChart> createState() => _BarChartState();
+}
+
+class _BarChartState extends State<BarChart> {
+  late StreamController<DateTime> _selectedPeriod;
+
   double _getItemWidth() {
-    final barItemQuantity = data.data.values.first.length;
-    final barWidth = style.barStyle.width;
-    final barSpacing = settings.barSpacing;
+    final barItemQuantity = widget.data.data.values.first.length;
+    final barWidth = widget.style.barStyle.width;
+    final barSpacing = widget.settings.barSpacing;
 
     final itemWidth =
         barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
@@ -49,8 +57,8 @@ class BarChart extends StatelessWidget {
   }
 
   double _getChartWidth(double maxWidth) {
-    final itemLength = data.data.length;
-    final itemSpacing = settings.itemSpacing;
+    final itemLength = widget.data.data.length;
+    final itemSpacing = widget.settings.itemSpacing;
 
     final itemWidth = _getItemWidth();
     final totalWidth = itemLength * (itemSpacing + itemWidth) - itemSpacing;
@@ -59,59 +67,78 @@ class BarChart extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    _selectedPeriod = StreamController<DateTime>.broadcast();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget grid = CustomPaint(
       painter: BarChartGridPainter(
-        data,
-        style,
-        settings,
+        widget.data,
+        widget.style,
+        widget.settings,
       ),
       size: Size.infinite,
     );
 
-    if (padding != null) {
+    if (widget.padding != null) {
       grid = Padding(
-        padding: padding!,
+        padding: widget.padding!,
         child: grid,
       );
     }
 
     final content = LayoutBuilder(
       builder: (context, constraints) {
+        final maxWidth = _getChartWidth(constraints.maxWidth);
         final chart = CustomPaint(
           painter: BarChartPainter(
-            data,
-            style,
-            settings,
+            widget.data,
+            widget.style,
+            widget.settings,
           ),
-          size: Size.fromWidth(_getChartWidth(constraints.maxWidth)),
+          size: Size.fromWidth(maxWidth),
         );
 
-        final labels = Row(
-          children: [
-            for (var i = 0; i < data.data.length; i++) ...[
-              _XAxisLabel(
-                style: style.axisStyle,
-                label: data.xAxisLabelBuilder(
-                  data.data.entries.elementAt(data.data.length - 1 - i).key,
+        Widget child;
+        if (widget.settings.showAxisXLabels) {
+          final maxItemWidth = _getItemWidth();
+          final xAxisLabels = Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var i = 0; i < widget.data.data.length; i++) ...[
+                _XAxisLabel(
+                  settings: widget.settings,
+                  style: widget.style.axisStyle,
+                  data: widget.data,
+                  index: i,
+                  maxWidth: maxItemWidth,
+                  selectedPeriod: _selectedPeriod,
                 ),
-              ),
-              if (i != data.data.length) SizedBox(width: settings.itemSpacing),
+                if (i != widget.data.data.length - 1)
+                  SizedBox(width: widget.settings.itemSpacing),
+              ],
             ],
-          ],
-        );
+          );
+
+          child = Column(
+            children: [
+              Expanded(child: chart),
+              SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
+              xAxisLabels,
+            ],
+          );
+        } else {
+          child = chart;
+        }
 
         return SingleChildScrollView(
           reverse: true,
           scrollDirection: Axis.horizontal,
-          padding: padding,
-          child: Column(
-            children: [
-              chart,
-              SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
-              labels,
-            ],
-          ),
+          padding: widget.padding,
+          child: child,
         );
       },
     );
@@ -124,30 +151,87 @@ class BarChart extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    _selectedPeriod.close();
+    super.dispose();
+  }
 }
 
 class _XAxisLabel extends StatelessWidget {
   const _XAxisLabel({
     Key? key,
+    required this.settings,
     required this.style,
-    required this.label,
+    required this.data,
+    required this.index,
+    required this.maxWidth,
+    required this.selectedPeriod,
   }) : super(key: key);
 
+  final BarChartSettings settings;
   final BarChartAxisStyle style;
-  final String label;
+  final BarChartData data;
+  final int index;
+  final double maxWidth;
+  final StreamController<DateTime> selectedPeriod;
 
   @override
   Widget build(BuildContext context) {
-    // TODO
-    return Container();
+    final currentDate =
+        data.data.entries.elementAt(data.data.length - 1 - index).key;
+
+    if (!settings.showSelection) {
+      return Container(
+        key: ValueKey(currentDate.toIso8601String()),
+        width: maxWidth,
+        padding: style.xAxisLabelPadding,
+        child: Text.rich(
+          data.xAxisLabelBuilder(currentDate),
+          style: style.xAxisLabelStyle,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => selectedPeriod.add(currentDate),
+      child: StreamBuilder<DateTime>(
+        stream: selectedPeriod.stream,
+        initialData: data.selectedPeriod,
+        builder: (context, selectedPeriod) {
+          final isSelected = currentDate == selectedPeriod.requireData;
+          final currentStyle = isSelected
+              ? style.xAxisSelectedLabelStyle
+              : style.xAxisLabelStyle;
+          final currentDecoration = isSelected
+              ? BoxDecoration(
+                  borderRadius: style.xAxisSelectedLabelBorderRadius,
+                  color: style.xAxisSelectedLabelBackgroundColor,
+                )
+              : null;
+
+          // TODO: it is needed to calculate the max size more precisely.
+          // this implementation is not correct in some cases, but still
+          // relatively fine.
+          final maxHeight = style.xAxisLabelPadding.vertical +
+              (currentStyle.height ?? 1) * (currentStyle.fontSize ?? 14);
+
+          return SizedOverflowBox(
+            size: Size(maxWidth, maxHeight),
+            child: Container(
+              padding: style.xAxisLabelPadding,
+              decoration: currentDecoration,
+              child: Text.rich(
+                data.xAxisLabelBuilder(currentDate),
+                style: currentStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
-
-/*
-TODO:
- 
- ! add x axis labels
- !
- ! add x axis label selection
- ! add docs
-*/
