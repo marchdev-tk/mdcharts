@@ -7,6 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 /// to run tests use `pub run test`
 void main() {
   test('test', () {
-    // TODO: Add tests here
+    // Add tests here
   });
 }

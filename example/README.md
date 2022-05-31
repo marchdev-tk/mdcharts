@@ -4,6 +4,8 @@ Demonstrates how to use the mdcharts package.
 
 ## `LineChart` Usage
 
+For more info about how to use `LineChart` please refer to the example app.
+
 ### Periodical monthly unidirectional ascending `LineChart` with customizable text
 
 ```dart
@@ -116,6 +118,32 @@ LineChart(
   ),
 )
 ```
+
+## `BarChart` Usage
+
+```dart
+BarChart(
+  settings: const BarChartSettings(),
+  style: const BarChartStyle(),
+  data: BarChartData(
+    data: {
+      DateTime(2022): [12345, 23456],
+      DateTime(2021): [1234, 1000],
+      DateTime(2020): [500, 500],
+      DateTime(2019): [0, 0],
+      DateTime(2018): [200, 0],
+      DateTime(2017): [0, 200],
+      DateTime(2016): [0, 0],
+      DateTime(2015): [0, 0],
+      DateTime(2014): [20, 0],
+      DateTime(2013): [0, 20],
+      DateTime(2012): [0, 0],
+    },
+  ),
+)
+```
+
+For more info about how to use `BarChart` please refer to the example app.
 
 ## Getting Started
 

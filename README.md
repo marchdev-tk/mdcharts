@@ -67,6 +67,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `altitudeLine` - whether to draw the altitude line or not, defaults to `true`.
 * `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
+* `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
 
 #### Styles
 
@@ -75,6 +76,46 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `lineStyle` - styling options for the chart line, for more details please refer to the source code of the `LineChartLineStyle`.
 * `limitStyle` - styling options for the limit, for more details please refer to the source code of the `LineChartLimitStyle`.
 * `pointStyle` - styling options for the point and tooltip above point, for more details please refer to the source code of the `LineChartPointStyle`.
+
+### BarChart
+
+#### Data
+
+* ##### REQUIRED data
+
+  * `data` - set of data with `DateTime` keys and `List<double>` values based on which chart will be drawned.
+
+* ##### Max Value 
+
+  * `predefinedMaxValue` - predefined max value for the chart.
+  * `maxValueRoundingMap` - rounding map for the maxValue that is used by beautification function of Y axis labels.
+
+* ##### Selection
+
+  * `initialSelectedPeriod` - initial selected period of the bar chart, defaults to `null`.
+  * `onSelectedPeriodChanged` - callback that notifies if selected period has changed, defaults to `null`.
+
+* ##### Label builder
+
+  * `xAxisLabelBuilder` - builds X axis label based on `DateTime` value from provided data.
+  * `yAxisLabelBuilder` - builds Y axis label based on `double` value from provided data, `maxValue` specifically.
+
+#### Settings
+
+* `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
+* `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
+* `showAxisX` - whether to show X axis or not, defaults to `true`.
+* `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
+* `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
+* `barSpacing` - spacing between bars in one item, defaults to `0`.
+* `itemSpacing` - spacing between group of bars, defaults to `12`.
+* `showSelection` - whether to show selection of the items or not, defaults to `true`.
+
+#### Style
+
+* `gridStyle` - styling options for the grid, for more details please refer to the source code of the `BarChartGridStyle`.
+* `axisStyle` - styling options for the axis, for more details please refer to the source code of the `BarChartAxisStyle`.
+* `barStyle` - styling options for the chart line, for more details please refer to the source code of the `BarChartBarStyle`.
 
 ## Examples
 

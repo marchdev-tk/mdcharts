@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0 - 31.05.2022
+
+* Added `BarChart`.
+
 ## 1.4.1 - 05.05.2022
 
 * Fixed `LimitLabelSnapPosition.chartBoundary` bias calculations.
