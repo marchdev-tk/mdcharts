@@ -44,6 +44,7 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart> {
   late StreamController<DateTime> _selectedPeriod;
+  StreamSubscription<DateTime>? _sub;
 
   double _getItemWidth() {
     final canDraw = widget.data.canDraw;
@@ -70,7 +71,19 @@ class _BarChartState extends State<BarChart> {
   @override
   void initState() {
     _selectedPeriod = StreamController<DateTime>.broadcast();
+    if (widget.data.onSelectedPeriodChanged != null) {
+      _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
+    }
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant BarChart oldWidget) {
+    _sub?.cancel();
+    if (widget.data.onSelectedPeriodChanged != null) {
+      _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -158,6 +171,7 @@ class _BarChartState extends State<BarChart> {
 
   @override
   void dispose() {
+    _sub?.cancel();
     _selectedPeriod.close();
     super.dispose();
   }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2 - 01.06.2022
+
+* Fixed `onSelectedPeriodChanged` raising from selection changed.
+
 ## 2.0.1 - 01.06.2022
 
 * Added TextStyle to the RichLabelBuilder delegate.
