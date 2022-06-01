@@ -5,6 +5,7 @@
 * Added TextStyle to the RichLabelBuilder delegate.
 * Fixed zero length data chart drawing.
 * Fixed extra scrolling if padding was provided.
+* Fixed label positioning if there's too few data.
 
 ## 2.0.0 - 31.05.2022
 

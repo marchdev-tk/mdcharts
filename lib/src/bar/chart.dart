@@ -127,6 +127,7 @@ class _BarChartState extends State<BarChart> {
           );
 
           child = Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(child: chart),
               SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
