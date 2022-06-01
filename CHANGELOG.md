@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 - 01.06.2022
+
+* Added TextStyle to the RichLabelBuilder delegate.
+* Fixed zero length data chart drawing.
+* Fixed extra scrolling if padding was provided.
+
 ## 2.0.0 - 31.05.2022
 
 * Added `BarChart`.

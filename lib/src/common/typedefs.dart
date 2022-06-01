@@ -8,5 +8,6 @@ import 'package:flutter/rendering.dart';
 typedef LabelBuilder<T> = String Function(T value);
 
 /// Signature for callbacks that builds label rich text based on the provided
-/// [key].
-typedef RichLabelBuilder<T> = TextSpan Function(T value);
+/// [key]. Also provides style in case if several styles could be used to build
+/// the label.
+typedef RichLabelBuilder<T> = TextSpan Function(T value, TextStyle style);

@@ -69,6 +69,10 @@ class BarChartPainter extends CustomPainter {
 
   /// Bar painter.
   void paintBar(Canvas canvas, Size size) {
+    if (!data.canDraw) {
+      return;
+    }
+
     final barTopRadius = Radius.circular(style.barStyle.topRadius);
     final zeroBarTopRadius = Radius.circular(style.barStyle.zeroBarTopRadius);
 

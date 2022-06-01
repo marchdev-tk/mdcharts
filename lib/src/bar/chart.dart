@@ -46,7 +46,8 @@ class _BarChartState extends State<BarChart> {
   late StreamController<DateTime> _selectedPeriod;
 
   double _getItemWidth() {
-    final barItemQuantity = widget.data.data.values.first.length;
+    final canDraw = widget.data.canDraw;
+    final barItemQuantity = canDraw ? widget.data.data.values.first.length : 0;
     final barWidth = widget.style.barStyle.width;
     final barSpacing = widget.settings.barSpacing;
 
@@ -92,7 +93,9 @@ class _BarChartState extends State<BarChart> {
 
     final content = LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = _getChartWidth(constraints.maxWidth);
+        final maxWidth = _getChartWidth(
+          constraints.maxWidth - (widget.padding?.horizontal ?? 0),
+        );
         final chart = CustomPaint(
           painter: BarChartPainter(
             widget.data,
@@ -188,7 +191,7 @@ class _XAxisLabel extends StatelessWidget {
         width: maxWidth,
         padding: style.xAxisLabelPadding,
         child: Text.rich(
-          data.xAxisLabelBuilder(currentDate),
+          data.xAxisLabelBuilder(currentDate, style.xAxisLabelStyle),
           style: style.xAxisLabelStyle,
           textAlign: TextAlign.center,
         ),
@@ -224,7 +227,7 @@ class _XAxisLabel extends StatelessWidget {
               padding: style.xAxisLabelPadding,
               decoration: currentDecoration,
               child: Text.rich(
-                data.xAxisLabelBuilder(currentDate),
+                data.xAxisLabelBuilder(currentDate, currentStyle),
                 style: currentStyle,
                 textAlign: TextAlign.center,
               ),

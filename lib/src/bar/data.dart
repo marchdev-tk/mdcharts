@@ -21,8 +21,8 @@ class BarChartData {
     this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
   });
 
-  static TextSpan defaultXAxisLabelBuilder(DateTime key) =>
-      TextSpan(text: '${key.month}-${key.year}');
+  static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
+      TextSpan(text: '${key.month}-${key.year}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
   static const Map<num, num> defaultMaxValueRoundingMap = {
     100: 5,
@@ -93,7 +93,8 @@ class BarChartData {
   ///
   /// If [initialSelectedPeriod] is no set, then first key of the [data] will
   /// be used instead.
-  DateTime get selectedPeriod => initialSelectedPeriod ?? data.keys.first;
+  DateTime? get selectedPeriod =>
+      initialSelectedPeriod ?? (canDraw ? data.keys.first : null);
 
   /// Checks whether chart and point could be drawned or not.
   ///
@@ -135,7 +136,7 @@ class BarChartData {
   BarChartData copyWith({
     bool allowNullPredefinedMaxValue = false,
     Map<DateTime, List<double>>? data,
-    DateTime? selectedPeriod,
+    DateTime? initialSelectedPeriod,
     double? predefinedMaxValue,
     Map<num, num>? maxValueRoundingMap,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,
@@ -143,7 +144,7 @@ class BarChartData {
   }) =>
       BarChartData(
         data: data ?? this.data,
-        initialSelectedPeriod: selectedPeriod,
+        initialSelectedPeriod: initialSelectedPeriod,
         predefinedMaxValue: allowNullPredefinedMaxValue
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
@@ -155,7 +156,7 @@ class BarChartData {
   @override
   int get hashCode =>
       data.hashCode ^
-      selectedPeriod.hashCode ^
+      initialSelectedPeriod.hashCode ^
       predefinedMaxValue.hashCode ^
       maxValueRoundingMap.hashCode ^
       xAxisLabelBuilder.hashCode ^
@@ -165,7 +166,7 @@ class BarChartData {
   bool operator ==(Object other) =>
       other is BarChartData &&
       mapEquals(data, other.data) &&
-      selectedPeriod == other.selectedPeriod &&
+      initialSelectedPeriod == other.initialSelectedPeriod &&
       predefinedMaxValue == other.predefinedMaxValue &&
       mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
       xAxisLabelBuilder == other.xAxisLabelBuilder &&
