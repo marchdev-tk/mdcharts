@@ -97,6 +97,21 @@ class _BarChartState extends State<BarChart> {
       size: Size.infinite,
     );
 
+    if (widget.settings.showAxisXLabels) {
+      grid = Column(
+        children: [
+          Expanded(child: grid),
+          SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
+          SizedBox(
+            height: _XAxisLabel.getEstimatedHeight(
+              widget.style.axisStyle,
+              widget.style.axisStyle.xAxisLabelStyle,
+            ),
+          ),
+        ],
+      );
+    }
+
     if (widget.padding != null) {
       grid = Padding(
         padding: widget.padding!,
@@ -109,6 +124,7 @@ class _BarChartState extends State<BarChart> {
         final maxWidth = _getChartWidth(
           constraints.maxWidth - (widget.padding?.horizontal ?? 0),
         );
+
         final chart = CustomPaint(
           painter: BarChartPainter(
             widget.data,
@@ -124,6 +140,13 @@ class _BarChartState extends State<BarChart> {
           final xAxisLabels = Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              if (widget.data.data.isEmpty)
+                SizedBox(
+                  height: _XAxisLabel.getEstimatedHeight(
+                    widget.style.axisStyle,
+                    widget.style.axisStyle.xAxisLabelStyle,
+                  ),
+                ),
               for (var i = 0; i < widget.data.data.length; i++) ...[
                 _XAxisLabel(
                   settings: widget.settings,
@@ -195,6 +218,19 @@ class _XAxisLabel extends StatelessWidget {
   final double maxWidth;
   final StreamController<DateTime> selectedPeriod;
 
+  static double getEstimatedHeight(
+    BarChartAxisStyle style,
+    TextStyle textStyle,
+  ) {
+    // TODO: it is needed to calculate the max size more precisely.
+    // this implementation is not correct in some cases, but still
+    // relatively fine.
+    final maxHeight = style.xAxisLabelPadding.vertical +
+        (textStyle.height ?? 1) * (textStyle.fontSize ?? 14);
+
+    return maxHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentDate =
@@ -229,12 +265,7 @@ class _XAxisLabel extends StatelessWidget {
                   color: style.xAxisSelectedLabelBackgroundColor,
                 )
               : null;
-
-          // TODO: it is needed to calculate the max size more precisely.
-          // this implementation is not correct in some cases, but still
-          // relatively fine.
-          final maxHeight = style.xAxisLabelPadding.vertical +
-              (currentStyle.height ?? 1) * (currentStyle.fontSize ?? 14);
+          final maxHeight = getEstimatedHeight(style, currentStyle);
 
           return SizedOverflowBox(
             size: Size(maxWidth, maxHeight),

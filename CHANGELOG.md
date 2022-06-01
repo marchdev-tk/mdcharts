@@ -3,6 +3,7 @@
 ## 2.0.2 - 01.06.2022
 
 * Fixed `onSelectedPeriodChanged` raising from selection changed.
+* Fixed grid and axis positioning if there's no data initially provided.
 
 ## 2.0.1 - 01.06.2022
 
