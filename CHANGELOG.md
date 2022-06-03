@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.3 - 03.06.2022
+
+* Fixed `selectedPeriod` functionality.
+
 ## 2.0.2 - 01.06.2022
 
 * Fixed `onSelectedPeriodChanged` raising from selection changed.
