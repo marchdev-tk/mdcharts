@@ -71,6 +71,9 @@ class _BarChartState extends State<BarChart> {
   @override
   void initState() {
     _selectedPeriod = StreamController<DateTime>.broadcast();
+    if (widget.data.selectedPeriod != null) {
+      _selectedPeriod.add(widget.data.selectedPeriod!);
+    }
     if (widget.data.onSelectedPeriodChanged != null) {
       _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
     }
@@ -80,6 +83,9 @@ class _BarChartState extends State<BarChart> {
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
     _sub?.cancel();
+    if (widget.data.selectedPeriod != null) {
+      _selectedPeriod.add(widget.data.selectedPeriod!);
+    }
     if (widget.data.onSelectedPeriodChanged != null) {
       _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
     }
