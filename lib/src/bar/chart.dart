@@ -68,6 +68,39 @@ class _BarChartState extends State<BarChart> {
     return math.max(maxWidth, totalWidth);
   }
 
+  void _handleTapUp(TapUpDetails details, double maxWidth) {
+    final itemSpacing = widget.settings.itemSpacing;
+    final itemWidth = _getItemWidth();
+    final maxChartWidth = _getChartWidth(0);
+    final maxScreenWidth = _getChartWidth(maxWidth);
+    final widthBias = maxScreenWidth - maxChartWidth;
+    final x = details.localPosition.dx - widthBias;
+    final invertedX = maxChartWidth - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // fist item
+    if (invertedX <= edgeItemWidth) {
+      key = widget.data.data.keys.first;
+    }
+
+    // last item
+    else if (x <= edgeItemWidth) {
+      key = widget.data.data.keys.last;
+    }
+
+    // other items
+    else {
+      var index = invertedX ~/ (itemWidth + itemSpacing);
+      index = invertedX - edgeItemWidth < edgeItemWidth ? 1 : index;
+      key = widget.data.data.keys.elementAt(index);
+    }
+
+    _selectedPeriod.add(key);
+    widget.data.onSelectedPeriodChanged?.call(key);
+  }
+
   @override
   void initState() {
     _selectedPeriod = StreamController<DateTime>.broadcast();
@@ -131,13 +164,16 @@ class _BarChartState extends State<BarChart> {
           constraints.maxWidth - (widget.padding?.horizontal ?? 0),
         );
 
-        final chart = CustomPaint(
-          painter: BarChartPainter(
-            widget.data,
-            widget.style,
-            widget.settings,
+        final chart = GestureDetector(
+          onTapUp: (details) => _handleTapUp(details, maxWidth),
+          child: CustomPaint(
+            painter: BarChartPainter(
+              widget.data,
+              widget.style,
+              widget.settings,
+            ),
+            size: Size.fromWidth(maxWidth),
           ),
-          size: Size.fromWidth(maxWidth),
         );
 
         Widget child;
