@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 - 17.06.2022
+
+* Added handling of taps over the bar chart.
+
 ## 2.0.3 - 03.06.2022
 
 * Fixed `selectedPeriod` functionality.
