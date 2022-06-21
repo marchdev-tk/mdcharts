@@ -208,7 +208,6 @@ class _BarChartState extends State<BarChart> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(child: chart),
-              SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
               xAxisLabels,
             ],
           );
@@ -309,15 +308,19 @@ class _XAxisLabel extends StatelessWidget {
               : null;
           final maxHeight = getEstimatedHeight(style, currentStyle);
 
-          return SizedOverflowBox(
-            size: Size(maxWidth, maxHeight),
-            child: Container(
-              padding: style.xAxisLabelPadding,
-              decoration: currentDecoration,
-              child: Text.rich(
-                data.xAxisLabelBuilder(currentDate, currentStyle),
-                style: currentStyle,
-                textAlign: TextAlign.center,
+          return Container(
+            color: Colors.transparent,
+            padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
+            child: SizedOverflowBox(
+              size: Size(maxWidth, maxHeight),
+              child: Container(
+                padding: style.xAxisLabelPadding,
+                decoration: currentDecoration,
+                child: Text.rich(
+                  data.xAxisLabelBuilder(currentDate, currentStyle),
+                  style: currentStyle,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           );
