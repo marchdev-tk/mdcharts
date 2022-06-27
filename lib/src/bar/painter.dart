@@ -17,6 +17,7 @@ class BarChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.valueCoef,
   );
 
   /// Set of required (and optional) data to construct the bar chart.
@@ -27,6 +28,10 @@ class BarChartPainter extends CustomPainter {
 
   /// Provides various settings for the bar chart.
   final BarChartSettings settings;
+
+  /// Multiplication coeficient of the value. It is used to create chart
+  /// animation.
+  final double valueCoef;
 
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
   /// [settings.yAxisDivisions] with "beautiful" integer chunks.
@@ -105,8 +110,8 @@ class BarChartPainter extends CustomPainter {
         final radius = style.barStyle.showZeroBars && barValue == 0
             ? zeroBarTopRadius
             : barTopRadius;
-        final top =
-            normalize(barValue) * size.height - style.barStyle.zeroBarHeight;
+        final top = normalize(barValue * valueCoef) *
+            (size.height - style.barStyle.zeroBarHeight);
 
         final itemOffset = (itemSpacing + itemWidth) * i;
         final barRight = size.width -

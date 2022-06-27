@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'data.dart';
@@ -21,6 +22,7 @@ class BarChart extends StatefulWidget {
     this.style = const BarChartStyle(),
     this.settings = const BarChartSettings(),
     this.padding,
+    this.duration = const Duration(milliseconds: 400),
   }) : super(key: key);
 
   /// Set of required (and optional) data to construct the bar chart.
@@ -38,13 +40,21 @@ class BarChart extends StatefulWidget {
   /// a scroll padding.
   final EdgeInsetsGeometry? padding;
 
+  /// Animation duration.
+  final Duration duration;
+
   @override
   State<BarChart> createState() => _BarChartState();
 }
 
-class _BarChartState extends State<BarChart> {
+class _BarChartState extends State<BarChart>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _valueController;
+  late Animation<double> _valueAnimation;
+
   late StreamController<DateTime> _selectedPeriod;
   StreamSubscription<DateTime>? _sub;
+  BarChartData? _oldData;
 
   double _getItemWidth() {
     final canDraw = widget.data.canDraw;
@@ -101,27 +111,60 @@ class _BarChartState extends State<BarChart> {
     widget.data.onSelectedPeriodChanged?.call(key);
   }
 
-  @override
-  void initState() {
-    _selectedPeriod = StreamController<DateTime>.broadcast();
+  void _initSelectedPeriod() {
     if (widget.data.selectedPeriod != null) {
       _selectedPeriod.add(widget.data.selectedPeriod!);
     }
     if (widget.data.onSelectedPeriodChanged != null) {
       _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
     }
+  }
+
+  void _initAnimation() {
+    _valueController = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+    _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _valueController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  void _startAnimation() {
+    _valueController.forward(from: 0);
+  }
+
+  void _revertAnimation() {
+    _valueController.reverse(from: 1);
+  }
+
+  @override
+  void initState() {
+    _selectedPeriod = StreamController<DateTime>.broadcast();
+    _initSelectedPeriod();
+    _initAnimation();
+    _startAnimation();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
     _sub?.cancel();
-    if (widget.data.selectedPeriod != null) {
-      _selectedPeriod.add(widget.data.selectedPeriod!);
+    _initSelectedPeriod();
+
+    if (!mapEquals(oldWidget.data.data, widget.data.data)) {
+      _oldData = oldWidget.data;
+      _revertAnimation();
+      Future.delayed(
+        widget.duration,
+        () {
+          _startAnimation();
+          _oldData = null;
+        },
+      );
     }
-    if (widget.data.onSelectedPeriodChanged != null) {
-      _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
-    }
+
     super.didUpdateWidget(oldWidget);
   }
 
@@ -129,7 +172,7 @@ class _BarChartState extends State<BarChart> {
   Widget build(BuildContext context) {
     Widget grid = CustomPaint(
       painter: BarChartGridPainter(
-        widget.data,
+        _oldData ?? widget.data,
         widget.style,
         widget.settings,
       ),
@@ -166,13 +209,20 @@ class _BarChartState extends State<BarChart> {
 
         final chart = GestureDetector(
           onTapUp: (details) => _handleTapUp(details, maxWidth),
-          child: CustomPaint(
-            painter: BarChartPainter(
-              widget.data,
-              widget.style,
-              widget.settings,
-            ),
-            size: Size.fromWidth(maxWidth),
+          child: ValueListenableBuilder<double>(
+            valueListenable: _valueAnimation,
+            builder: (context, valueCoef, child) {
+              return CustomPaint(
+                key: ValueKey(valueCoef),
+                painter: BarChartPainter(
+                  _oldData ?? widget.data,
+                  widget.style,
+                  widget.settings,
+                  valueCoef,
+                ),
+                size: Size.fromWidth(maxWidth),
+              );
+            },
           ),
         );
 
@@ -237,6 +287,7 @@ class _BarChartState extends State<BarChart> {
   void dispose() {
     _sub?.cancel();
     _selectedPeriod.close();
+    _valueController.dispose();
     super.dispose();
   }
 }

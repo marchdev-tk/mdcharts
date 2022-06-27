@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mdcharts/mdcharts.dart';
 import 'package:mdcharts_example/src/widgets/number_list_tile.dart';
@@ -75,6 +77,7 @@ class _Chart extends StatelessWidget {
                   settings: settings.requireData,
                   style: style.requireData,
                   data: data.requireData,
+                  duration: const Duration(milliseconds: 400),
                 );
               },
             );
@@ -97,6 +100,22 @@ class _GeneralDataSetupGroup extends StatelessWidget {
         return SetupGroup(
           title: 'General Data',
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  final randomizedData = <DateTime, List<double>>{};
+                  for (var i = 0; i < 11; i++) {
+                    randomizedData[DateTime(DateTime.now().year - i)] = [
+                      Random().nextInt(50000).toDouble(),
+                      Random().nextInt(50000).toDouble(),
+                    ];
+                  }
+                  _data.add(_data.value.copyWith(data: randomizedData));
+                },
+                child: const Center(child: Text('Randomize Data')),
+              ),
+            ),
             DialogListTile(
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
