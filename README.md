@@ -110,6 +110,9 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `barSpacing` - spacing between bars in one item, defaults to `0`.
 * `itemSpacing` - spacing between group of bars, defaults to `12`.
 * `showSelection` - whether to show selection of the items or not, defaults to `true`.
+* `duration` - the length of time animation should last.
+* `alignment` - alignment of the bars within chart.
+* `reverse` - whether the scroll view scrolls in the reading direction.
 
 #### Style
 
