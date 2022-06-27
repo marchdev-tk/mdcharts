@@ -2,7 +2,10 @@
 
 ## 3.0.0 - 27.06.2022
 
-* Implemented animation for bar chart.
+* Added animation for the `BarChart`.
+* Added alignment of the bars for the `BarChart`.
+* **BREAKING CHANGE:**
+  * chart data are now drawing from the first to the last item (in previous versions they were drawn reversed), and this change has led to changes in `BarChartData.selectedPeriod` getter (previously used to get first item as fallback, but now - last item).
 
 ## 2.1.1 - 21.06.2022
 
