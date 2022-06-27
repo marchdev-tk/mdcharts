@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0 - 27.06.2022
+
+* Implemented animation for bar chart.
+
 ## 2.1.1 - 21.06.2022
 
 * Added ability to tap between chart and x axis label.
