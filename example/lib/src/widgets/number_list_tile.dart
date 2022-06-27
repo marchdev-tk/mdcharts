@@ -35,7 +35,7 @@ class IntListTile extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 20,
+            width: 24,
             child: Center(child: Text(value.toString())),
           ),
           IconButton(

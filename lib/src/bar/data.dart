@@ -91,10 +91,10 @@ class BarChartData {
 
   /// Selected period of the bar chart.
   ///
-  /// If [initialSelectedPeriod] is no set, then first key of the [data] will
+  /// If [initialSelectedPeriod] is no set, then last key of the [data] will
   /// be used instead.
   DateTime? get selectedPeriod =>
-      initialSelectedPeriod ?? (canDraw ? data.keys.first : null);
+      initialSelectedPeriod ?? (canDraw ? data.keys.last : null);
 
   /// Checks whether chart and point could be drawned or not.
   ///

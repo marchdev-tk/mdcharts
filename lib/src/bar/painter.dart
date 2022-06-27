@@ -101,6 +101,35 @@ class BarChartPainter extends CustomPainter {
           .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
     }
 
+    switch (settings.alignment) {
+      case BarAlignment.start:
+        _paintBarStart(canvas, size, barTopRadius, zeroBarTopRadius,
+            itemSpacing, itemWidth, barSpacing, barWidth, colors);
+        break;
+
+      case BarAlignment.center:
+        _paintBarCenter(canvas, size, barTopRadius, zeroBarTopRadius,
+            itemSpacing, itemWidth, barSpacing, barWidth, colors);
+        break;
+
+      case BarAlignment.end:
+        _paintBarEnd(canvas, size, barTopRadius, zeroBarTopRadius, itemSpacing,
+            itemWidth, barSpacing, barWidth, colors);
+        break;
+    }
+  }
+
+  void _paintBarStart(
+    Canvas canvas,
+    Size size,
+    Radius barTopRadius,
+    Radius zeroBarTopRadius,
+    double itemSpacing,
+    double itemWidth,
+    double barSpacing,
+    double barWidth,
+    List<Color> colors,
+  ) {
     for (var i = 0; i < data.data.length; i++) {
       final item = data.data.entries.elementAt(i);
 
@@ -114,16 +143,113 @@ class BarChartPainter extends CustomPainter {
             (size.height - style.barStyle.zeroBarHeight);
 
         final itemOffset = (itemSpacing + itemWidth) * i;
+
+        final barLeft = barWidth * j + barSpacing * j + itemOffset;
+        final barRight = barWidth + barLeft;
+
+        canvas.drawRRect(
+          RRect.fromLTRBAndCorners(
+            barLeft,
+            top,
+            barRight,
+            size.height,
+            topLeft: radius,
+            topRight: radius,
+          ),
+          Paint()
+            ..style = PaintingStyle.fill
+            ..color = colors[j],
+        );
+      }
+    }
+  }
+
+  void _paintBarCenter(
+    Canvas canvas,
+    Size size,
+    Radius barTopRadius,
+    Radius zeroBarTopRadius,
+    double itemSpacing,
+    double itemWidth,
+    double barSpacing,
+    double barWidth,
+    List<Color> colors,
+  ) {
+    for (var i = 0; i < data.data.length; i++) {
+      final item = data.data.entries.elementAt(i);
+
+      for (var j = item.value.length - 1; j >= 0; j--) {
+        final barValue = item.value[j];
+
+        final radius = style.barStyle.showZeroBars && barValue == 0
+            ? zeroBarTopRadius
+            : barTopRadius;
+        final top = normalize(barValue * valueCoef) *
+            (size.height - style.barStyle.zeroBarHeight);
+
+        final itemLength = data.data.length;
+        final totalWidth = itemLength * (itemSpacing + itemWidth) - itemSpacing;
+        final sideOffset = (size.width - totalWidth) / 2;
+
+        final itemOffset = (itemSpacing + itemWidth) * i + sideOffset;
+
+        final barLeft = barWidth * j + barSpacing * j + itemOffset;
+        final barRight = barWidth + barLeft;
+
+        canvas.drawRRect(
+          RRect.fromLTRBAndCorners(
+            barLeft,
+            top,
+            barRight,
+            size.height,
+            topLeft: radius,
+            topRight: radius,
+          ),
+          Paint()
+            ..style = PaintingStyle.fill
+            ..color = colors[j],
+        );
+      }
+    }
+  }
+
+  void _paintBarEnd(
+    Canvas canvas,
+    Size size,
+    Radius barTopRadius,
+    Radius zeroBarTopRadius,
+    double itemSpacing,
+    double itemWidth,
+    double barSpacing,
+    double barWidth,
+    List<Color> colors,
+  ) {
+    for (var i = data.data.length - 1; i >= 0; i--) {
+      final item = data.data.entries.elementAt(i);
+
+      for (var j = item.value.length - 1; j >= 0; j--) {
+        final barValue = item.value[j];
+
+        final radius = style.barStyle.showZeroBars && barValue == 0
+            ? zeroBarTopRadius
+            : barTopRadius;
+        final top = normalize(barValue * valueCoef) *
+            (size.height - style.barStyle.zeroBarHeight);
+
+        final itemOffset =
+            (itemSpacing + itemWidth) * (data.data.length - 1 - i);
+
         final barRight = size.width -
             barWidth * (item.value.length - 1 - j) -
-            barSpacing * (item.value.length - 1 - j);
+            barSpacing * (item.value.length - 1 - j) -
+            itemOffset;
         final barLeft = barRight - barWidth;
 
         canvas.drawRRect(
           RRect.fromLTRBAndCorners(
-            barLeft - itemOffset,
+            barLeft,
             top,
-            barRight - itemOffset,
+            barRight,
             size.height,
             topLeft: radius,
             topRight: radius,

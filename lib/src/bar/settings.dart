@@ -4,6 +4,21 @@
 
 import '../common.dart';
 
+/// Alignment of the bars within chart.
+///
+/// Note that alignment will be used only if total bar width is less the paint
+/// zone (if no scroll is present).
+enum BarAlignment {
+  /// Bars will be placed at the start (left side) of the chart zone.
+  start,
+
+  /// Bars will be placed at the center of the chart zone.
+  center,
+
+  /// Bars will be placed at the end (right side) of the chart zone.
+  end,
+}
+
 /// Set of settings of the [BarChart].
 class BarChartSettings {
   /// Constructs an instance of [BarChartSettings].
@@ -16,6 +31,9 @@ class BarChartSettings {
     this.barSpacing = 0,
     this.itemSpacing = 12,
     this.showSelection = true,
+    this.duration = const Duration(milliseconds: 400),
+    this.alignment = BarAlignment.end,
+    this.reverse = false,
   });
 
   /// Constructs an instance of [BarChartSettings] without grids.
@@ -26,6 +44,9 @@ class BarChartSettings {
     this.barSpacing = 0,
     this.itemSpacing = 12,
     this.showSelection = true,
+    this.duration = const Duration(milliseconds: 400),
+    this.alignment = BarAlignment.end,
+    this.reverse = false,
   })  : yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
 
@@ -80,6 +101,28 @@ class BarChartSettings {
   /// Defaults to `true`.
   final bool showSelection;
 
+  /// The length of time animation should last.
+  ///
+  /// To disable animation - [Duration.zero] could be passed.
+  final Duration duration;
+
+  /// Alignment of the bars within chart.
+  ///
+  /// Defaults to [BarAlignment.end].
+  ///
+  /// Note that alignment will be used only if total bar width is less the paint
+  /// zone (if no scroll is present).
+  final BarAlignment alignment;
+
+  /// Whether the scroll view scrolls in the reading direction.
+  ///
+  /// For example, if the reading direction is left-to-right, then the scroll
+  /// view scrolls from left to right when [reverse] is `false` and from right
+  /// to left when [reverse] is `true`.
+  ///
+  /// Defaults to `false`.
+  final bool reverse;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartSettings copyWith({
@@ -91,6 +134,9 @@ class BarChartSettings {
     double? barSpacing,
     double? itemSpacing,
     bool? showSelection,
+    Duration? duration,
+    BarAlignment? alignment,
+    bool? reverse,
   }) =>
       BarChartSettings(
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
@@ -101,6 +147,9 @@ class BarChartSettings {
         barSpacing: barSpacing ?? this.barSpacing,
         itemSpacing: itemSpacing ?? this.itemSpacing,
         showSelection: showSelection ?? this.showSelection,
+        duration: duration ?? this.duration,
+        alignment: alignment ?? this.alignment,
+        reverse: reverse ?? this.reverse,
       );
 
   @override
@@ -112,7 +161,10 @@ class BarChartSettings {
       showAxisYLabels.hashCode ^
       barSpacing.hashCode ^
       itemSpacing.hashCode ^
-      showSelection.hashCode;
+      showSelection.hashCode ^
+      duration.hashCode ^
+      alignment.hashCode ^
+      reverse.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -124,5 +176,8 @@ class BarChartSettings {
       showAxisYLabels == other.showAxisYLabels &&
       barSpacing == other.barSpacing &&
       itemSpacing == other.itemSpacing &&
-      showSelection == other.showSelection;
+      showSelection == other.showSelection &&
+      duration == other.duration &&
+      alignment == other.alignment &&
+      reverse == other.reverse;
 }

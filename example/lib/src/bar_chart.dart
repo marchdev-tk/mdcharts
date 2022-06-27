@@ -18,17 +18,17 @@ final _settings =
 final _style = BehaviorSubject<BarChartStyle>.seeded(const BarChartStyle());
 final _data = BehaviorSubject<BarChartData>.seeded(BarChartData(
   data: {
-    DateTime(2022): [12345, 23456],
-    DateTime(2021): [1234, 1000],
-    DateTime(2020): [500, 500],
-    DateTime(2019): [0, 0],
-    DateTime(2018): [200, 0],
-    DateTime(2017): [0, 200],
-    DateTime(2016): [0, 0],
-    DateTime(2015): [0, 0],
-    DateTime(2014): [20, 0],
-    DateTime(2013): [0, 20],
     DateTime(2012): [0, 0],
+    DateTime(2013): [0, 20],
+    DateTime(2014): [20, 0],
+    DateTime(2015): [0, 0],
+    DateTime(2016): [0, 0],
+    DateTime(2017): [0, 200],
+    DateTime(2018): [200, 0],
+    DateTime(2019): [0, 0],
+    DateTime(2020): [500, 500],
+    DateTime(2021): [1234, 1000],
+    DateTime(2022): [12345, 23456],
   },
 ));
 
@@ -43,6 +43,8 @@ class BarChartExample extends StatelessWidget {
         _GeneralDataSetupGroup(),
         SetupDivider(),
         _GeneralSettingsSetupGroup(),
+        SetupDivider(),
+        _BarAlignmentSetupGroup(),
         SetupDivider(),
         _AxisDivisionsEdgesSetupGroup(),
         SetupDivider(),
@@ -77,7 +79,6 @@ class _Chart extends StatelessWidget {
                   settings: settings.requireData,
                   style: style.requireData,
                   data: data.requireData,
-                  duration: const Duration(milliseconds: 400),
                 );
               },
             );
@@ -183,6 +184,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   _settings.add(data.copyWith(showSelection: value == true)),
               title: const Text('showSelection'),
             ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: data.reverse,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(reverse: value == true)),
+              title: const Text('reverse'),
+            ),
             IntListTile(
               value: data.yAxisDivisions,
               onChanged: (value) =>
@@ -205,6 +213,36 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               },
               title: const Text('itemSpacing'),
             ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BarAlignmentSetupGroup extends StatelessWidget {
+  const _BarAlignmentSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: 'Bar Alignment',
+          children: [
+            for (var i = 0; i < BarAlignment.values.length; i++)
+              RadioListTile<BarAlignment>(
+                controlAffinity: ListTileControlAffinity.leading,
+                groupValue: data.alignment,
+                value: BarAlignment.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(alignment: value)),
+                title: Text(BarAlignment.values[i].name),
+              ),
           ],
         );
       },

@@ -22,7 +22,6 @@ class BarChart extends StatefulWidget {
     this.style = const BarChartStyle(),
     this.settings = const BarChartSettings(),
     this.padding,
-    this.duration = const Duration(milliseconds: 400),
   }) : super(key: key);
 
   /// Set of required (and optional) data to construct the bar chart.
@@ -40,9 +39,6 @@ class BarChart extends StatefulWidget {
   /// a scroll padding.
   final EdgeInsetsGeometry? padding;
 
-  /// Animation duration.
-  final Duration duration;
-
   @override
   State<BarChart> createState() => _BarChartState();
 }
@@ -55,6 +51,17 @@ class _BarChartState extends State<BarChart>
   late StreamController<DateTime> _selectedPeriod;
   StreamSubscription<DateTime>? _sub;
   BarChartData? _oldData;
+
+  CrossAxisAlignment _convertAlignment(BarAlignment alignment) {
+    switch (alignment) {
+      case BarAlignment.start:
+        return CrossAxisAlignment.start;
+      case BarAlignment.center:
+        return CrossAxisAlignment.center;
+      case BarAlignment.end:
+        return CrossAxisAlignment.end;
+    }
+  }
 
   double _getItemWidth() {
     final canDraw = widget.data.canDraw;
@@ -123,7 +130,7 @@ class _BarChartState extends State<BarChart>
   void _initAnimation() {
     _valueController = AnimationController(
       vsync: this,
-      duration: widget.duration,
+      duration: widget.settings.duration,
     );
     _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _valueController,
@@ -131,13 +138,9 @@ class _BarChartState extends State<BarChart>
     ));
   }
 
-  void _startAnimation() {
-    _valueController.forward(from: 0);
-  }
+  TickerFuture _startAnimation() => _valueController.forward(from: 0);
 
-  void _revertAnimation() {
-    _valueController.reverse(from: 1);
-  }
+  TickerFuture _revertAnimation() => _valueController.reverse(from: 1);
 
   @override
   void initState() {
@@ -155,14 +158,10 @@ class _BarChartState extends State<BarChart>
 
     if (!mapEquals(oldWidget.data.data, widget.data.data)) {
       _oldData = oldWidget.data;
-      _revertAnimation();
-      Future.delayed(
-        widget.duration,
-        () {
-          _startAnimation();
-          _oldData = null;
-        },
-      );
+      _revertAnimation().whenCompleteOrCancel(() {
+        _oldData = null;
+        _startAnimation();
+      });
     }
 
     super.didUpdateWidget(oldWidget);
@@ -255,7 +254,7 @@ class _BarChartState extends State<BarChart>
           );
 
           child = Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: _convertAlignment(widget.settings.alignment),
             children: [
               Expanded(child: chart),
               xAxisLabels,
@@ -266,7 +265,7 @@ class _BarChartState extends State<BarChart>
         }
 
         return SingleChildScrollView(
-          reverse: true,
+          reverse: widget.settings.reverse,
           scrollDirection: Axis.horizontal,
           padding: widget.padding,
           child: child,
@@ -325,8 +324,7 @@ class _XAxisLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentDate =
-        data.data.entries.elementAt(data.data.length - 1 - index).key;
+    final currentDate = data.data.entries.elementAt(index).key;
 
     if (!settings.showSelection) {
       return Container(
