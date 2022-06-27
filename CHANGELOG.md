@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 - 27.06.2022
+## 3.0.0-dev.1 - 27.06.2022
 
 * Added animation for the `BarChart`.
 * Added alignment of the bars for the `BarChart`.
