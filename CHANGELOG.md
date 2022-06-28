@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0-dev.2 - 28.06.2022
+
+* Fixed taps on `BarChart`s bars.
+
 ## 3.0.0-dev.1 - 27.06.2022
 
 * Added animation for the `BarChart`.
