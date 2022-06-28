@@ -90,6 +90,104 @@ class _BarChartState extends State<BarChart>
     final itemWidth = _getItemWidth();
     final maxChartWidth = _getChartWidth(0);
     final maxScreenWidth = _getChartWidth(maxWidth);
+
+    DateTime key;
+
+    switch (widget.settings.alignment) {
+      case BarAlignment.start:
+        key = _getKeyStart(
+            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
+        break;
+      case BarAlignment.center:
+        key = _getKeyCenter(
+            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
+        break;
+      case BarAlignment.end:
+        key = _getKeyEnd(
+            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
+        break;
+    }
+
+    _selectedPeriod.add(key);
+    widget.data.onSelectedPeriodChanged?.call(key);
+  }
+
+  DateTime _getKeyStart(
+    TapUpDetails details,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+  ) {
+    final widthBias = maxScreenWidth - maxChartWidth;
+    final x = details.localPosition.dx;
+    final invertedX = maxChartWidth + widthBias - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // last item
+    if (invertedX <= edgeItemWidth) {
+      key = widget.data.data.keys.last;
+    }
+
+    // first item
+    else if (x <= edgeItemWidth) {
+      key = widget.data.data.keys.first;
+    }
+
+    // other items
+    else {
+      var index = (x - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // plus 1 due to exclusion of the first item
+      key = widget.data.data.keys.elementAt(index + 1);
+    }
+
+    return key;
+  }
+
+  DateTime _getKeyCenter(
+    TapUpDetails details,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+  ) {
+    final widthBias = (maxScreenWidth - maxChartWidth) / 2;
+    final x = details.localPosition.dx - widthBias;
+    final invertedX = maxChartWidth - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // last item
+    if (invertedX <= edgeItemWidth) {
+      key = widget.data.data.keys.last;
+    }
+
+    // first item
+    else if (x <= edgeItemWidth) {
+      key = widget.data.data.keys.first;
+    }
+
+    // other items
+    else {
+      final lastIndex = widget.data.data.length - 1;
+      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // minus 1 due to exclusion of the last item
+      key = widget.data.data.keys.elementAt(lastIndex - index - 1);
+    }
+
+    return key;
+  }
+
+  DateTime _getKeyEnd(
+    TapUpDetails details,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+  ) {
     final widthBias = maxScreenWidth - maxChartWidth;
     final x = details.localPosition.dx - widthBias;
     final invertedX = maxChartWidth - x;
@@ -97,25 +195,25 @@ class _BarChartState extends State<BarChart>
 
     DateTime key;
 
-    // fist item
+    // last item
     if (invertedX <= edgeItemWidth) {
-      key = widget.data.data.keys.first;
+      key = widget.data.data.keys.last;
     }
 
-    // last item
+    // first item
     else if (x <= edgeItemWidth) {
-      key = widget.data.data.keys.last;
+      key = widget.data.data.keys.first;
     }
 
     // other items
     else {
-      var index = invertedX ~/ (itemWidth + itemSpacing);
-      index = invertedX - edgeItemWidth < edgeItemWidth ? 1 : index;
-      key = widget.data.data.keys.elementAt(index);
+      final lastIndex = widget.data.data.length - 1;
+      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // minus 1 due to exclusion of the last item
+      key = widget.data.data.keys.elementAt(lastIndex - index - 1);
     }
 
-    _selectedPeriod.add(key);
-    widget.data.onSelectedPeriodChanged?.call(key);
+    return key;
   }
 
   void _initSelectedPeriod() {
