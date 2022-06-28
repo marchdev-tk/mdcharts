@@ -255,7 +255,7 @@ class _BarChartState extends State<BarChart>
     _initSelectedPeriod();
 
     if (!mapEquals(oldWidget.data.data, widget.data.data)) {
-      _oldData = oldWidget.data;
+      _oldData = widget.data.copyWith(data: oldWidget.data.data);
       _revertAnimation().whenCompleteOrCancel(() {
         _oldData = null;
         _startAnimation();
@@ -269,7 +269,7 @@ class _BarChartState extends State<BarChart>
   Widget build(BuildContext context) {
     Widget grid = CustomPaint(
       painter: BarChartGridPainter(
-        _oldData ?? widget.data,
+        widget.data,
         widget.style,
         widget.settings,
       ),
