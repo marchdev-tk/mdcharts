@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0-dev.3 - 28.06.2022
+
+* Fixed grid redraw issue caused by usage of old data due to animation implementation.
+
 ## 3.0.0-dev.2 - 28.06.2022
 
 * Fixed taps on `BarChart`s bars.
