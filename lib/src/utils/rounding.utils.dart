@@ -15,7 +15,7 @@ double getRoundedMaxValue(
   double initalMaxValue,
   int yAxisDivisions,
 ) {
-  final yDivisions = yAxisDivisions == 0 ? 1 : yAxisDivisions + 1;
+  final yDivisions = yAxisDivisions + 1;
   final complement = roundingMap.entries
       .firstWhere(
         (entry) => initalMaxValue < entry.key,

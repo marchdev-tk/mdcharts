@@ -48,19 +48,73 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
+  /// Rounding method that calculates and rounds Y axis division size.
+  ///
+  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
+  double get roundedDivisionSize {
+    final yDivisions = settings.yAxisDivisions + 1;
+    double divisionSize;
+
+    if (yDivisions == 1) {
+      divisionSize = data.totalValue;
+    } else if (yDivisions == 2 && data.maxValue == 0) {
+      divisionSize = data.minValue.abs() / 2;
+    } else if (yDivisions == 2) {
+      divisionSize = math.max(data.maxValue, data.minValue.abs());
+    } else if (data.minValue == 0 || data.maxValue == 0) {
+      divisionSize = data.totalValue / yDivisions;
+    } else {
+      var size = data.totalValue / yDivisions;
+      var maxDivisions = (data.maxValue / size).ceil();
+      var minDivisions = (data.minValue.abs() / size).ceil();
+
+      // TODO: find a better way to calculate size of the division.
+      while (maxDivisions + minDivisions > yDivisions) {
+        size = size + 1;
+        maxDivisions = (data.maxValue / size).ceil();
+        minDivisions = (data.minValue.abs() / size).ceil();
+      }
+
+      divisionSize = size;
+    }
+
+    return getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
+  }
+
+  /// Rounding method that rounds [data.minValue] to achieve beautified value
+  /// so, it could be multiplied by [settings.yAxisDivisions].
+  ///
+  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
+  double get roundedMinValue {
+    if (data.hasNegativeMinValue) {
+      final size = roundedDivisionSize;
+      final divisions = (data.minValue.abs() / size).ceil();
+      return size * divisions;
+    }
+
+    return 0;
+  }
+
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
-  /// [settings.yAxisDivisions] with "beautiful" integer chunks.
+  /// [settings.yAxisDivisions] with beautified integer chunks.
   ///
   /// Example:
   /// - yAxisDivisions = 2 (so 2 division lines results with 3 chunks of chart);
   /// - maxValue = 83 (from data).
   ///
   /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue => getRoundedMaxValue(
-        data.maxValueRoundingMap,
-        data.maxValue,
-        settings.yAxisDivisions,
-      );
+  double get roundedMaxValue {
+    if (data.hasNegativeMinValue) {
+      final yDivisions = settings.yAxisDivisions + 1;
+      return roundedDivisionSize * yDivisions;
+    }
+
+    return getRoundedMaxValue(
+      data.maxValueRoundingMap,
+      data.maxValue,
+      settings.yAxisDivisions,
+    );
+  }
 
   /// Normalization method.
   ///
@@ -91,6 +145,11 @@ class LineChartPainter extends CustomPainter {
     return index;
   }
 
+  /// Height of the X axis.
+  double _getZeroHeight(Size size) => data.hasNegativeMinValue
+      ? normalize(roundedMinValue) * size.height
+      : size.height;
+
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
     if (!data.canDraw) {
       return Offset(0, size.height);
@@ -104,7 +163,7 @@ class LineChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * index;
-    final y = normalize(entry.value) * size.height;
+    final y = normalize(entry.value + roundedMinValue) * size.height;
     final point = Offset(x, y);
 
     return point;
@@ -160,7 +219,8 @@ class LineChartPainter extends CustomPainter {
         continue;
       }
 
-      final labelValue = roundedMaxValue * (yDivisions - i) / yDivisions;
+      final labelValue =
+          roundedMaxValue * (yDivisions - i) / yDivisions - roundedMinValue;
       final textPainter = MDTextPainter(
         TextSpan(
           text: data.yAxisLabelBuilder(labelValue),
@@ -189,7 +249,12 @@ class LineChartPainter extends CustomPainter {
 
     // x axis
     if (settings.showAxisX) {
-      canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+      if (data.hasNegativeMinValue) {
+        final y = normalize(roundedMinValue) * size.height;
+        canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
+      } else {
+        canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+      }
     }
     // y axis
     if (settings.showAxisY) {
@@ -206,12 +271,13 @@ class LineChartPainter extends CustomPainter {
     final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = data.typedData;
+    final zeroHeight = _getZeroHeight(size);
     final path = Path();
 
     Path? pathSelected;
 
     if (!_isDescendingChart) {
-      path.moveTo(0, size.height);
+      path.moveTo(0, zeroHeight);
     }
 
     double x = 0;
@@ -220,7 +286,7 @@ class LineChartPainter extends CustomPainter {
       final value = map.entries.elementAt(i).value;
 
       x = widthFraction * i;
-      y = normalize(value) * size.height;
+      y = normalize(value + roundedMinValue) * size.height;
 
       path.lineTo(x, y);
 
@@ -234,13 +300,13 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.lineFilling) {
-      final firstY = _isDescendingChart ? 0 : size.height;
+      final firstY = _isDescendingChart ? 0 : zeroHeight;
       final dy = style.lineStyle.stroke / 2;
       final gradientPath = path.shift(Offset(0, -dy));
 
       // finishing path to create valid gradient/color fill
-      gradientPath.lineTo(x, size.height);
-      gradientPath.lineTo(0, size.height);
+      gradientPath.lineTo(x, zeroHeight);
+      gradientPath.lineTo(0, zeroHeight);
       gradientPath.lineTo(0, firstY - dy);
 
       canvas.drawPath(
@@ -252,7 +318,7 @@ class LineChartPainter extends CustomPainter {
     if (settings.altitudeLine) {
       canvas.drawLine(
         Offset(x, y),
-        Offset(x, size.height),
+        Offset(x, _getZeroHeight(size)),
         style.lineStyle.altitudeLinePaint,
       );
     }
@@ -277,7 +343,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y = normalize(data.limit!) * size.height;
+    final y = normalize(data.limit!) * _getZeroHeight(size);
 
     path.moveTo(0, y);
 
@@ -302,7 +368,7 @@ class LineChartPainter extends CustomPainter {
         settings.limitLabelSnapPosition == LimitLabelSnapPosition.chartBoundary
             ? (padding?.left ?? style.pointStyle.tooltipHorizontalOverflowWidth)
             : .0;
-    final yCenter = normalize(data.limit!) * size.height;
+    final yCenter = normalize(data.limit!) * _getZeroHeight(size);
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused
@@ -338,6 +404,7 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
+    final zeroHeight = _getZeroHeight(size);
     final point = _getPoint(size);
     final dashWidth = style.pointStyle.dropLineDashSize;
     final gapWidth = style.pointStyle.dropLineGapSize;
@@ -346,7 +413,7 @@ class LineChartPainter extends CustomPainter {
     final pathY = Path();
 
     pathX.moveTo(0, point.dy);
-    pathY.moveTo(point.dx, size.height);
+    pathY.moveTo(point.dx, zeroHeight);
 
     final countX = (point.dx / (dashWidth + gapWidth)).round();
     for (var i = 1; i <= countX; i++) {
@@ -354,10 +421,12 @@ class LineChartPainter extends CustomPainter {
       pathX.relativeMoveTo(gapWidth, 0);
     }
 
-    final countY = ((size.height - point.dy) / (dashWidth + gapWidth)).round();
+    final isNegativeValue = point.dy > zeroHeight;
+    final countY =
+        ((zeroHeight - point.dy) / (dashWidth + gapWidth)).round().abs();
     for (var i = 1; i <= countY; i++) {
-      pathY.relativeLineTo(0, -dashWidth);
-      pathY.relativeMoveTo(0, -gapWidth);
+      pathY.relativeLineTo(0, isNegativeValue ? dashWidth : -dashWidth);
+      pathY.relativeMoveTo(0, isNegativeValue ? gapWidth : -gapWidth);
     }
 
     canvas.drawPath(pathX, style.pointStyle.dropLinePaint);

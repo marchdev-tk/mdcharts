@@ -19,18 +19,18 @@ final _style = BehaviorSubject<LineChartStyle>.seeded(const LineChartStyle());
 final _data = BehaviorSubject<LineChartData>.seeded(LineChartData(
   gridType: LineChartGridType.undefined,
   data: {
-    DateTime(2022, 02, 2): 10,
-    DateTime(2022, 02, 4): 15,
-    DateTime(2022, 02, 5): 19,
-    DateTime(2022, 02, 6): 21,
-    DateTime(2022, 02, 7): 17,
-    DateTime(2022, 02, 8): 3,
-    DateTime(2022, 02, 23): 73,
-    DateTime(2022, 02, 24): 82,
-    DateTime(2022, 02, 25): 83,
-    DateTime(2022, 02, 26): 81,
-    DateTime(2022, 02, 27): 77,
-    DateTime(2022, 02, 28): 70,
+    DateTime(2022, 03, 01): -960.0,
+    DateTime(2022, 03, 02): -1652.0,
+    DateTime(2022, 03, 03): -2593.0,
+    DateTime(2022, 03, 04): -690.0,
+    DateTime(2022, 03, 05): -139.0,
+    DateTime(2022, 03, 06): -55.0,
+    DateTime(2022, 03, 07): 398.0,
+    DateTime(2022, 03, 08): 742.0,
+    DateTime(2022, 03, 09): 681.0,
+    DateTime(2022, 03, 10): 711.0,
+    DateTime(2022, 03, 11): 127.0,
+    DateTime(2022, 03, 12): 110.0,
   },
 ));
 
@@ -92,6 +92,53 @@ class _Chart extends StatelessWidget {
 class _GeneralDataSetupGroup extends StatelessWidget {
   const _GeneralDataSetupGroup({Key? key}) : super(key: key);
 
+  Map<DateTime, double> getRandomizedData({required bool positive}) {
+    final year = DateTime.now().year;
+    final month = Random().nextInt(12) + 1;
+    final days = Random().nextInt(20) + 8;
+    final randomizedData = <DateTime, double>{};
+    for (var i = 1, maxValue = 1000; i < days; i++) {
+      final value = Random().nextInt(maxValue);
+      maxValue += value;
+      randomizedData[DateTime(year, month, i)] =
+          positive ? value.toDouble() : 0 - value.toDouble();
+    }
+
+    return randomizedData;
+  }
+
+  Map<DateTime, double> getMixedRandomizedData() {
+    final year = DateTime.now().year;
+    final month = Random().nextInt(12) + 1;
+    final days = Random().nextInt(5) * 4 + 8;
+    final randomizedData = <DateTime, double>{};
+
+    for (var i = 1, maxValue = 1000; i <= days / 4; i++) {
+      final value = Random().nextInt(maxValue);
+      maxValue += value;
+      randomizedData[DateTime(year, month, i)] = -value.toDouble();
+    }
+    for (var i = 1, maxValue = 1000; i <= days / 4; i++) {
+      final value = Random().nextInt(maxValue);
+      maxValue -= value;
+      randomizedData[DateTime(year, month, i + days ~/ 4)] = -value.toDouble();
+    }
+    for (var i = 1, maxValue = 1000; i <= days / 4; i++) {
+      final value = Random().nextInt(maxValue);
+      maxValue += value;
+      randomizedData[DateTime(year, month, i + (days * 2) ~/ 4)] =
+          value.toDouble();
+    }
+    for (var i = 1, maxValue = 1000; i <= days / 4; i++) {
+      final value = Random().nextInt(maxValue);
+      maxValue -= value;
+      randomizedData[DateTime(year, month, i + (days * 3) ~/ 4)] =
+          value.toDouble();
+    }
+
+    return randomizedData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<LineChartData>(
@@ -103,34 +150,24 @@ class _GeneralDataSetupGroup extends StatelessWidget {
           children: [
             Button(
               onPressed: () {
-                final year = DateTime.now().year;
-                final month = Random().nextInt(12) + 1;
-                final days = Random().nextInt(20) + 8;
-                final randomizedData = <DateTime, double>{};
-                for (var i = 1, maxValue = 1000; i < days; i++) {
-                  final value = Random().nextInt(maxValue);
-                  maxValue += value;
-                  randomizedData[DateTime(year, month, i)] = value.toDouble();
-                }
+                final randomizedData = getRandomizedData(positive: true);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Positive Data'),
             ),
             Button(
               onPressed: () {
-                final year = DateTime.now().year;
-                final month = Random().nextInt(12) + 1;
-                final days = Random().nextInt(20) + 8;
-                final randomizedData = <DateTime, double>{};
-                for (var i = 1, maxValue = 1000; i < days; i++) {
-                  final value = (Random().nextBool() ? 0 : -0) -
-                      Random().nextInt(maxValue);
-                  maxValue += value;
-                  randomizedData[DateTime(year, month, i)] = value.toDouble();
-                }
+                final randomizedData = getRandomizedData(positive: false);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Negative Data'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getMixedRandomizedData();
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Mixed Data'),
             ),
             DialogListTile(
               keyboardType:

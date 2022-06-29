@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 
@@ -266,13 +268,28 @@ class LineChartData {
       return predefinedMaxValue!;
     }
 
-    final max = data.values.max;
+    final max = math.max(data.values.max, .0);
     if (limit == null || max > limit!) {
       return max;
     }
 
     return limit!;
   }
+
+  /// Determines min value for chart to draw.
+  double get minValue {
+    if (!canDraw) {
+      return 0;
+    }
+
+    return math.min(data.values.min, .0);
+  }
+
+  /// Whether [minValue] is less than `0`.
+  bool get hasNegativeMinValue => minValue < 0;
+
+  /// Determines sum of the [maxValue] and absolute value of [minValue].
+  double get totalValue => maxValue - minValue;
 
   /// Determines whether max value from [data] is greater than limit.
   /// If so - [limit] is overused. Otherwise - no.
