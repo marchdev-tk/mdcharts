@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0-dev.4 - 29.06.2022
+
+* Added negative values support to `LineChart`.
+
 ## 3.0.0-dev.3 - 28.06.2022
 
 * Fixed grid redraw issue caused by usage of old data due to animation implementation.
