@@ -10,6 +10,7 @@ import 'package:mdcharts_example/src/widgets/number_list_tile.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'scaffolds/setup_scaffold.dart';
+import 'widgets/button.dart';
 import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 
@@ -101,21 +102,18 @@ class _GeneralDataSetupGroup extends StatelessWidget {
         return SetupGroup(
           title: 'General Data',
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ElevatedButton(
-                onPressed: () {
-                  final randomizedData = <DateTime, List<double>>{};
-                  for (var i = 0; i < 11; i++) {
-                    randomizedData[DateTime(DateTime.now().year - i)] = [
-                      Random().nextInt(50000).toDouble(),
-                      Random().nextInt(50000).toDouble(),
-                    ];
-                  }
-                  _data.add(_data.value.copyWith(data: randomizedData));
-                },
-                child: const Center(child: Text('Randomize Data')),
-              ),
+            Button(
+              onPressed: () {
+                final randomizedData = <DateTime, List<double>>{};
+                for (var i = 0; i < 11; i++) {
+                  randomizedData[DateTime(DateTime.now().year - i)] = [
+                    Random().nextInt(50000).toDouble(),
+                    Random().nextInt(50000).toDouble(),
+                  ];
+                }
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize Data'),
             ),
             DialogListTile(
               keyboardType:

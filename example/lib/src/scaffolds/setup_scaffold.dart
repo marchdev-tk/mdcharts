@@ -16,26 +16,28 @@ class SetupScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 315,
-          child: _Setup(children: setupChildren),
-        ),
-        Positioned(
-          left: 315,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: body,
+    return SafeArea(
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 315,
+            child: _Setup(children: setupChildren),
           ),
-        ),
-      ],
+          Positioned(
+            left: 315,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: body,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

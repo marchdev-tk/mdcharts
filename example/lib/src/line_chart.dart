@@ -2,11 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mdcharts/mdcharts.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'scaffolds/setup_scaffold.dart';
+import 'widgets/button.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
@@ -98,6 +101,37 @@ class _GeneralDataSetupGroup extends StatelessWidget {
         return SetupGroup(
           title: 'General Data',
           children: [
+            Button(
+              onPressed: () {
+                final year = DateTime.now().year;
+                final month = Random().nextInt(12) + 1;
+                final days = Random().nextInt(20) + 8;
+                final randomizedData = <DateTime, double>{};
+                for (var i = 1, maxValue = 1000; i < days; i++) {
+                  final value = Random().nextInt(maxValue);
+                  maxValue += value;
+                  randomizedData[DateTime(year, month, i)] = value.toDouble();
+                }
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Positive Data'),
+            ),
+            Button(
+              onPressed: () {
+                final year = DateTime.now().year;
+                final month = Random().nextInt(12) + 1;
+                final days = Random().nextInt(20) + 8;
+                final randomizedData = <DateTime, double>{};
+                for (var i = 1, maxValue = 1000; i < days; i++) {
+                  final value = (Random().nextBool() ? 0 : -0) -
+                      Random().nextInt(maxValue);
+                  maxValue += value;
+                  randomizedData[DateTime(year, month, i)] = value.toDouble();
+                }
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Negative Data'),
+            ),
             DialogListTile(
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
