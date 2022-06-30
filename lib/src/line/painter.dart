@@ -48,11 +48,32 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
+  /// Cached value of [data.typedData].
+  ///
+  /// It is needed to store this cache due to lots of calculations that
+  /// "low-end" devices couldn't complete fast enough (escpecially on mobile
+  /// devices).
+  Map<DateTime, double>? _cachedTypedData;
+
   /// Cached value of [roundedDivisionSize].
   ///
-  /// It is needed to store cache due to VERY insufficient way of it's
+  /// It is needed to store this cache due to VERY insufficient way of it's
   /// calculation.
   double? _cachedRoundedDivisionSize;
+
+  /// Smart getter of the [data.typedData].
+  ///
+  /// If there's cache - it will be used instead of basic [data.typedData].
+  Map<DateTime, double> get _typedData {
+    if (_cachedTypedData != null) {
+      return _cachedTypedData!;
+    }
+
+    final typedData = data.typedData;
+    _cachedTypedData = typedData;
+
+    return typedData;
+  }
 
   /// Rounding method that calculates and rounds Y axis division size.
   ///
@@ -154,7 +175,7 @@ class LineChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, data.typedData.length - 1);
+    index = math.min(index, _typedData.length - 1);
 
     return index;
   }
@@ -173,7 +194,7 @@ class LineChartPainter extends CustomPainter {
     final index = selectedIndex ?? data.lastDivisionIndex;
     final entry = selectedIndex == null
         ? data.data.entries.last
-        : data.typedData.entries.elementAt(index);
+        : _typedData.entries.elementAt(index);
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * index;
@@ -284,7 +305,7 @@ class LineChartPainter extends CustomPainter {
 
     final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
-    final map = data.typedData;
+    final map = _typedData;
     final zeroHeight = _getZeroHeight(size);
     final path = Path();
 
@@ -479,7 +500,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final selectedIndex = _getSelectedIndex(size)!;
-    final entry = data.typedData.entries.elementAt(selectedIndex);
+    final entry = _typedData.entries.elementAt(selectedIndex);
     final titlePainter = MDTextPainter(TextSpan(
       text: data.titleBuilder(entry.key, entry.value),
       style: style.pointStyle.tooltipTitleStyle,

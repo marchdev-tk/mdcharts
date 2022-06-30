@@ -16,28 +16,31 @@ class SetupScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 315,
-            child: _Setup(children: setupChildren),
-          ),
-          Positioned(
-            left: 315,
-            top: 0,
-            right: 0,
-            bottom: 0,
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 315,
+          child: _Setup(children: setupChildren),
+        ),
+        Positioned(
+          left: 315,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          child: SafeArea(
+            left: false,
+            top: false,
+            bottom: false,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: body,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -52,16 +55,20 @@ class _Setup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTileTheme(
-      dense: true,
-      textColor: Colors.white,
-      child: Material(
-        elevation: 1,
-        color: Colors.grey[700],
-        child: Scrollbar(
-          isAlwaysShown: true,
-          child: ListView(
-            children: children,
+    return MediaQuery.removePadding(
+      context: context,
+      removeLeft: true,
+      child: ListTileTheme(
+        dense: true,
+        textColor: Colors.white,
+        child: Material(
+          elevation: 1,
+          color: Colors.grey[700],
+          child: Scrollbar(
+            isAlwaysShown: true,
+            child: ListView(
+              children: children,
+            ),
           ),
         ),
       ),

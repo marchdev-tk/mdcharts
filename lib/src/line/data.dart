@@ -244,8 +244,8 @@ class LineChartData {
 
   /// Checks whether chart and point could be drawned or not.
   ///
-  /// It checks for [typedData] length to be greater than or equal to 1.
-  bool get canDraw => typedData.isNotEmpty;
+  /// It checks for [data] length to be greater than or equal to 1.
+  bool get canDraw => data.isNotEmpty;
 
   /// Determines max value for chart to draw.
   ///

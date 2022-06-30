@@ -86,8 +86,10 @@ class _AppMenu extends StatelessWidget implements PreferredSizeWidget {
 
     return Material(
       color: Colors.grey[800],
-      child: Row(
-        children: tabs.map(buildTab).toList(),
+      child: SafeArea(
+        child: Row(
+          children: tabs.map(buildTab).toList(),
+        ),
       ),
     );
   }
