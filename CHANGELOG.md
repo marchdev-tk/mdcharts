@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0-dev.5 - 30.06.2022
+
+* Added caching of the division size calculation method, it will significantly improve rendering performance of the `LineChart`.
+
 ## 3.0.0-dev.4 - 29.06.2022
 
 * Added negative values support to `LineChart`.
