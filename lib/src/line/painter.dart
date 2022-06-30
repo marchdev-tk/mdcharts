@@ -16,7 +16,7 @@ import 'style.dart';
 /// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {
   /// Constructs an instance of [LineChartPainter].
-  const LineChartPainter(
+  LineChartPainter(
     this.data,
     this.style,
     this.settings,
@@ -48,10 +48,20 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
+  /// Cached value of [roundedDivisionSize].
+  ///
+  /// It is needed to store cache due to VERY insufficient way of it's
+  /// calculation.
+  double? _cachedRoundedDivisionSize;
+
   /// Rounding method that calculates and rounds Y axis division size.
   ///
   /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
   double get roundedDivisionSize {
+    if (_cachedRoundedDivisionSize != null) {
+      return _cachedRoundedDivisionSize!;
+    }
+
     final yDivisions = settings.yAxisDivisions + 1;
     double divisionSize;
 
@@ -78,7 +88,11 @@ class LineChartPainter extends CustomPainter {
       divisionSize = size;
     }
 
-    return getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
+    final roundedSize =
+        getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
+    _cachedRoundedDivisionSize = roundedSize;
+
+    return roundedSize;
   }
 
   /// Rounding method that rounds [data.minValue] to achieve beautified value
