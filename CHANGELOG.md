@@ -1,26 +1,30 @@
 # Changelog
 
-## 3.0.0-dev.6 - 30.06.2022
+## 3.0.0 - 30.06.2022
+
+Full list of chages:
+
+### 3.0.0-dev.6 - 30.06.2022
 
 * Added caching of the typedData getter, it will significantly improve rendering performance of the `LineChart`.
 
-## 3.0.0-dev.5 - 30.06.2022
+### 3.0.0-dev.5 - 30.06.2022
 
 * Added caching of the division size calculation method, it will significantly improve rendering performance of the `LineChart`.
 
-## 3.0.0-dev.4 - 29.06.2022
+### 3.0.0-dev.4 - 29.06.2022
 
 * Added negative values support to `LineChart`.
 
-## 3.0.0-dev.3 - 28.06.2022
+### 3.0.0-dev.3 - 28.06.2022
 
 * Fixed grid redraw issue caused by usage of old data due to animation implementation.
 
-## 3.0.0-dev.2 - 28.06.2022
+### 3.0.0-dev.2 - 28.06.2022
 
 * Fixed taps on `BarChart`s bars.
 
-## 3.0.0-dev.1 - 27.06.2022
+### 3.0.0-dev.1 - 27.06.2022
 
 * Added animation for the `BarChart`.
 * Added alignment of the bars for the `BarChart`.
