@@ -698,34 +698,78 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   /// Limited X axis labels painter.
   void paintLimited(Canvas canvas, Size size) {
     final dates = data.xAxisDates;
-    final count = settings.xAxisLabelQuantity!;
-    final innerCount = math.max(count - 2, 0);
+    final count = math.min(settings.xAxisLabelQuantity!, dates.length);
+    var innerCount = math.max(count - 2, 0);
 
     final datesToPaint = <DateTime>[
       dates.first,
       dates.last,
     ];
 
-    if (innerCount == 0) {
-      for (var i = 0; i < dates.length; i++) {
+    while (innerCount > 0) {
+      final datesLength = dates.length - 2;
+      final step = datesLength ~/ (innerCount + 1);
+      final innerDatesToPaint = <DateTime>[];
+
+      for (var i = 1; i <= innerCount / 2; i++) {
+        final stepDuration = Duration(days: step * i);
+        innerDatesToPaint.add(datesToPaint.first.add(stepDuration));
+        innerDatesToPaint.add(datesToPaint.last.subtract(stepDuration));
+      }
+      if (innerCount % 2 == 1) {
+        final centralDay = dates.length ~/ 2;
+        innerDatesToPaint.insert(
+          innerDatesToPaint.length ~/ 2,
+          datesToPaint.first.add(Duration(days: centralDay)),
+        );
+      }
+
+      final localDatesToPaint = List.of(datesToPaint);
+      localDatesToPaint.insertAll(1, innerDatesToPaint);
+
+      double totalWidth = .0;
+      for (var i = 0; i < localDatesToPaint.length; i++) {
         final item = datesToPaint[i];
         final text = data.xAxisLabelBuilder(item);
         final painter = MDTextPainter(TextSpan(
           text: text,
           style: style.xAxisLabelStyle,
         ));
-        final dx = i == 0 ? .0 : -painter.size.width;
-
-        painter.paint(
-          canvas,
-          Offset(dx, 0),
-        );
+        totalWidth += painter.size.width;
       }
 
-      return;
+      if (totalWidth <= size.width) {
+        datesToPaint.insertAll(1, innerDatesToPaint);
+        break;
+      }
+
+      innerCount = innerCount - 1;
     }
 
-    // TODO
+    for (var i = 0; i < dates.length; i++) {
+      final item = datesToPaint[i];
+      final text = data.xAxisLabelBuilder(item);
+      final painter = MDTextPainter(TextSpan(
+        text: text,
+        style: style.xAxisLabelStyle,
+      ));
+
+      double dx;
+      if (i == 0) {
+        dx = 0;
+      } else if (i == datesToPaint.length - 1) {
+        dx = size.width - painter.size.width;
+      } else {
+        final widthFactor = size.width / data.xAxisDivisions;
+        final index = dates.indexOf(datesToPaint[i]);
+        dx = widthFactor * index - painter.size.width / 2;
+      }
+
+      painter.paint(
+        canvas,
+        Offset(dx, 0),
+      );
+    }
   }
 
   @override
