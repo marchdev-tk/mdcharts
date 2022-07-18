@@ -729,7 +729,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
       double totalWidth = .0;
       for (var i = 0; i < localDatesToPaint.length; i++) {
-        final item = datesToPaint[i];
+        final item = localDatesToPaint[i];
         final text = data.xAxisLabelBuilder(item);
         final painter = MDTextPainter(TextSpan(
           text: text,
@@ -746,7 +746,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       innerCount = innerCount - 1;
     }
 
-    for (var i = 0; i < dates.length; i++) {
+    for (var i = 0; i < datesToPaint.length; i++) {
       final item = datesToPaint[i];
       final text = data.xAxisLabelBuilder(item);
       final painter = MDTextPainter(TextSpan(
