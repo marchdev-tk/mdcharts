@@ -59,6 +59,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 
 * `xAxisDivisions` - quantity of the X axis divisions, defaults to `3`.
 * `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
+* `xAxisLabelQuantity` - quantity of the X axis labels to draw, defaults to `null`.
 * `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
 * `showAxisY` - whether to show Y axis or not, defaults to `true`.
