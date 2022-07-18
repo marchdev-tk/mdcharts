@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0 - 18.07.2022
+
+* Added `xAxisLabelQuantity` to `LineChartSettings` which defines the quantity of the X axis labels to draw.
+
 ## 3.0.0 - 30.06.2022
 
 Full list of chages:
