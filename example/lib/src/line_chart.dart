@@ -368,6 +368,15 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   _settings.add(data.copyWith(yAxisDivisions: value)),
               title: const Text('yAxisDivisions'),
             ),
+            DialogListTile(
+              value: data.xAxisLabelQuantity?.toString(),
+              onChanged: (value) => _settings.add(data.copyWith(
+                allowNullXAxisLabelQuantity: true,
+                xAxisLabelQuantity: value != null ? int.parse(value) : null,
+              )),
+              keyboardType: TextInputType.number,
+              title: const Text('xAxisLabelQuantity'),
+            ),
           ],
         );
       },

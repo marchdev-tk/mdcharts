@@ -21,6 +21,7 @@ class LineChartSettings {
   const LineChartSettings({
     this.xAxisDivisions = 3,
     this.yAxisDivisions = 2,
+    this.xAxisLabelQuantity,
     this.axisDivisionEdges = AxisDivisionEdges.none,
     this.showAxisX = true,
     this.showAxisY = true,
@@ -34,6 +35,7 @@ class LineChartSettings {
 
   /// Constructs an instance of [LineChartSettings] without grids.
   const LineChartSettings.gridless({
+    this.xAxisLabelQuantity,
     this.showAxisX = true,
     this.showAxisY = true,
     this.lineFilling = true,
@@ -69,6 +71,17 @@ class LineChartSettings {
   /// and [yAxisDivisions] to `0` or consider using [LineChartSettings.gridless]
   /// constructor.
   final int yAxisDivisions;
+
+  /// Quantity of the X axis labels to draw.
+  ///
+  /// Defaults to `null`.
+  ///
+  /// If set - X axis label quantity could be less than or equal to a
+  /// specified value, but no less than `2`.
+  ///
+  /// **Note**: that X axis labels are dynamically displaying beneath X axis
+  /// based on width that they occupy and available drawing space.
+  final int? xAxisLabelQuantity;
 
   /// Axis division edges to be painted.
   ///
@@ -119,8 +132,10 @@ class LineChartSettings {
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   LineChartSettings copyWith({
+    bool allowNullXAxisLabelQuantity = false,
     int? xAxisDivisions,
     int? yAxisDivisions,
+    int? xAxisLabelQuantity,
     AxisDivisionEdges? axisDivisionEdges,
     bool? showAxisX,
     bool? showAxisY,
@@ -134,6 +149,9 @@ class LineChartSettings {
       LineChartSettings(
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
+        xAxisLabelQuantity: allowNullXAxisLabelQuantity
+            ? xAxisLabelQuantity
+            : xAxisLabelQuantity ?? this.xAxisLabelQuantity,
         axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
         showAxisX: showAxisX ?? this.showAxisX,
         showAxisY: showAxisY ?? this.showAxisY,
@@ -150,6 +168,7 @@ class LineChartSettings {
   int get hashCode =>
       xAxisDivisions.hashCode ^
       yAxisDivisions.hashCode ^
+      xAxisLabelQuantity.hashCode ^
       axisDivisionEdges.hashCode ^
       showAxisX.hashCode ^
       showAxisY.hashCode ^
@@ -165,6 +184,7 @@ class LineChartSettings {
       other is LineChartSettings &&
       xAxisDivisions == other.xAxisDivisions &&
       yAxisDivisions == other.yAxisDivisions &&
+      xAxisLabelQuantity == other.xAxisLabelQuantity &&
       axisDivisionEdges == other.axisDivisionEdges &&
       showAxisX == other.showAxisX &&
       showAxisY == other.showAxisY &&

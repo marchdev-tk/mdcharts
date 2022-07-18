@@ -86,6 +86,7 @@ class _LineChartState extends State<LineChart> {
       painter: LineChartXAxisLabelPainter(
         widget.data,
         widget.style.axisStyle,
+        widget.settings,
       ),
       size: Size.fromHeight(widget.style.axisStyle.labelHeight),
     );

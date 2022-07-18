@@ -603,6 +603,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   const LineChartXAxisLabelPainter(
     this.data,
     this.style,
+    this.settings,
   );
 
   /// Set of required (and optional) data to construct the line chart.
@@ -611,17 +612,16 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   /// Provides various customizations for the chart axis.
   final LineChartAxisStyle style;
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (data.gridType == LineChartGridType.undefined && !data.canDraw) {
-      return;
-    }
+  /// Provides various settings for the line chart.
+  final LineChartSettings settings;
 
-    final map = data.xAxisDates;
+  /// Unlimited X axis labels painter.
+  void paintUnlimited(Canvas canvas, Size size) {
+    final dates = data.xAxisDates;
     final painters = <MDTextPainter, bool>{};
 
-    for (var i = 0; i < map.length; i++) {
-      final item = map[i];
+    for (var i = 0; i < dates.length; i++) {
+      final item = dates[i];
       final text = data.xAxisLabelBuilder(item);
       final painter = MDTextPainter(TextSpan(
         text: text,
@@ -695,7 +695,55 @@ class LineChartXAxisLabelPainter extends CustomPainter {
     }
   }
 
+  /// Limited X axis labels painter.
+  void paintLimited(Canvas canvas, Size size) {
+    final dates = data.xAxisDates;
+    final count = settings.xAxisLabelQuantity!;
+    final innerCount = math.max(count - 2, 0);
+
+    final datesToPaint = <DateTime>[
+      dates.first,
+      dates.last,
+    ];
+
+    if (innerCount == 0) {
+      for (var i = 0; i < dates.length; i++) {
+        final item = datesToPaint[i];
+        final text = data.xAxisLabelBuilder(item);
+        final painter = MDTextPainter(TextSpan(
+          text: text,
+          style: style.xAxisLabelStyle,
+        ));
+        final dx = i == 0 ? .0 : -painter.size.width;
+
+        painter.paint(
+          canvas,
+          Offset(dx, 0),
+        );
+      }
+
+      return;
+    }
+
+    // TODO
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.gridType == LineChartGridType.undefined && !data.canDraw) {
+      return;
+    }
+
+    if (settings.xAxisLabelQuantity == null) {
+      paintUnlimited(canvas, size);
+    } else {
+      paintLimited(canvas, size);
+    }
+  }
+
   @override
   bool shouldRepaint(covariant LineChartXAxisLabelPainter oldDelegate) =>
-      data != oldDelegate.data || style != oldDelegate.style;
+      data != oldDelegate.data ||
+      style != oldDelegate.style ||
+      settings != oldDelegate.settings;
 }
