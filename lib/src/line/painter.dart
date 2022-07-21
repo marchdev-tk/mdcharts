@@ -708,7 +708,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
     while (innerCount > 0) {
       final datesLength = dates.length - 2;
-      final step = datesLength ~/ (innerCount + 1);
+      final step = (datesLength / (innerCount + 1)).round();
       final innerDatesToPaint = <DateTime>[];
 
       for (var i = 1; i <= innerCount / 2; i++) {
