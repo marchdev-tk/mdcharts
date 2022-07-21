@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-class SetupScaffold extends StatelessWidget {
+class SetupScaffold extends StatefulWidget {
   const SetupScaffold({
     Key? key,
     required this.setupChildren,
@@ -15,18 +15,75 @@ class SetupScaffold extends StatelessWidget {
   final Widget body;
 
   @override
+  State<SetupScaffold> createState() => _SetupScaffoldState();
+}
+
+class _SetupScaffoldState extends State<SetupScaffold>
+    with SingleTickerProviderStateMixin {
+  final _scrollController = ScrollController();
+
+  late AnimationController _animationController;
+  late Animation<double> _iconTurns;
+
+  bool _collapsed = false;
+
+  @override
+  void initState() {
+    final Animatable<double> easeInTween = CurveTween(curve: Curves.easeIn);
+    final Animatable<double> halfTween = Tween<double>(begin: 0, end: 0.5);
+
+    _animationController = AnimationController(
+      duration: kThemeAnimationDuration,
+      vsync: this,
+    );
+    _iconTurns = _animationController.drive(halfTween.chain(easeInTween));
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final visibilityIcon = Material(
+      color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: InkResponse(
+          onTap: () {
+            setState(() => _collapsed = !_collapsed);
+            if (_animationController.isCompleted) {
+              _animationController.reverse(from: 1);
+            } else {
+              _animationController.forward(from: 0);
+            }
+          },
+          radius: 20,
+          child: RotationTransition(
+            turns: _iconTurns,
+            child: const Icon(
+              Icons.keyboard_arrow_left_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return Stack(
       children: [
-        Positioned(
+        AnimatedPositioned(
+          duration: kThemeAnimationDuration,
           left: 0,
           top: 0,
           bottom: 0,
-          width: 315,
-          child: _Setup(children: setupChildren),
+          width: _collapsed ? 0 : 315,
+          child: _Setup(
+            controller: _scrollController,
+            children: widget.setupChildren,
+          ),
         ),
-        Positioned(
-          left: 315,
+        AnimatedPositioned(
+          duration: kThemeAnimationDuration,
+          left: _collapsed ? 0 : 315,
           top: 0,
           right: 0,
           bottom: 0,
@@ -36,21 +93,38 @@ class SetupScaffold extends StatelessWidget {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: body,
+              child: widget.body,
             ),
+          ),
+        ),
+        AnimatedPositioned(
+          duration: kThemeAnimationDuration,
+          left: _collapsed ? 0 : 315,
+          top: 0,
+          child: SafeArea(
+            child: visibilityIcon,
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 }
 
 class _Setup extends StatelessWidget {
   const _Setup({
     Key? key,
+    required this.controller,
     required this.children,
   }) : super(key: key);
 
+  final ScrollController controller;
   final List<Widget> children;
 
   @override
@@ -65,8 +139,12 @@ class _Setup extends StatelessWidget {
           elevation: 1,
           color: Colors.grey[700],
           child: Scrollbar(
+            controller: controller,
             isAlwaysShown: true,
+            showTrackOnHover: true,
+            interactive: true,
             child: ListView(
+              controller: controller,
               children: children,
             ),
           ),
