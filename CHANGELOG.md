@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.1 - 21.07.2022
+
+* Adjusted drawing of limited X axis labels.
+* Adjusted example app.
+
 ## 3.1.0 - 18.07.2022
 
 * Added `xAxisLabelQuantity` to `LineChartSettings` which defines the quantity of the X axis labels to draw.
