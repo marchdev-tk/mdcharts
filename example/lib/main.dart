@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'src/bar_chart.dart';
+import 'src/gauge_chart.dart';
 import 'src/line_chart.dart';
 import 'src/scaffolds/example_scaffold.dart';
 
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage> {
       tabs: {
         'Line Chart': LineChartExample(),
         'Bar Chart': BarChartExample(),
+        'Gauge Chart': GaugeChartExample(),
       },
     );
   }

@@ -23,28 +23,28 @@ class IntListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            constraints: const BoxConstraints.tightFor(width: 32),
-            splashRadius: 16,
-            padding: EdgeInsets.zero,
+          InkResponse(
+            radius: 16,
             hoverColor: Colors.white10,
-            onPressed: () => onChanged(value - 1),
-            icon: const Icon(
+            onTap: () => onChanged(value - 1),
+            onDoubleTap: () => onChanged(value - 5),
+            onLongPress: () => onChanged(value - 15),
+            child: const Icon(
               Icons.keyboard_arrow_left,
               color: Colors.blue,
             ),
           ),
           SizedBox(
-            width: 24,
+            width: 28,
             child: Center(child: Text(value.toString())),
           ),
-          IconButton(
-            constraints: const BoxConstraints.tightFor(width: 32),
-            splashRadius: 16,
-            padding: EdgeInsets.zero,
+          InkResponse(
+            radius: 16,
             hoverColor: Colors.white10,
-            onPressed: () => onChanged(value + 1),
-            icon: const Icon(
+            onTap: () => onChanged(value + 1),
+            onDoubleTap: () => onChanged(value + 5),
+            onLongPress: () => onChanged(value + 15),
+            child: const Icon(
               Icons.keyboard_arrow_right,
               color: Colors.blue,
             ),

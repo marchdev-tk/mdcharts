@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0 - TBA
+
+* Added `GaugeChart`.
+
 ## 3.1.1 - 21.07.2022
 
 * Adjusted drawing of limited X axis labels.

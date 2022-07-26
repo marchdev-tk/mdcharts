@@ -6,13 +6,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mdcharts/mdcharts.dart';
-import 'package:mdcharts_example/src/widgets/number_list_tile.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'scaffolds/setup_scaffold.dart';
 import 'widgets/button.dart';
 import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
+import 'widgets/number_list_tile.dart';
 
 final _settings =
     BehaviorSubject<BarChartSettings>.seeded(const BarChartSettings());
@@ -125,9 +125,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                     allowNullPredefinedMaxValue: true,
                     predefinedMaxValue: null,
                   ));
+                  return;
                 }
 
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = double.tryParse(value);
                 _data.add(
                     data.requireData.copyWith(predefinedMaxValue: doubleValue));
               },

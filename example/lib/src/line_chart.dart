@@ -198,9 +198,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                     allowNullPredefinedMaxValue: true,
                     predefinedMaxValue: null,
                   ));
+                  return;
                 }
 
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = double.tryParse(value);
                 _data.add(
                     data.requireData.copyWith(predefinedMaxValue: doubleValue));
               },
@@ -216,9 +217,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                     allowNullLimit: true,
                     limit: null,
                   ));
+                  return;
                 }
 
-                final doubleValue = double.tryParse(value!);
+                final doubleValue = double.tryParse(value);
                 _data.add(data.requireData.copyWith(limit: doubleValue));
               },
               title: const Text('limit'),

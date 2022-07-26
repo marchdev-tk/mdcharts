@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library mdcharts;
-
-export 'src/bar.dart';
-export 'src/common.dart';
-export 'src/gauge.dart';
-export 'src/line.dart';
+export 'gauge/chart.dart';
+export 'gauge/data.dart';
+export 'gauge/settings.dart';
+export 'gauge/style.dart';
