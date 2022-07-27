@@ -106,7 +106,6 @@ Path buildArc({
   required double innerRadius,
   required double startAngle,
   required double endAngle,
-  bool rounded = false,
 }) {
   final innerRadiusStartPoint = Point<double>(
     innerRadius * cos(startAngle) + center.x,
@@ -120,46 +119,25 @@ Path buildArc({
     radius * cos(startAngle) + center.x,
     radius * sin(startAngle) + center.y,
   );
-  final centerOffset = Offset(center.x as double, center.y as double);
-
+  final centerOffset = Offset(center.x.toDouble(), center.y.toDouble());
   final path = Path();
 
   path.moveTo(innerRadiusStartPoint.x, innerRadiusStartPoint.y);
   path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
-
   path.arcTo(
     Rect.fromCircle(center: centerOffset, radius: radius),
     startAngle,
     endAngle - startAngle,
     true,
   );
-
-  if (rounded && endAngle > startAngle) {
-    path.arcToPoint(
-      Offset(innerRadiusEndPoint.x, innerRadiusEndPoint.y),
-      radius: Radius.circular((radius - innerRadius) / 2),
-    );
-  } else {
-    path.lineTo(innerRadiusEndPoint.x, innerRadiusEndPoint.y);
-  }
-
+  path.lineTo(innerRadiusEndPoint.x, innerRadiusEndPoint.y);
   path.arcTo(
     Rect.fromCircle(center: centerOffset, radius: innerRadius),
     endAngle,
     startAngle - endAngle,
     true,
   );
-
-  // Drawing two copies of this line segment, before and after the arcs,
-  // ensures that the path actually gets closed correctly.
-  if (rounded && endAngle > startAngle) {
-    path.arcToPoint(
-      Offset(radiusStartPoint.x, radiusStartPoint.y),
-      radius: Radius.circular((radius - innerRadius) / 2),
-    );
-  } else {
-    path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
-  }
+  path.lineTo(radiusStartPoint.x, radiusStartPoint.y);
 
   return path;
 }

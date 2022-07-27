@@ -27,8 +27,7 @@ class IntListTile extends StatelessWidget {
             radius: 16,
             hoverColor: Colors.white10,
             onTap: () => onChanged(value - 1),
-            onDoubleTap: () => onChanged(value - 5),
-            onLongPress: () => onChanged(value - 15),
+            onLongPress: () => onChanged(value - 10),
             child: const Icon(
               Icons.keyboard_arrow_left,
               color: Colors.blue,
@@ -42,8 +41,7 @@ class IntListTile extends StatelessWidget {
             radius: 16,
             hoverColor: Colors.white10,
             onTap: () => onChanged(value + 1),
-            onDoubleTap: () => onChanged(value + 5),
-            onLongPress: () => onChanged(value + 15),
+            onLongPress: () => onChanged(value + 10),
             child: const Icon(
               Icons.keyboard_arrow_right,
               color: Colors.blue,
