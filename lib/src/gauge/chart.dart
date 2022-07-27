@@ -32,17 +32,78 @@ class GaugeChart extends StatefulWidget {
   State<GaugeChart> createState() => _GaugeChartState();
 }
 
-class _GaugeChartState extends State<GaugeChart> {
+class _GaugeChartState extends State<GaugeChart>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _valueController;
+  late Animation<double> _valueAnimation;
+
+  GaugeChartData? oldData;
+
+  GaugeChartData getAdjustedOldData() {
+    var old = oldData ??
+        widget.data.copyWith(data: List.filled(widget.data.data.length, 0));
+
+    if (old.data.length >= widget.data.data.length) {
+      old = old.copyWith(data: old.data.sublist(0, widget.data.data.length));
+    }
+    if (old.data.length <= widget.data.data.length) {
+      for (var i = 0; i < widget.data.data.length - old.data.length; i++) {
+        old.data.add(0);
+      }
+    }
+
+    return old;
+  }
+
+  void startAnimation() {
+    _valueController.forward(from: 0);
+  }
+
+  @override
+  void initState() {
+    _valueController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _valueController,
+      curve: Curves.easeInOut,
+    ));
+    startAnimation();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant GaugeChart oldWidget) {
+    oldData = oldWidget.data;
+    startAnimation();
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: GaugeChartPainter(
-        widget.data,
-        widget.style,
-        widget.settings,
-        1,
-      ),
-      size: Size.infinite,
+    final oldData = getAdjustedOldData();
+
+    return AnimatedBuilder(
+      animation: _valueAnimation,
+      builder: (context, _) {
+        return CustomPaint(
+          painter: GaugeChartPainter(
+            widget.data,
+            widget.style,
+            widget.settings,
+            oldData,
+            _valueAnimation.value,
+          ),
+          size: Size.infinite,
+        );
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    _valueController.dispose();
+    super.dispose();
   }
 }

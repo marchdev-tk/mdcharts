@@ -33,6 +33,10 @@ class GaugeChartExample extends StatelessWidget {
         _GeneralSettingsSetupGroup(),
         SetupDivider(),
         _BackgroundStyleSetupGroup(),
+        SetupDivider(),
+        _BackgroundBorderStyleSetupGroup(),
+        SetupDivider(),
+        _SectionStyleSetupGroup(),
       ],
     );
   }
@@ -208,30 +212,6 @@ class _BackgroundStyleSetupGroup extends StatelessWidget {
               title: const Text('color'),
             ),
             ColorListTile(
-              value: data.backgroundStyle.borderColor ?? Colors.transparent,
-              onChanged: (value) {
-                _style.add(
-                  data.copyWith(
-                    backgroundStyle: data.backgroundStyle.copyWith(
-                      borderColor: value,
-                    ),
-                  ),
-                );
-              },
-              title: const Text('borderColor'),
-            ),
-            IntListTile(
-              value: data.backgroundStyle.borderStroke.toInt(),
-              onChanged: (value) => _style.add(
-                data.copyWith(
-                  backgroundStyle: data.backgroundStyle.copyWith(
-                    borderStroke: value.toDouble(),
-                  ),
-                ),
-              ),
-              title: const Text('borderStroke'),
-            ),
-            ColorListTile(
               value: data.backgroundStyle.shadowColor,
               onChanged: (value) {
                 _style.add(
@@ -254,6 +234,185 @@ class _BackgroundStyleSetupGroup extends StatelessWidget {
                 ),
               ),
               title: const Text('shadowElevation'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
+  const _BackgroundBorderStyleSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<GaugeChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: '└─ Border Style',
+          children: [
+            IntListTile(
+              value: data.backgroundStyle.borderStroke.toInt(),
+              onChanged: (value) => _style.add(
+                data.copyWith(
+                  backgroundStyle: data.backgroundStyle.copyWith(
+                    borderStroke: value.toDouble(),
+                  ),
+                ),
+              ),
+              title: const Text('borderStroke'),
+            ),
+            ColorListTile(
+              value: data.backgroundStyle.borderColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      borderColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('borderColor'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      allowNullBorderColor: true,
+                      borderColor: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear borderColor'),
+            ),
+            ColorListTile(
+              value: data.backgroundStyle.borderGradient?.colors.first ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      borderGradient: LinearGradient(
+                        colors: [
+                          value,
+                          data.backgroundStyle.borderGradient?.colors.last ??
+                              Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('borderGradient first color'),
+            ),
+            ColorListTile(
+              value: data.backgroundStyle.borderGradient?.colors.last ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      borderGradient: LinearGradient(
+                        colors: [
+                          data.backgroundStyle.borderGradient?.colors.first ??
+                              Colors.transparent,
+                          value,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('borderGradient last color'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      allowNullBorderGradient: true,
+                      borderGradient: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear borderGradient'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SectionStyleSetupGroup extends StatelessWidget {
+  const _SectionStyleSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<GaugeChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Section Style',
+          children: [
+            ColorListTile(
+              value: data.sectionStyle.selectedColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    sectionStyle: data.sectionStyle.copyWith(
+                      selectedColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('selectedColor'),
+            ),
+            for (var i = 0; i < data.sectionStyle.colors.length; i++)
+              ColorListTile(
+                value: data.sectionStyle.colors[i],
+                onChanged: (value) {
+                  final colors = List.of(data.sectionStyle.colors);
+                  colors[i] = value;
+
+                  _style.add(
+                    data.copyWith(
+                      sectionStyle: data.sectionStyle.copyWith(
+                        colors: colors,
+                      ),
+                    ),
+                  );
+                },
+                title: Text(
+                  'color ${i + 1}',
+                ),
+              ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    sectionStyle: data.sectionStyle.copyWith(
+                      colors: [
+                        ...data.sectionStyle.colors,
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Add color'),
             ),
           ],
         );

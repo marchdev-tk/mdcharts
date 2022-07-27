@@ -116,6 +116,8 @@ class GaugeChartBackgroundStyle {
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GaugeChartBackgroundStyle copyWith({
+    bool allowNullBorderColor = false,
+    bool allowNullBorderGradient = false,
     Color? color,
     Color? shadowColor,
     double? shadowElevation,
@@ -127,8 +129,12 @@ class GaugeChartBackgroundStyle {
         color: color ?? this.color,
         shadowColor: shadowColor ?? this.shadowColor,
         shadowElevation: shadowElevation ?? this.shadowElevation,
-        borderColor: borderColor ?? this.borderColor,
-        borderGradient: borderGradient ?? this.borderGradient,
+        borderColor: allowNullBorderColor
+            ? borderColor
+            : borderColor ?? this.borderColor,
+        borderGradient: allowNullBorderGradient
+            ? borderGradient
+            : borderGradient ?? this.borderGradient,
         borderStroke: borderStroke ?? this.borderStroke,
       );
 

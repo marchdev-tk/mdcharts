@@ -20,6 +20,7 @@ class GaugeChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.oldData,
     this.valueCoef,
   );
 
@@ -35,6 +36,10 @@ class GaugeChartPainter extends CustomPainter {
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
   final double valueCoef;
+
+  /// Set of required (and optional) `BUT OLD` data to construct the gauge
+  /// chart.
+  final GaugeChartData oldData;
 
   /// Normalization method.
   ///
@@ -52,8 +57,8 @@ class GaugeChartPainter extends CustomPainter {
   /// Converts [data.data] values based on [data.total] into a percentage
   /// proportion with valid values in inclusive range [0..1], so sum of the list
   /// values will be always `1`.
-  List<double> get normalizedList {
-    final values = data.data.map(normalize).toList();
+  List<double> normalizedList(List<double> data) {
+    final values = data.map(normalize).toList();
     final rest = 1 - values.sum;
 
     if (rest == 1) {
@@ -67,7 +72,7 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Calculates section color based either on [settings.colorPattern] or
   /// [style.sectionStyle.colors].
-  /// 
+  ///
   /// Pattern takes precedence over color list, but it still uses color list to
   /// fullfill it's purpose.
   Color sectionColor(int index) {
@@ -198,12 +203,15 @@ class GaugeChartPainter extends CustomPainter {
     final innerRadius = radius -
         settings.sectionStroke +
         style.backgroundStyle.borderStroke * 2;
-    final normalizedData = normalizedList;
+    final normalizedData = normalizedList(data.data);
+    final normalizedOldData = normalizedList(oldData.data);
     final angleDiff = _endAngle - _startAngle;
     double startAngle = _startAngle;
 
     for (var i = 0; i < normalizedData.length; i++) {
-      final endAngle = startAngle + angleDiff * normalizedData[i];
+      final value = normalizedOldData[i] +
+          (normalizedData[i] - normalizedOldData[i]) * valueCoef;
+      final endAngle = startAngle + angleDiff * value;
 
       final path = buildArc(
         center: _centerPoint!,
@@ -232,5 +240,6 @@ class GaugeChartPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||
+      oldData != oldDelegate.oldData ||
       valueCoef != oldDelegate.valueCoef;
 }
