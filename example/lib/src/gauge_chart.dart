@@ -2,11 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mdcharts/mdcharts.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'scaffolds/setup_scaffold.dart';
+import 'widgets/button.dart';
 import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
@@ -69,15 +72,48 @@ class _Chart extends StatelessWidget {
 class _GeneralDataSetupGroup extends StatelessWidget {
   const _GeneralDataSetupGroup({Key? key}) : super(key: key);
 
+  List<double> getRandomizedData({required bool fixedQty}) {
+    if (fixedQty) {
+      return [
+        Random().nextInt(100000) / 100,
+        Random().nextInt(100000) / 100,
+      ];
+    }
+
+    final randomizedData = <double>[];
+    final count = Random().nextInt(4) + 1;
+
+    for (var i = 0; i < count; i++) {
+      randomizedData.add(Random().nextInt(100000) / 100);
+    }
+
+    return randomizedData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<GaugeChartData>(
       stream: _data,
       initialData: _data.value,
       builder: (context, data) {
-        return const SetupGroup(
+        return SetupGroup(
           title: 'General Data',
-          children: [],
+          children: [
+            Button(
+              onPressed: () {
+                final randomizedData = getRandomizedData(fixedQty: true);
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Fixed Qty'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getRandomizedData(fixedQty: false);
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Random Qty'),
+            ),
+          ],
         );
       },
     );
@@ -130,6 +166,12 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               onChanged: (value) =>
                   _settings.add(data.copyWith(gaugeAngle: value.toDouble())),
               title: const Text('gaugeAngle'),
+            ),
+            CheckboxListTile(
+              value: data.debugMode,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(debugMode: value)),
+              title: const Text('debugMode'),
             ),
           ],
         );

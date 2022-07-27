@@ -135,6 +135,8 @@ class GaugeChartBackgroundStyle {
   @override
   int get hashCode =>
       color.hashCode ^
+      shadowColor.hashCode ^
+      shadowElevation.hashCode ^
       borderColor.hashCode ^
       borderGradient.hashCode ^
       borderStroke.hashCode;
@@ -143,6 +145,8 @@ class GaugeChartBackgroundStyle {
   bool operator ==(Object other) =>
       other is GaugeChartBackgroundStyle &&
       color == other.color &&
+      shadowColor == other.shadowColor &&
+      shadowElevation == other.shadowElevation &&
       borderColor == other.borderColor &&
       borderGradient == other.borderGradient &&
       borderStroke == other.borderStroke;
@@ -152,13 +156,13 @@ class GaugeChartBackgroundStyle {
 class GaugeChartSectionStyle {
   /// Constructs an instance of [GaugeChartSectionStyle].
   const GaugeChartSectionStyle({
-    this.colors = const [],
+    this.colors = const [Color(0x80FFFFFF)],
     this.selectedColor = const Color(0xFFFFFFFF),
   });
 
   /// Colors of the gauge sections.
   ///
-  /// Defaults to `const []`.
+  /// Defaults to `[0x80FFFFFF]`.
   final List<Color> colors;
 
   /// Color of the selected gauge section.

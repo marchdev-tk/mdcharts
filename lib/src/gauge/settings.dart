@@ -9,6 +9,7 @@ class GaugeChartSettings {
     this.colorPattern,
     this.sectionStroke = 30,
     this.gaugeAngle = 180,
+    this.debugMode = false,
   }) : assert(gaugeAngle >= 0 && gaugeAngle <= 360);
 
   /// Pattern which colors will respect while getting from [colors] field.
@@ -29,6 +30,11 @@ class GaugeChartSettings {
   /// [AssertionError] will be thrown.
   final double gaugeAngle;
 
+  /// Whether debug mode is enabled or not.
+  ///
+  /// Defaults to `false`.
+  final bool debugMode;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GaugeChartSettings copyWith({
@@ -36,6 +42,7 @@ class GaugeChartSettings {
     List<int>? colorPattern,
     double? sectionStroke,
     double? gaugeAngle,
+    bool? debugMode,
   }) =>
       GaugeChartSettings(
         colorPattern: allowNullColorPattern
@@ -43,16 +50,21 @@ class GaugeChartSettings {
             : colorPattern ?? this.colorPattern,
         sectionStroke: sectionStroke ?? this.sectionStroke,
         gaugeAngle: gaugeAngle ?? this.gaugeAngle,
+        debugMode: debugMode ?? this.debugMode,
       );
 
   @override
   int get hashCode =>
-      colorPattern.hashCode ^ sectionStroke.hashCode ^ gaugeAngle.hashCode;
+      colorPattern.hashCode ^
+      sectionStroke.hashCode ^
+      gaugeAngle.hashCode ^
+      debugMode.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is GaugeChartSettings &&
       colorPattern == other.colorPattern &&
       sectionStroke == other.sectionStroke &&
-      gaugeAngle == other.gaugeAngle;
+      gaugeAngle == other.gaugeAngle &&
+      debugMode == other.debugMode;
 }
