@@ -32,7 +32,7 @@ class ColorListTile extends StatelessWidget {
           ),
         );
 
-        onChanged(result);
+        onChanged(result ?? Colors.transparent);
       },
       title: title,
       trailing: Container(

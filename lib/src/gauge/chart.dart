@@ -47,8 +47,9 @@ class _GaugeChartState extends State<GaugeChart>
       old = old.copyWith(data: old.data.sublist(0, widget.data.data.length));
     }
     if (old.data.length <= widget.data.data.length) {
-      for (var i = 0; i < widget.data.data.length - old.data.length; i++) {
-        old.data.add(0);
+      final oldDataLength = old.data.length;
+      for (var i = 0; i < widget.data.data.length - oldDataLength; i++) {
+        old = old.copyWith(data: [...old.data, 0]);
       }
     }
 
@@ -82,7 +83,7 @@ class _GaugeChartState extends State<GaugeChart>
 
   @override
   Widget build(BuildContext context) {
-    final oldData = getAdjustedOldData();
+    final _oldData = getAdjustedOldData();
 
     return AnimatedBuilder(
       animation: _valueAnimation,
@@ -92,7 +93,7 @@ class _GaugeChartState extends State<GaugeChart>
             widget.data,
             widget.style,
             widget.settings,
-            oldData,
+            _oldData,
             _valueAnimation.value,
           ),
           size: Size.infinite,

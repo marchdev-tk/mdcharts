@@ -273,7 +273,9 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
                 _style.add(
                   data.copyWith(
                     backgroundStyle: data.backgroundStyle.copyWith(
+                      allowNullBorderGradient: true,
                       borderColor: value,
+                      borderGradient: null,
                     ),
                   ),
                 );
@@ -300,6 +302,8 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
                 _style.add(
                   data.copyWith(
                     backgroundStyle: data.backgroundStyle.copyWith(
+                      allowNullBorderColor: true,
+                      borderColor: null,
                       borderGradient: LinearGradient(
                         colors: [
                           value,
@@ -320,6 +324,8 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
                 _style.add(
                   data.copyWith(
                     backgroundStyle: data.backgroundStyle.copyWith(
+                      allowNullBorderColor: true,
+                      borderColor: null,
                       borderGradient: LinearGradient(
                         colors: [
                           data.backgroundStyle.borderGradient?.colors.first ??

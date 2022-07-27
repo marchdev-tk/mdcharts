@@ -92,6 +92,8 @@ class GaugeChartBackgroundStyle {
   /// Gets a [Paint] for the border drawing.
   Paint getBorderPaint([Rect? bounds]) {
     assert(borderFilled);
+    assert(borderGradient == null && borderColor != null ||
+        borderGradient != null && borderColor == null);
 
     final paint = Paint()
       ..style = PaintingStyle.stroke
