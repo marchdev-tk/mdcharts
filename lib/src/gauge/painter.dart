@@ -43,10 +43,10 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Normalization method.
   ///
-  /// Converts provided [value] based on [data.total] into a percentage
+  /// Converts provided [value] based on [total] into a percentage
   /// proportion with valid values in inclusive range [0..1].
-  double normalize(double value) {
-    final normalizedValue = value / data.total;
+  double normalize(double value, double total) {
+    final normalizedValue = value / total;
     return normalizedValue.isNaN ? 0 : normalizedValue;
   }
 
@@ -57,12 +57,17 @@ class GaugeChartPainter extends CustomPainter {
   /// Converts [data.data] values based on [data.total] into a percentage
   /// proportion with valid values in inclusive range [0..1], so sum of the list
   /// values will be always `1`.
-  List<double> normalizedList(List<double> data) {
-    final values = data.map(normalize).toList();
+  List<double> normalizeList(GaugeChartData data) {
+    final values =
+        data.data.map((value) => normalize(value, data.total)).toList();
     final rest = 1 - values.sum;
 
     if (rest == 1) {
       return [1];
+    }
+
+    if (rest == 0) {
+      return values;
     }
 
     final index = values.indexOf(values.min);
@@ -203,8 +208,8 @@ class GaugeChartPainter extends CustomPainter {
     final innerRadius = radius -
         settings.sectionStroke +
         style.backgroundStyle.borderStroke * 2;
-    final normalizedData = normalizedList(data.data);
-    final normalizedOldData = normalizedList(oldData.data);
+    final normalizedData = normalizeList(data);
+    final normalizedOldData = normalizeList(oldData);
     final angleDiff = _endAngle - _startAngle;
     double startAngle = _startAngle;
 

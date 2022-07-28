@@ -37,31 +37,42 @@ class _GaugeChartState extends State<GaugeChart>
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
 
+  late GaugeChartData data;
   GaugeChartData? oldData;
 
-  GaugeChartData getAdjustedOldData() {
-    var old = oldData ??
-        widget.data.copyWith(data: List.filled(widget.data.data.length, 0));
+  void adjustDatas() {
+    var old = oldData ?? data.copyWith(data: List.filled(data.data.length, 0));
 
-    if (old.data.length >= widget.data.data.length) {
-      old = old.copyWith(data: old.data.sublist(0, widget.data.data.length));
+    if (old.data.length >= data.data.length) {
+      data = data.copyWith(
+        data: [
+          ...data.data,
+          ...List.filled(old.data.length - data.data.length, 0),
+        ],
+      );
     }
-    if (old.data.length <= widget.data.data.length) {
+    if (old.data.length <= data.data.length) {
       final oldDataLength = old.data.length;
-      for (var i = 0; i < widget.data.data.length - oldDataLength; i++) {
+      for (var i = 0; i < data.data.length - oldDataLength; i++) {
         old = old.copyWith(data: [...old.data, 0]);
       }
     }
 
-    return old;
+    oldData = old;
   }
 
   void startAnimation() {
+    if (data == oldData) {
+      return;
+    }
+
     _valueController.forward(from: 0);
   }
 
   @override
   void initState() {
+    data = widget.data;
+
     _valueController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -71,11 +82,13 @@ class _GaugeChartState extends State<GaugeChart>
       curve: Curves.easeInOut,
     ));
     startAnimation();
+
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant GaugeChart oldWidget) {
+    data = widget.data;
     oldData = oldWidget.data;
     startAnimation();
     super.didUpdateWidget(oldWidget);
@@ -83,17 +96,17 @@ class _GaugeChartState extends State<GaugeChart>
 
   @override
   Widget build(BuildContext context) {
-    final _oldData = getAdjustedOldData();
+    adjustDatas();
 
     return AnimatedBuilder(
       animation: _valueAnimation,
       builder: (context, _) {
         return CustomPaint(
           painter: GaugeChartPainter(
-            widget.data,
+            data,
             widget.style,
             widget.settings,
-            _oldData,
+            oldData!,
             _valueAnimation.value,
           ),
           size: Size.infinite,
