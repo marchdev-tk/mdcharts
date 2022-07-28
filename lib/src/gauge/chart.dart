@@ -17,6 +17,7 @@ class GaugeChart extends StatefulWidget {
     required this.data,
     this.style = const GaugeChartStyle(),
     this.settings = const GaugeChartSettings(),
+    this.onSelectionChanged,
   }) : super(key: key);
 
   /// Set of required (and optional) data to construct the line chart.
@@ -27,6 +28,9 @@ class GaugeChart extends StatefulWidget {
 
   /// Provides various settings for the line chart.
   final GaugeChartSettings settings;
+
+  /// Callbacks that reports that selected section index has changed.
+  final ValueChanged<int>? onSelectionChanged;
 
   @override
   State<GaugeChart> createState() => _GaugeChartState();
@@ -39,6 +43,8 @@ class _GaugeChartState extends State<GaugeChart>
 
   late GaugeChartData data;
   GaugeChartData? oldData;
+
+  int? prevSelectedIndex;
 
   void adjustDatas() {
     var old = oldData ?? data.copyWith(data: List.filled(data.data.length, 0));
@@ -72,6 +78,7 @@ class _GaugeChartState extends State<GaugeChart>
   @override
   void initState() {
     data = widget.data;
+    prevSelectedIndex = data.selectedIndex;
 
     _valueController = AnimationController(
       vsync: this,
@@ -90,6 +97,7 @@ class _GaugeChartState extends State<GaugeChart>
   void didUpdateWidget(covariant GaugeChart oldWidget) {
     data = widget.data;
     oldData = oldWidget.data;
+    prevSelectedIndex = data.selectedIndex;
     startAnimation();
     super.didUpdateWidget(oldWidget);
   }
@@ -108,6 +116,14 @@ class _GaugeChartState extends State<GaugeChart>
             widget.settings,
             oldData!,
             _valueAnimation.value,
+            (index) {
+              if (prevSelectedIndex == index) {
+                return;
+              }
+
+              widget.onSelectionChanged?.call(index);
+              prevSelectedIndex = index;
+            },
           ),
           size: Size.infinite,
         );

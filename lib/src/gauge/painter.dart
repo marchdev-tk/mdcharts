@@ -22,6 +22,7 @@ class GaugeChartPainter extends CustomPainter {
     this.settings,
     this.oldData,
     this.valueCoef,
+    this.onSelectionChanged,
   );
 
   /// Set of required (and optional) data to construct the gauge chart.
@@ -40,6 +41,12 @@ class GaugeChartPainter extends CustomPainter {
   /// Set of required (and optional) `BUT OLD` data to construct the gauge
   /// chart.
   final GaugeChartData oldData;
+
+  /// Callbacks that reports that selected section index has changed.
+  final ValueChanged<int> onSelectionChanged;
+
+  /// List of paths for hit tests.
+  final paths = <Path>[];
 
   /// Normalization method.
   ///
@@ -96,6 +103,19 @@ class GaugeChartPainter extends CustomPainter {
     }
 
     return colors[index];
+  }
+
+  /// Converts [HitTestBehavior] into a bool variable with corresponding state
+  /// that is used by [hitTest].
+  bool? get defualtHitTestResult {
+    switch (settings.behavior) {
+      case HitTestBehavior.deferToChild:
+        return null;
+      case HitTestBehavior.opaque:
+        return true;
+      case HitTestBehavior.translucent:
+        return false;
+    }
   }
 
   double _radius(Size size) => size.shortestSide / 2;
@@ -186,6 +206,8 @@ class GaugeChartPainter extends CustomPainter {
       path,
       style.backgroundStyle.backgroundPaint,
     );
+    // TODO: large borders are drawing outside of the path on the bottom side,
+    // need to figure out how to fix it.
     canvas.drawPath(
       borderPath,
       style.backgroundStyle.getBorderPaint(path.getBounds()),
@@ -200,6 +222,8 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Sections painter.
   void paintSections(Canvas canvas, Size size) {
+    paths.clear();
+
     if (data.data.isEmpty) {
       return;
     }
@@ -225,6 +249,7 @@ class GaugeChartPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
+      paths.add(path);
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),
@@ -234,10 +259,45 @@ class GaugeChartPainter extends CustomPainter {
     }
   }
 
+  /// Selected section painter.
+  void paintSelectedSection(Canvas canvas, Size size) {
+    if (data.selectedIndex == null) {
+      return;
+    }
+
+    // TODO
+
+    final i = data.selectedIndex!;
+    final radius = _radius(size) - style.backgroundStyle.borderStroke;
+    final innerRadius = radius -
+        settings.sectionStroke +
+        style.backgroundStyle.borderStroke * 2;
+    final normalizedData = normalizeList(data);
+    final normalizedOldData = normalizeList(oldData);
+    final angleDiff = _endAngle - _startAngle;
+    double startAngle = _startAngle;
+    final value = normalizedOldData[i] +
+        (normalizedData[i] - normalizedOldData[i]) * valueCoef;
+    final endAngle = startAngle + angleDiff * value;
+
+    final path = buildArc(
+      center: _centerPoint!,
+      radius: radius,
+      innerRadius: innerRadius,
+      startAngle: startAngle,
+      endAngle: endAngle,
+    );
+    canvas.drawPath(
+      path,
+      style.sectionStyle.sectionPaint..color = sectionColor(i),
+    );
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     paintBackground(canvas, size);
     paintSections(canvas, size);
+    paintSelectedSection(canvas, size);
   }
 
   @override
@@ -247,4 +307,25 @@ class GaugeChartPainter extends CustomPainter {
       settings != oldDelegate.settings ||
       oldData != oldDelegate.oldData ||
       valueCoef != oldDelegate.valueCoef;
+
+  @override
+  bool? hitTest(Offset position) {
+    if (!settings.selectionEnabled) {
+      return super.hitTest(position);
+    }
+
+    if (paths.isNotEmpty != true) {
+      return defualtHitTestResult;
+    }
+
+    for (var i = 0; i < data.data.length; i++) {
+      final contains = paths[i].contains(position);
+
+      if (contains) {
+        onSelectionChanged.call(i);
+      }
+    }
+
+    return defualtHitTestResult;
+  }
 }

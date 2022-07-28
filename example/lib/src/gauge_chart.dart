@@ -14,11 +14,19 @@ import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
-final _settings =
-    BehaviorSubject<GaugeChartSettings>.seeded(const GaugeChartSettings());
-final _style = BehaviorSubject<GaugeChartStyle>.seeded(const GaugeChartStyle());
+final _settings = BehaviorSubject<GaugeChartSettings>.seeded(
+  const GaugeChartSettings(colorPattern: [0, 1]),
+);
+final _style = BehaviorSubject<GaugeChartStyle>.seeded(
+  const GaugeChartStyle(
+    sectionStyle: GaugeChartSectionStyle(
+      colors: [Colors.blue, Colors.yellow],
+    ),
+  ),
+);
 final _data = BehaviorSubject<GaugeChartData>.seeded(
-    const GaugeChartData(data: [524, 306]));
+  const GaugeChartData(data: [524, 306]),
+);
 
 class GaugeChartExample extends StatelessWidget {
   const GaugeChartExample({Key? key}) : super(key: key);
@@ -166,6 +174,12 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               title: const Text('sectionStroke'),
             ),
             IntListTile(
+              value: data.selectedSectionStroke.toInt(),
+              onChanged: (value) => _settings
+                  .add(data.copyWith(selectedSectionStroke: value.toDouble())),
+              title: const Text('selectedSectionStroke'),
+            ),
+            IntListTile(
               value: data.gaugeAngle.toInt(),
               onChanged: (value) =>
                   _settings.add(data.copyWith(gaugeAngle: value.toDouble())),
@@ -176,6 +190,12 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               onChanged: (value) =>
                   _settings.add(data.copyWith(debugMode: value)),
               title: const Text('debugMode'),
+            ),
+            CheckboxListTile(
+              value: data.selectionEnabled,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(selectionEnabled: value)),
+              title: const Text('selectionEnabled'),
             ),
           ],
         );
