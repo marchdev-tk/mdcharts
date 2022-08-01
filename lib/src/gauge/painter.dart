@@ -141,7 +141,7 @@ class GaugeChartPainter extends CustomPainter {
     }
   }
 
-  double _radius(Size size) => size.shortestSide / 2;
+  double _radius(Size size) => size.width / 2;
 
   Point<double>? _centerPoint;
   Point<double> _centerPointFallback(Size size) =>

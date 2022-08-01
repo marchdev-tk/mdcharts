@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.2 - 01.08.2022
+
+* Fixed `GaugeChartBackgroundStyle.borderColor` default value.
+* Redo radius calculation, changed constraints from `Size.shortestSize` to `Size.width`.
+
 ## 4.0.0-dev.1 - 01.08.2022
 
 * Added `GaugeChart`.

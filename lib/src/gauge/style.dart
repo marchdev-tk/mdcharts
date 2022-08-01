@@ -46,7 +46,7 @@ class GaugeChartBackgroundStyle {
     this.color = const Color(0x33FFFFFF),
     this.shadowColor = const Color(0x40000000),
     this.shadowElevation = 4,
-    this.borderColor = const Color(0x3DFFFFFF),
+    this.borderColor,
     this.borderGradient,
     this.borderStroke = 1,
   });
