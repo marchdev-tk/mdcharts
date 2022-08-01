@@ -97,7 +97,6 @@ class _GaugeChartState extends State<GaugeChart>
   void didUpdateWidget(covariant GaugeChart oldWidget) {
     data = widget.data;
     oldData = oldWidget.data;
-    prevSelectedIndex = data.selectedIndex;
     startAnimation();
     super.didUpdateWidget(oldWidget);
   }

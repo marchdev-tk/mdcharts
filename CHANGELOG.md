@@ -1,8 +1,11 @@
 # Changelog
 
-## 4.0.0 - TBA
+## 4.0.0-dev.1 - 01.08.2022
 
 * Added `GaugeChart`.
+* Limitations:
+  * Large borders are drawing outside of the path on the bottom side;
+  * Only one chart could be on the screen.
 
 ## 3.1.1 - 21.07.2022
 

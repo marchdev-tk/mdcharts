@@ -63,8 +63,10 @@ class GaugeChartPainter extends CustomPainter {
   /// Callbacks that reports that selected section index has changed.
   final ValueChanged<int> onSelectionChanged;
 
+  // TODO: it is needed to make this field non-static in order to remove single
+  // chart limitation
   /// List of path holders for hit tests and selection.
-  final pathHolders = <_PathDataHolder>[];
+  static final pathHolders = <_PathDataHolder>[];
 
   /// Path of the background border to paint.
   Path? _borderPath;
@@ -238,7 +240,7 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Sections painter.
   void paintSections(Canvas canvas, Size size) {
-    // pathHolders.clear(); // ?
+    pathHolders.clear();
 
     if (data.data.isEmpty) {
       return;
@@ -370,7 +372,7 @@ class GaugeChartPainter extends CustomPainter {
       final contains = pathHolders[i].path.contains(position);
 
       if (contains) {
-        onSelectionChanged.call(i);
+        onSelectionChanged(i);
       }
     }
 

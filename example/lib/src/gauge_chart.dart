@@ -69,7 +69,10 @@ class _Chart extends StatelessWidget {
               builder: (context, data) {
                 return GaugeChart(
                   onSelectionChanged: (i) =>
-                      _data.add(data.requireData.copyWith(selectedIndex: i)),
+                      _data.add(data.requireData.copyWith(
+                    allowNullSelectedIndex: true,
+                    selectedIndex: i,
+                  )),
                   settings: settings.requireData,
                   style: style.requireData,
                   data: data.requireData,
