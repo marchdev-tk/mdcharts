@@ -123,6 +123,8 @@ class _GaugeChartState extends State<GaugeChart>
 
               widget.onSelectionChanged?.call(index);
               prevSelectedIndex = index;
+
+              startAnimation();
             },
           ),
           size: Size.infinite,

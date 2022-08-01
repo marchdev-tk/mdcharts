@@ -166,6 +166,8 @@ class GaugeChartSectionStyle {
   const GaugeChartSectionStyle({
     this.colors = const [Color(0x80FFFFFF)],
     this.selectedColor = const Color(0xFFFFFFFF),
+    this.selectedBorderColor = const Color(0xFFAAAAAA),
+    this.selectedBorderStroke = 4,
   });
 
   /// Colors of the gauge sections.
@@ -178,6 +180,16 @@ class GaugeChartSectionStyle {
   /// Defaults to `0xFFFFFFFF`.
   final Color selectedColor;
 
+  /// Color of the selected gauge section border.
+  ///
+  /// Defaults to `0xFFAAAAAA`.
+  final Color selectedBorderColor;
+
+  /// Stroke of the selected gauge section border.
+  ///
+  /// Defaults to `4`.
+  final double selectedBorderStroke;
+
   /// Gets a [Paint] for the gauge section.
   Paint get sectionPaint => Paint()..style = PaintingStyle.fill;
 
@@ -186,23 +198,38 @@ class GaugeChartSectionStyle {
     ..style = PaintingStyle.fill
     ..color = selectedColor;
 
+  /// Gets a [Paint] for the selected gauge section border.
+  Paint get selectedSectionBorderPaint => Paint()
+    ..style = PaintingStyle.fill
+    ..color = selectedBorderColor;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GaugeChartSectionStyle copyWith({
     List<Color>? colors,
     Color? selectedColor,
+    Color? selectedBorderColor,
+    double? selectedBorderStroke,
   }) =>
       GaugeChartSectionStyle(
         colors: colors ?? this.colors,
         selectedColor: selectedColor ?? this.selectedColor,
+        selectedBorderColor: selectedBorderColor ?? this.selectedBorderColor,
+        selectedBorderStroke: selectedBorderStroke ?? this.selectedBorderStroke,
       );
 
   @override
-  int get hashCode => colors.hashCode ^ selectedColor.hashCode;
+  int get hashCode =>
+      colors.hashCode ^
+      selectedColor.hashCode ^
+      selectedBorderColor.hashCode ^
+      selectedBorderStroke.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is GaugeChartSectionStyle &&
       colors == other.colors &&
-      selectedColor == other.selectedColor;
+      selectedColor == other.selectedColor &&
+      selectedBorderColor == other.selectedBorderColor &&
+      selectedBorderStroke == other.selectedBorderStroke;
 }

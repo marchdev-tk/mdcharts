@@ -13,6 +13,24 @@ import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
 
+/// Holder of the start/end angles of the path alongside with path itself.
+class _PathDataHolder {
+  const _PathDataHolder(
+    this.startAngle,
+    this.endAngle,
+    this.path,
+  );
+
+  /// Start andgle of the path.
+  final double startAngle;
+
+  /// End andgle of the path.
+  final double endAngle;
+
+  /// Path.
+  final Path path;
+}
+
 /// Main painter of the [GaugeChart].
 class GaugeChartPainter extends CustomPainter {
   /// Constructs an instance of [GaugeChartPainter].
@@ -45,8 +63,11 @@ class GaugeChartPainter extends CustomPainter {
   /// Callbacks that reports that selected section index has changed.
   final ValueChanged<int> onSelectionChanged;
 
-  /// List of paths for hit tests.
-  final paths = <Path>[];
+  /// List of path holders for hit tests and selection.
+  final pathHolders = <_PathDataHolder>[];
+
+  /// Path of the background border to paint.
+  Path? _borderPath;
 
   /// Normalization method.
   ///
@@ -130,7 +151,8 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Background painter.
   void paintBackground(Canvas canvas, Size size) {
-    final radius = _radius(size);
+    final radius = _radius(size) -
+        max(settings.selectedSectionStroke - settings.sectionStroke, 0);
     final innerRadius = radius - settings.sectionStroke;
     _centerPoint ??= _centerPointFallback(size);
 
@@ -167,7 +189,7 @@ class GaugeChartPainter extends CustomPainter {
       startAngle: _startAngle,
       endAngle: _endAngle,
     );
-    final borderPath = buildArc(
+    _borderPath = buildArc(
       center: _centerPoint!,
       innerRadius: innerRadius + style.backgroundStyle.borderStroke / 2,
       radius: radius - style.backgroundStyle.borderStroke / 2,
@@ -206,12 +228,6 @@ class GaugeChartPainter extends CustomPainter {
       path,
       style.backgroundStyle.backgroundPaint,
     );
-    // TODO: large borders are drawing outside of the path on the bottom side,
-    // need to figure out how to fix it.
-    canvas.drawPath(
-      borderPath,
-      style.backgroundStyle.getBorderPaint(path.getBounds()),
-    );
     canvas.drawShadow(
       path,
       style.backgroundStyle.shadowColor,
@@ -222,16 +238,15 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Sections painter.
   void paintSections(Canvas canvas, Size size) {
-    paths.clear();
+    // pathHolders.clear(); // ?
 
     if (data.data.isEmpty) {
       return;
     }
 
-    final radius = _radius(size) - style.backgroundStyle.borderStroke;
-    final innerRadius = radius -
-        settings.sectionStroke +
-        style.backgroundStyle.borderStroke * 2;
+    final radius = _radius(size) -
+        max(settings.selectedSectionStroke - settings.sectionStroke, 0);
+    final innerRadius = radius - settings.sectionStroke;
     final normalizedData = normalizeList(data);
     final normalizedOldData = normalizeList(oldData);
     final angleDiff = _endAngle - _startAngle;
@@ -249,7 +264,7 @@ class GaugeChartPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
-      paths.add(path);
+      pathHolders.add(_PathDataHolder(startAngle, endAngle, path));
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),
@@ -259,26 +274,44 @@ class GaugeChartPainter extends CustomPainter {
     }
   }
 
-  /// Selected section painter.
-  void paintSelectedSection(Canvas canvas, Size size) {
-    if (data.selectedIndex == null) {
+  // Background border painter.
+  void paintBackgroundBorder(Canvas canvas, Size size) {
+    if (_borderPath == null || style.backgroundStyle.borderStroke <= 0) {
       return;
     }
 
-    // TODO
+    // TODO: large borders are drawing outside of the path on the bottom side,
+    // need to figure out how to fix it.
+    canvas.drawPath(
+      _borderPath!,
+      style.backgroundStyle.getBorderPaint(_borderPath!.getBounds()),
+    );
+  }
 
-    final i = data.selectedIndex!;
-    final radius = _radius(size) - style.backgroundStyle.borderStroke;
+  /// Selected section painter.
+  void paintSelectedSection(Canvas canvas, Size size) {
+    if (data.selectedIndex == null && oldData.selectedIndex == null) {
+      return;
+    }
+
+    final i = data.selectedIndex ?? 0;
+    final oldI = oldData.selectedIndex ?? 0;
+    final hasI = data.selectedIndex != null;
+    final hasOldI = oldData.selectedIndex != null;
+
+    final radius = _radius(size);
     final innerRadius = radius -
-        settings.sectionStroke +
-        style.backgroundStyle.borderStroke * 2;
-    final normalizedData = normalizeList(data);
-    final normalizedOldData = normalizeList(oldData);
-    final angleDiff = _endAngle - _startAngle;
-    double startAngle = _startAngle;
-    final value = normalizedOldData[i] +
-        (normalizedData[i] - normalizedOldData[i]) * valueCoef;
-    final endAngle = startAngle + angleDiff * value;
+        settings.sectionStroke -
+        max(settings.selectedSectionStroke - settings.sectionStroke, 0);
+
+    final oldStartAngle = hasOldI ? pathHolders[oldI].startAngle : _startAngle;
+    final oldEndAngle = hasOldI ? pathHolders[oldI].endAngle : _startAngle;
+    final newStartAngle = hasI ? pathHolders[i].startAngle : _startAngle;
+    final newEndAngle = hasI ? pathHolders[i].endAngle : _startAngle;
+
+    final startAngle =
+        oldStartAngle + (newStartAngle - oldStartAngle) * valueCoef;
+    final endAngle = oldEndAngle + (newEndAngle - oldEndAngle) * valueCoef;
 
     final path = buildArc(
       center: _centerPoint!,
@@ -289,14 +322,29 @@ class GaugeChartPainter extends CustomPainter {
     );
     canvas.drawPath(
       path,
-      style.sectionStyle.sectionPaint..color = sectionColor(i),
+      style.sectionStyle.selectedSectionPaint,
     );
+
+    if (style.sectionStyle.selectedBorderStroke > 0) {
+      final borderPath = buildArc(
+        center: _centerPoint!,
+        radius: innerRadius + style.sectionStyle.selectedBorderStroke,
+        innerRadius: innerRadius,
+        startAngle: startAngle,
+        endAngle: endAngle,
+      );
+      canvas.drawPath(
+        borderPath,
+        style.sectionStyle.selectedSectionBorderPaint,
+      );
+    }
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     paintBackground(canvas, size);
     paintSections(canvas, size);
+    paintBackgroundBorder(canvas, size);
     paintSelectedSection(canvas, size);
   }
 
@@ -314,12 +362,12 @@ class GaugeChartPainter extends CustomPainter {
       return super.hitTest(position);
     }
 
-    if (paths.isNotEmpty != true) {
+    if (pathHolders.isEmpty) {
       return defualtHitTestResult;
     }
 
     for (var i = 0; i < data.data.length; i++) {
-      final contains = paths[i].contains(position);
+      final contains = pathHolders[i].path.contains(position);
 
       if (contains) {
         onSelectionChanged.call(i);
