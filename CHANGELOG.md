@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.3 - 02.08.2022
+
+* Adjusted `GaugeChartBackgroundStyle.borderFilled` check before painting border.
+* Removed ignoring of the taps over already selected section as it caused more issues than value.
+
 ## 4.0.0-dev.2 - 01.08.2022
 
 * Fixed `GaugeChartBackgroundStyle.borderColor` default value.
