@@ -44,8 +44,6 @@ class _GaugeChartState extends State<GaugeChart>
   late GaugeChartData data;
   GaugeChartData? oldData;
 
-  int? prevSelectedIndex;
-
   void adjustDatas() {
     var old = oldData ?? data.copyWith(data: List.filled(data.data.length, 0));
 
@@ -78,7 +76,6 @@ class _GaugeChartState extends State<GaugeChart>
   @override
   void initState() {
     data = widget.data;
-    prevSelectedIndex = data.selectedIndex;
 
     _valueController = AnimationController(
       vsync: this,
@@ -116,12 +113,7 @@ class _GaugeChartState extends State<GaugeChart>
             oldData!,
             _valueAnimation.value,
             (index) {
-              if (prevSelectedIndex == index) {
-                return;
-              }
-
               widget.onSelectionChanged?.call(index);
-              prevSelectedIndex = index;
 
               startAnimation();
             },
