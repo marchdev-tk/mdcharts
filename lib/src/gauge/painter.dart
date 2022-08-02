@@ -278,7 +278,7 @@ class GaugeChartPainter extends CustomPainter {
 
   // Background border painter.
   void paintBackgroundBorder(Canvas canvas, Size size) {
-    if (_borderPath == null || style.backgroundStyle.borderStroke <= 0) {
+    if (_borderPath == null || !style.backgroundStyle.borderFilled) {
       return;
     }
 
