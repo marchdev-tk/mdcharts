@@ -4,6 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../common.dart';
 import 'data.dart';
 import 'painter.dart';
 import 'settings.dart';
@@ -30,7 +31,7 @@ class GaugeChart extends StatefulWidget {
   final GaugeChartSettings settings;
 
   /// Callbacks that reports that selected section index has changed.
-  final ValueChanged<int>? onSelectionChanged;
+  final IndexedPredicate? onSelectionChanged;
 
   @override
   State<GaugeChart> createState() => _GaugeChartState();
@@ -113,9 +114,12 @@ class _GaugeChartState extends State<GaugeChart>
             oldData!,
             _valueAnimation.value,
             (index) {
-              widget.onSelectionChanged?.call(index);
+              final needAnimation =
+                  widget.onSelectionChanged?.call(index) ?? false;
 
-              startAnimation();
+              if (needAnimation) {
+                startAnimation();
+              }
             },
           ),
           size: Size.infinite,

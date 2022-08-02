@@ -11,3 +11,6 @@ typedef LabelBuilder<T> = String Function(T value);
 /// [key]. Also provides style in case if several styles could be used to build
 /// the label.
 typedef RichLabelBuilder<T> = TextSpan Function(T value, TextStyle style);
+
+/// Signature for indexed predicate.
+typedef IndexedPredicate = bool Function(int index);

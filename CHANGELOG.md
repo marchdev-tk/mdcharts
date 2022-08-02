@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-dev.4 - 02.08.2022
+
+* Changed `GaugeChart.onSelectionChanged` delegate type from `ValueChanged<int>` to `IndexedPredicate` which now allows to control whether animation is needed or not by passing `true/false` as a return value.
+
 ## 4.0.0-dev.3 - 02.08.2022
 
 * Adjusted `GaugeChartBackgroundStyle.borderFilled` check before painting border.
