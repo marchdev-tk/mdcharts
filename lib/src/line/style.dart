@@ -100,6 +100,8 @@ class LineChartGridStyle {
 
   /// Gets a [Paint] for the X axis grid drawing.
   Paint get xAxisPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = xAxisStroke
@@ -107,6 +109,8 @@ class LineChartGridStyle {
 
   /// Gets a [Paint] for the Y axis grid drawing.
   Paint get yAxisPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = yAxisStroke
@@ -195,6 +199,8 @@ class LineChartAxisStyle {
 
   /// Gets a [Paint] for the axis drawing.
   Paint get paint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeWidth = stroke
     ..color = color;
@@ -312,6 +318,8 @@ class LineChartLineStyle {
 
   /// Gets a [Paint] for the line drawing.
   Paint get linePaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = stroke
@@ -319,6 +327,8 @@ class LineChartLineStyle {
 
   /// Gets a [Paint] for the inactive line drawing.
   Paint get lineInactivePaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = stroke
@@ -326,6 +336,8 @@ class LineChartLineStyle {
 
   /// Gets a [Paint] for the drawing of the shadow beneath the line.
   Paint get shadowPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = shadowStroke
@@ -337,6 +349,8 @@ class LineChartLineStyle {
 
   /// Gets a [Paint] for the altitude line drawing.
   Paint get altitudeLinePaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = altitudeLineStroke
@@ -347,10 +361,13 @@ class LineChartLineStyle {
   Paint getFillPaint([Rect? bounds]) {
     assert(filled);
 
-    final gradientPaint = Paint()..style = PaintingStyle.fill;
+    final paint = Paint()
+      ..isAntiAlias = true
+      ..filterQuality = FilterQuality.medium
+      ..style = PaintingStyle.fill;
 
     if (fillColor != null) {
-      gradientPaint.color = fillColor!;
+      paint.color = fillColor!;
     }
     if (fillGradient != null) {
       assert(
@@ -358,10 +375,10 @@ class LineChartLineStyle {
         'bounds must not be null if fillGradient not null',
       );
 
-      gradientPaint.shader = fillGradient!.createShader(bounds!);
+      paint.shader = fillGradient!.createShader(bounds!);
     }
 
-    return gradientPaint;
+    return paint;
   }
 
   @override
@@ -464,6 +481,8 @@ class LineChartLimitStyle {
 
   /// Gets a [Paint] for the limit line drawing.
   Paint get linePaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = stroke
@@ -471,6 +490,8 @@ class LineChartLimitStyle {
 
   /// Gets a [Paint] for the limit label drawing.
   Paint get labelPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = labelColor;
 
@@ -681,16 +702,22 @@ class LineChartPointStyle {
 
   /// Gets a [Paint] for the drawing of the inner circle of the point.
   Paint get innerPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = innerColor;
 
   /// Gets a [Paint] for the drawing of the outer circle of the point.
   Paint get outerPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = outerColor;
 
   /// Gets a [Paint] for the drawing of the outer circle shadow of the point.
   Paint get shadowPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = shadowColor
     ..imageFilter = ImageFilter.blur(
@@ -701,6 +728,8 @@ class LineChartPointStyle {
 
   /// Gets a [Paint] for the drop line drawing.
   Paint get dropLinePaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = dropLineStroke
@@ -708,6 +737,8 @@ class LineChartPointStyle {
 
   /// Gets a [Paint] for the tooltip drawing.
   Paint get tooltipPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = tooltipColor;
 

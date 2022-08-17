@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.5 - 17.08.2022
+
+* Added explicitly anti-aliasing to all `Paint`'s.
+* Set `filterQuality` to `FilterQuality.medium` for all `Paint`'s.
+
 ## 4.0.0-dev.4 - 02.08.2022
 
 * Changed `GaugeChart.onSelectionChanged` delegate type from `ValueChanged<int>` to `IndexedPredicate` which now allows to control whether animation is needed or not by passing `true/false` as a return value.

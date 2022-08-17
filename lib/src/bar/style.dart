@@ -72,6 +72,8 @@ class BarChartGridStyle {
 
   /// Gets a [Paint] for the X axis grid drawing.
   Paint get paint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.butt
     ..strokeWidth = stroke
@@ -198,6 +200,8 @@ class BarChartAxisStyle {
 
   /// Gets a [Paint] for the axis drawing.
   Paint get paint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.stroke
     ..strokeWidth = stroke
     ..color = color;

@@ -157,6 +157,8 @@ class BarChartPainter extends CustomPainter {
             topRight: radius,
           ),
           Paint()
+            ..isAntiAlias = true
+            ..filterQuality = FilterQuality.medium
             ..style = PaintingStyle.fill
             ..color = colors[j],
         );
@@ -206,6 +208,8 @@ class BarChartPainter extends CustomPainter {
             topRight: radius,
           ),
           Paint()
+            ..isAntiAlias = true
+            ..filterQuality = FilterQuality.medium
             ..style = PaintingStyle.fill
             ..color = colors[j],
         );
@@ -255,6 +259,8 @@ class BarChartPainter extends CustomPainter {
             topRight: radius,
           ),
           Paint()
+            ..isAntiAlias = true
+            ..filterQuality = FilterQuality.medium
             ..style = PaintingStyle.fill
             ..color = colors[j],
         );

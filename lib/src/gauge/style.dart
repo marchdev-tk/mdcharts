@@ -87,6 +87,8 @@ class GaugeChartBackgroundStyle {
 
   /// Gets a [Paint] for the gauge background.
   Paint get backgroundPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = color;
 
@@ -97,6 +99,8 @@ class GaugeChartBackgroundStyle {
         borderGradient != null && borderColor == null);
 
     final paint = Paint()
+      ..isAntiAlias = true
+      ..filterQuality = FilterQuality.medium
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.square
       ..strokeWidth = borderStroke;
@@ -192,15 +196,22 @@ class GaugeChartSectionStyle {
   final double selectedBorderStroke;
 
   /// Gets a [Paint] for the gauge section.
-  Paint get sectionPaint => Paint()..style = PaintingStyle.fill;
+  Paint get sectionPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.fill;
 
   /// Gets a [Paint] for the selected gauge section.
   Paint get selectedSectionPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = selectedColor;
 
   /// Gets a [Paint] for the selected gauge section border.
   Paint get selectedSectionBorderPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill
     ..color = selectedBorderColor;
 

@@ -226,15 +226,15 @@ class GaugeChartPainter extends CustomPainter {
       );
     }
 
-    canvas.drawPath(
-      path,
-      style.backgroundStyle.backgroundPaint,
-    );
     canvas.drawShadow(
       path,
       style.backgroundStyle.shadowColor,
       style.backgroundStyle.shadowElevation,
       false,
+    );
+    canvas.drawPath(
+      path,
+      style.backgroundStyle.backgroundPaint,
     );
   }
 
