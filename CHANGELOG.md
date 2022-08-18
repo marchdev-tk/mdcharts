@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-dev.6 - 18.08.2022
+
+* Added blur for the edges of the `GaugeChart` to remove "sharpened" edges (possibly it is caused by flutter itself).
+
 ## 4.0.0-dev.5 - 17.08.2022
 
 * Added explicitly anti-aliasing to all `Paint`'s.
