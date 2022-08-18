@@ -333,6 +333,8 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
                       allowNullBorderColor: true,
                       borderColor: null,
                       borderGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: [
                           value,
                           data.backgroundStyle.borderGradient?.colors.last ??
@@ -355,6 +357,8 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
                       allowNullBorderColor: true,
                       borderColor: null,
                       borderGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: [
                           data.backgroundStyle.borderGradient?.colors.first ??
                               Colors.transparent,

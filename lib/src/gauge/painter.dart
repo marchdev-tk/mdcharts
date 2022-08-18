@@ -191,13 +191,15 @@ class GaugeChartPainter extends CustomPainter {
       startAngle: _startAngle,
       endAngle: _endAngle,
     );
-    _borderPath = buildArc(
-      center: _centerPoint!,
-      innerRadius: innerRadius + style.backgroundStyle.borderStroke / 2,
-      radius: radius - style.backgroundStyle.borderStroke / 2,
-      startAngle: _startAngle,
-      endAngle: _endAngle,
-    );
+    if (style.backgroundStyle.borderFilled) {
+      _borderPath = buildArc(
+        center: _centerPoint!,
+        innerRadius: innerRadius + style.backgroundStyle.borderStroke / 2,
+        radius: radius - style.backgroundStyle.borderStroke / 2,
+        startAngle: _startAngle,
+        endAngle: _endAngle,
+      );
+    }
 
     if (settings.debugMode) {
       canvas.drawPoints(
