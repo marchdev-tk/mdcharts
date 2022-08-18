@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.8 - 18.08.2022
+
+* Reverted previous change.
+* Mark custom paint of `GaugeChart` as complex.
+
 ## 4.0.0-dev.7 - 18.08.2022
 
 * Increased blur radius from 1px to 2px.

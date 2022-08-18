@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 
+const setupWidth = 315.0;
+
 class SetupScaffold extends StatefulWidget {
   const SetupScaffold({
     Key? key,
@@ -72,10 +74,10 @@ class _SetupScaffoldState extends State<SetupScaffold>
       children: [
         AnimatedPositioned(
           duration: kThemeAnimationDuration,
-          left: 0,
+          left: _collapsed ? -setupWidth : 0,
           top: 0,
           bottom: 0,
-          width: _collapsed ? 0 : 315,
+          width: setupWidth,
           child: _Setup(
             controller: _scrollController,
             children: widget.setupChildren,
@@ -83,7 +85,7 @@ class _SetupScaffoldState extends State<SetupScaffold>
         ),
         AnimatedPositioned(
           duration: kThemeAnimationDuration,
-          left: _collapsed ? 0 : 315,
+          left: _collapsed ? 0 : setupWidth,
           top: 0,
           right: 0,
           bottom: 0,
@@ -99,7 +101,7 @@ class _SetupScaffoldState extends State<SetupScaffold>
         ),
         AnimatedPositioned(
           duration: kThemeAnimationDuration,
-          left: _collapsed ? 0 : 315,
+          left: _collapsed ? 0 : setupWidth,
           top: 0,
           child: SafeArea(
             child: visibilityIcon,

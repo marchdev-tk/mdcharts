@@ -89,7 +89,7 @@ class GaugeChartBackgroundStyle {
   Paint get backgroundPaint => Paint()
     ..isAntiAlias = true
     ..filterQuality = FilterQuality.medium
-    ..maskFilter = const MaskFilter.blur(BlurStyle.inner, 2)
+    ..maskFilter = const MaskFilter.blur(BlurStyle.inner, 1)
     ..style = PaintingStyle.fill
     ..color = color;
 

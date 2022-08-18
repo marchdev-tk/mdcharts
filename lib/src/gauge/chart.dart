@@ -107,6 +107,7 @@ class _GaugeChartState extends State<GaugeChart>
       animation: _valueAnimation,
       builder: (context, _) {
         return CustomPaint(
+          isComplex: true,
           painter: GaugeChartPainter(
             data,
             widget.style,
