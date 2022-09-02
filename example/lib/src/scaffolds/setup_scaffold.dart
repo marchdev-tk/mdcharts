@@ -142,8 +142,8 @@ class _Setup extends StatelessWidget {
           color: Colors.grey[700],
           child: Scrollbar(
             controller: controller,
-            isAlwaysShown: true,
-            showTrackOnHover: true,
+            thumbVisibility: true,
+            trackVisibility: true,
             interactive: true,
             child: ListView(
               controller: controller,
