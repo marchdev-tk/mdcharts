@@ -6,7 +6,7 @@ issue_tracker: https://github.com/marchdev-tk/mdcharts/issues
 description: march.dev charts library. Provides highly customizable and configurable charts.
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -16,6 +16,7 @@ dependencies:
   
   cross_platform: ^3.0.1
   flinq: ^2.0.2
+  rxdart: ^0.27.5
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../common.dart';
 import '../utils.dart';
@@ -17,6 +20,7 @@ class BarChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.selectedPeriod,
     this.valueCoef,
   );
 
@@ -28,6 +32,9 @@ class BarChartPainter extends CustomPainter {
 
   /// Provides various settings for the bar chart.
   final BarChartSettings settings;
+
+  /// Selected period value stream.
+  final ValueStream<DateTime> selectedPeriod;
 
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
@@ -90,6 +97,10 @@ class BarChartPainter extends CustomPainter {
         barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
 
     final colors = List.of(style.barStyle.colors);
+    final selectedColors = List.of(style.barStyle.selectedColors ?? <Color>[]);
+    final borderColors = List.of(style.barStyle.borderColors ?? <Color>[]);
+    final selectedBorderColors =
+        List.of(style.barStyle.selectedBorderColors ?? <Color>[]);
 
     assert(
       colors.length == 1 || colors.length == barItemQuantity,
@@ -100,21 +111,90 @@ class BarChartPainter extends CustomPainter {
       colors.add(colors.first
           .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
     }
+    assert(
+      selectedColors.isEmpty ||
+          selectedColors.length == 1 ||
+          selectedColors.length == barItemQuantity,
+      'List of selected colors must be empty or contain either 1 color or '
+      'quantity that is equal to bar quantity in an item',
+    );
+    if (selectedColors.length == 1 && barItemQuantity > 1) {
+      selectedColors.add(selectedColors.first
+          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+    }
+    assert(
+      borderColors.isEmpty ||
+          borderColors.length == 1 ||
+          borderColors.length == barItemQuantity,
+      'List of border colors must be empty or contain either 1 color or '
+      'quantity that is equal to bar quantity in an item',
+    );
+    if (borderColors.length == 1 && barItemQuantity > 1) {
+      borderColors.add(borderColors.first
+          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+    }
+    assert(
+      selectedBorderColors.isEmpty ||
+          selectedBorderColors.length == 1 ||
+          selectedBorderColors.length == barItemQuantity,
+      'List of selected border colors must be empty or contain either 1 color '
+      'or quantity that is equal to bar quantity in an item',
+    );
+    if (selectedBorderColors.length == 1 && barItemQuantity > 1) {
+      selectedBorderColors.add(selectedBorderColors.first
+          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+    }
 
     switch (settings.alignment) {
       case BarAlignment.start:
-        _paintBarStart(canvas, size, barTopRadius, zeroBarTopRadius,
-            itemSpacing, itemWidth, barSpacing, barWidth, colors);
+        _paintBarStart(
+          canvas,
+          size,
+          barTopRadius,
+          zeroBarTopRadius,
+          itemSpacing,
+          itemWidth,
+          barSpacing,
+          barWidth,
+          colors,
+          selectedColors,
+          borderColors,
+          selectedBorderColors,
+        );
         break;
 
       case BarAlignment.center:
-        _paintBarCenter(canvas, size, barTopRadius, zeroBarTopRadius,
-            itemSpacing, itemWidth, barSpacing, barWidth, colors);
+        _paintBarCenter(
+          canvas,
+          size,
+          barTopRadius,
+          zeroBarTopRadius,
+          itemSpacing,
+          itemWidth,
+          barSpacing,
+          barWidth,
+          colors,
+          selectedColors,
+          borderColors,
+          selectedBorderColors,
+        );
         break;
 
       case BarAlignment.end:
-        _paintBarEnd(canvas, size, barTopRadius, zeroBarTopRadius, itemSpacing,
-            itemWidth, barSpacing, barWidth, colors);
+        _paintBarEnd(
+          canvas,
+          size,
+          barTopRadius,
+          zeroBarTopRadius,
+          itemSpacing,
+          itemWidth,
+          barSpacing,
+          barWidth,
+          colors,
+          selectedColors,
+          borderColors,
+          selectedBorderColors,
+        );
         break;
     }
   }
@@ -129,6 +209,9 @@ class BarChartPainter extends CustomPainter {
     double barSpacing,
     double barWidth,
     List<Color> colors,
+    List<Color> selectedColors,
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
   ) {
     for (var i = 0; i < data.data.length; i++) {
       final item = data.data.entries.elementAt(i);
@@ -147,21 +230,23 @@ class BarChartPainter extends CustomPainter {
         final barLeft = barWidth * j + barSpacing * j + itemOffset;
         final barRight = barWidth + barLeft;
 
-        canvas.drawRRect(
-          RRect.fromLTRBAndCorners(
-            barLeft,
-            top,
-            barRight,
-            size.height,
-            topLeft: radius,
-            topRight: radius,
-          ),
-          Paint()
-            ..isAntiAlias = true
-            ..filterQuality = FilterQuality.medium
-            ..style = PaintingStyle.fill
-            ..color = colors[j],
+        final rrect = RRect.fromLTRBAndCorners(
+          barLeft,
+          top,
+          barRight,
+          size.height,
+          topLeft: radius,
+          topRight: radius,
         );
+
+        _paintBarShadow(canvas, rrect, item.key);
+        canvas.drawRRect(
+          rrect,
+          style.barStyle.barPaint
+            ..color = _getBarColor(colors, selectedColors, item.key, j),
+        );
+        _paintBarBorder(
+            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
       }
     }
   }
@@ -176,6 +261,9 @@ class BarChartPainter extends CustomPainter {
     double barSpacing,
     double barWidth,
     List<Color> colors,
+    List<Color> selectedColors,
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
   ) {
     for (var i = 0; i < data.data.length; i++) {
       final item = data.data.entries.elementAt(i);
@@ -198,21 +286,23 @@ class BarChartPainter extends CustomPainter {
         final barLeft = barWidth * j + barSpacing * j + itemOffset;
         final barRight = barWidth + barLeft;
 
-        canvas.drawRRect(
-          RRect.fromLTRBAndCorners(
-            barLeft,
-            top,
-            barRight,
-            size.height,
-            topLeft: radius,
-            topRight: radius,
-          ),
-          Paint()
-            ..isAntiAlias = true
-            ..filterQuality = FilterQuality.medium
-            ..style = PaintingStyle.fill
-            ..color = colors[j],
+        final rrect = RRect.fromLTRBAndCorners(
+          barLeft,
+          top,
+          barRight,
+          size.height,
+          topLeft: radius,
+          topRight: radius,
         );
+
+        _paintBarShadow(canvas, rrect, item.key);
+        canvas.drawRRect(
+          rrect,
+          style.barStyle.barPaint
+            ..color = _getBarColor(colors, selectedColors, item.key, j),
+        );
+        _paintBarBorder(
+            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
       }
     }
   }
@@ -227,6 +317,9 @@ class BarChartPainter extends CustomPainter {
     double barSpacing,
     double barWidth,
     List<Color> colors,
+    List<Color> selectedColors,
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
   ) {
     for (var i = data.data.length - 1; i >= 0; i--) {
       final item = data.data.entries.elementAt(i);
@@ -249,22 +342,195 @@ class BarChartPainter extends CustomPainter {
             itemOffset;
         final barLeft = barRight - barWidth;
 
+        final rrect = RRect.fromLTRBAndCorners(
+          barLeft,
+          top,
+          barRight,
+          size.height,
+          topLeft: radius,
+          topRight: radius,
+        );
+
+        _paintBarShadow(canvas, rrect, item.key);
         canvas.drawRRect(
-          RRect.fromLTRBAndCorners(
-            barLeft,
-            top,
-            barRight,
-            size.height,
-            topLeft: radius,
-            topRight: radius,
+          rrect,
+          style.barStyle.barPaint
+            ..color = _getBarColor(colors, selectedColors, item.key, j),
+        );
+        _paintBarBorder(
+            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
+      }
+    }
+  }
+
+  Color _getBarColor(
+    List<Color> colors,
+    List<Color> selectedColors,
+    DateTime key,
+    int index,
+  ) {
+    return key == selectedPeriod.value && selectedColors.isNotEmpty
+        ? selectedColors[index]
+        : colors[index];
+  }
+
+  void _paintBarShadow(Canvas canvas, RRect rrect, DateTime key) {
+    if (!style.barStyle.canPaintShadow) {
+      return;
+    }
+
+    final color = key == selectedPeriod.value &&
+            style.barStyle.selectedShadowColor != null
+        ? style.barStyle.selectedShadowColor!
+        : style.barStyle.shadowColor ?? const Color(0x00FFFFFF);
+
+    final path = Path();
+    path.addRRect(rrect);
+    canvas.drawShadow(
+      path,
+      color,
+      style.barStyle.shadowElevation,
+      true,
+    );
+  }
+
+  void _paintBarBorder(
+    Canvas canvas,
+    RRect rrect,
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
+    DateTime key,
+    int index,
+  ) {
+    if (!style.barStyle.canPaintBorder) {
+      return;
+    }
+
+    final color = key == selectedPeriod.value && selectedBorderColors.isNotEmpty
+        ? selectedBorderColors[index]
+        : borderColors.isNotEmpty
+            ? borderColors[index]
+            : const Color(0x00FFFFFF);
+
+    final barStyle = style.barStyle;
+    final strokeBias = barStyle.borderStroke / 2;
+    final topRadius = data.data[key]![index] == 0
+        ? barStyle.zeroBarTopRadius
+        : barStyle.topRadius;
+
+    void drawLeft() {
+      canvas.drawLine(
+        Offset(rrect.left + strokeBias, rrect.top + topRadius),
+        Offset(rrect.left + strokeBias, rrect.bottom),
+        barStyle.barBorderPaint..color = color,
+      );
+    }
+
+    void drawTop() {
+      if (barStyle.width / 2 == topRadius) {
+        canvas.drawArc(
+          Rect.fromLTWH(
+            rrect.left + strokeBias,
+            rrect.top + strokeBias,
+            barStyle.width - barStyle.borderStroke,
+            barStyle.width - barStyle.borderStroke,
           ),
-          Paint()
-            ..isAntiAlias = true
-            ..filterQuality = FilterQuality.medium
-            ..style = PaintingStyle.fill
-            ..color = colors[j],
+          0,
+          -math.pi,
+          false,
+          barStyle.barBorderPaint..color = color,
+        );
+      } else {
+        final path = Path();
+        path.arcTo(
+          Rect.fromLTWH(
+            rrect.left + strokeBias,
+            rrect.top + strokeBias,
+            topRadius * 2 - barStyle.borderStroke,
+            topRadius * 2 - barStyle.borderStroke,
+          ),
+          math.pi,
+          math.pi / 2,
+          false,
+        );
+        path.relativeLineTo(
+          barStyle.width - topRadius * 2,
+          0,
+        );
+        path.addArc(
+          Rect.fromLTWH(
+            rrect.right + strokeBias - topRadius * 2,
+            rrect.top + strokeBias,
+            topRadius * 2 - barStyle.borderStroke,
+            topRadius * 2 - barStyle.borderStroke,
+          ),
+          0,
+          -math.pi / 2,
+        );
+        canvas.drawPath(
+          path,
+          barStyle.barBorderPaint..color = color,
         );
       }
+    }
+
+    void drawRight() {
+      canvas.drawLine(
+        Offset(rrect.right - strokeBias, rrect.top + topRadius),
+        Offset(rrect.right - strokeBias, rrect.bottom),
+        barStyle.barBorderPaint..color = color,
+      );
+    }
+
+    void drawBottom() {
+      canvas.drawLine(
+        Offset(rrect.left, rrect.bottom - strokeBias),
+        Offset(rrect.right, rrect.bottom - strokeBias),
+        barStyle.barBorderPaint..color = color,
+      );
+    }
+
+    void drawAll() {
+      canvas.drawRRect(
+        RRect.fromLTRBAndCorners(
+          rrect.left + strokeBias,
+          rrect.top + strokeBias,
+          rrect.right - strokeBias,
+          rrect.bottom - strokeBias,
+          topLeft: rrect.tlRadius,
+          topRight: rrect.trRadius,
+        ),
+        barStyle.barBorderPaint..color = color,
+      );
+    }
+
+    switch (barStyle.border) {
+      case BarBorder.left:
+        drawLeft();
+        break;
+      case BarBorder.top:
+        drawTop();
+        break;
+      case BarBorder.right:
+        drawRight();
+        break;
+      case BarBorder.bottom:
+        drawBottom();
+        break;
+      case BarBorder.horizontal:
+        drawLeft();
+        drawRight();
+        break;
+      case BarBorder.vertical:
+        drawTop();
+        drawBottom();
+        break;
+      case BarBorder.all:
+        drawAll();
+        break;
+
+      case BarBorder.none:
+      default:
     }
   }
 

@@ -54,6 +54,8 @@ class BarChartExample extends StatelessWidget {
         _AxisStyleSetupGroup(),
         SetupDivider(),
         _BarStyleSetupGroup(),
+        SetupDivider(),
+        _BardBorderSetupGroup(),
       ],
     );
   }
@@ -426,18 +428,17 @@ class _BarStyleSetupGroup extends StatelessWidget {
       builder: (context, style) {
         final data = style.requireData;
         final colorLength = _data.value.data.values.first.length;
-        final singleColor = data.barStyle.colors.length == 1;
 
         return SetupGroup(
           title: 'Bar Style',
           children: [
             for (var i = 0; i < colorLength; i++)
               ColorListTile(
-                value: singleColor
+                value: data.barStyle.colors.length == 1
                     ? data.barStyle.colors.first
                     : data.barStyle.colors[i],
                 onChanged: (value) {
-                  final colors = data.barStyle.colors.asMap();
+                  final colors = Map.of(data.barStyle.colors.asMap());
                   colors[i] = value;
 
                   _style.add(
@@ -449,6 +450,76 @@ class _BarStyleSetupGroup extends StatelessWidget {
                   );
                 },
                 title: Text('color ${i + 1}'),
+              ),
+            for (var i = 0; i < colorLength; i++)
+              ColorListTile(
+                value: data.barStyle.selectedColors == null
+                    ? Colors.transparent
+                    : i < data.barStyle.selectedColors!.length
+                        ? data.barStyle.selectedColors![i]
+                        : Colors.transparent,
+                onChanged: (value) {
+                  final colors = Map.of(
+                      data.barStyle.selectedColors?.asMap() ?? <int, Color>{});
+                  colors[i] = value;
+
+                  _style.add(
+                    data.copyWith(
+                      barStyle: data.barStyle.copyWith(
+                        allowNullSelectedColors: true,
+                        selectedColors: colors.values.toList(),
+                      ),
+                    ),
+                  );
+                },
+                title: Text('selectedColor ${i + 1}'),
+              ),
+            for (var i = 0; i < colorLength; i++)
+              ColorListTile(
+                value: data.barStyle.borderColors == null
+                    ? Colors.transparent
+                    : i < data.barStyle.borderColors!.length
+                        ? data.barStyle.borderColors![i]
+                        : Colors.transparent,
+                onChanged: (value) {
+                  final colors = Map.of(
+                      data.barStyle.borderColors?.asMap() ?? <int, Color>{});
+                  colors[i] = value;
+
+                  _style.add(
+                    data.copyWith(
+                      barStyle: data.barStyle.copyWith(
+                        allowNullBorderColors: true,
+                        borderColors: colors.values.toList(),
+                      ),
+                    ),
+                  );
+                },
+                title: Text('borderColors ${i + 1}'),
+              ),
+            for (var i = 0; i < colorLength; i++)
+              ColorListTile(
+                value: data.barStyle.selectedBorderColors == null
+                    ? Colors.transparent
+                    : i < data.barStyle.selectedBorderColors!.length
+                        ? data.barStyle.selectedBorderColors![i]
+                        : Colors.transparent,
+                onChanged: (value) {
+                  final colors = Map.of(
+                      data.barStyle.selectedBorderColors?.asMap() ??
+                          <int, Color>{});
+                  colors[i] = value;
+
+                  _style.add(
+                    data.copyWith(
+                      barStyle: data.barStyle.copyWith(
+                        allowNullSelectedBorderColors: true,
+                        selectedBorderColors: colors.values.toList(),
+                      ),
+                    ),
+                  );
+                },
+                title: Text('selectedBorderColors ${i + 1}'),
               ),
             IntListTile(
               value: data.barStyle.width.toInt(),
@@ -462,6 +533,19 @@ class _BarStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('width'),
+            ),
+            IntListTile(
+              value: data.barStyle.borderStroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    barStyle: data.barStyle.copyWith(
+                      borderStroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('borderStroke'),
             ),
             IntListTile(
               value: data.barStyle.zeroBarHeight.toInt(),
@@ -502,6 +586,82 @@ class _BarStyleSetupGroup extends StatelessWidget {
               },
               title: const Text('zeroBarTopRadius'),
             ),
+            ColorListTile(
+              value: data.barStyle.shadowColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    barStyle: data.barStyle.copyWith(
+                      shadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowColor'),
+            ),
+            ColorListTile(
+              value: data.barStyle.selectedShadowColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    barStyle: data.barStyle.copyWith(
+                      selectedShadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('selectedShadowColor'),
+            ),
+            IntListTile(
+              value: data.barStyle.shadowElevation.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    barStyle: data.barStyle.copyWith(
+                      shadowElevation: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowElevation'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BardBorderSetupGroup extends StatelessWidget {
+  const _BardBorderSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Bar Borders',
+          children: [
+            for (var i = 0; i < BarBorder.values.length; i++)
+              RadioListTile<BarBorder>(
+                controlAffinity: ListTileControlAffinity.leading,
+                groupValue: data.barStyle.border,
+                value: BarBorder.values[i],
+                onChanged: (value) {
+                  _style.add(
+                    data.copyWith(
+                      barStyle: data.barStyle.copyWith(
+                        border: value,
+                      ),
+                    ),
+                  );
+                },
+                title: Text(AxisDivisionEdges.values[i].name),
+              ),
           ],
         );
       },

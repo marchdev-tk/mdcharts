@@ -9,6 +9,35 @@ import 'package:flutter/painting.dart';
 
 import '../utils.dart';
 
+/// Axis division borders.
+enum BarBorder {
+  /// No border.
+  ///
+  /// Default option.
+  none,
+
+  /// Left border.
+  left,
+
+  /// Top border.
+  top,
+
+  /// Right border.
+  right,
+
+  /// Bottom border.
+  bottom,
+
+  /// [left] and [right] borders.
+  horizontal,
+
+  /// [top] and [bottom] borders.
+  vertical,
+
+  /// All borders.
+  all,
+}
+
 /// Contains various customization options for the [BarChart].
 class BarChartStyle {
   /// Constructs an instance of [BarChartStyle].
@@ -267,9 +296,17 @@ class BarChartBarStyle {
   const BarChartBarStyle({
     this.width = 32,
     this.colors = const [Color(0xFFFFFFFF)],
+    this.selectedColors,
+    this.borderColors,
+    this.selectedBorderColors,
+    this.border = BarBorder.none,
+    this.borderStroke = 0,
     this.zeroBarHeight = 2,
     this.topRadius = 6,
     this.zeroBarTopRadius = 2,
+    this.shadowColor,
+    this.selectedShadowColor,
+    this.shadowElevation = 0,
   });
 
   /// Width of the bar.
@@ -287,6 +324,69 @@ class BarChartBarStyle {
   ///
   /// Defaults to `[Color(0xFFFFFFFF)]`.
   final List<Color> colors;
+
+  /// List of selected bar colors.
+  ///
+  /// If provided, this colors will be used to paint selected bars, otherwise
+  /// [colors] will be used instead.
+  ///
+  /// **Please note**, that list of colors must contain either 1 color or
+  /// quantity that is equal to bar quantity in an item.
+  ///
+  /// If only 1 color is provided and bar quantity is greater than 1 - every
+  /// subsequent bar will be using base color with opacity.
+  ///
+  /// Defaults to `null`.
+  final List<Color>? selectedColors;
+
+  /// List of bar border colors.
+  ///
+  /// If provided, this colors will be used to paint border over the bars.
+  ///
+  /// **Please note**, that list of colors must contain either 1 color or
+  /// quantity that is equal to bar quantity in an item.
+  ///
+  /// If only 1 color is provided and bar quantity is greater than 1 - every
+  /// subsequent bar will be using base color with opacity.
+  ///
+  /// **Also note**, that this setting will be ignored if neither
+  /// [borderColors] nor [selectedBorderColors] nor [borderStroke] is given.
+  ///
+  /// Defaults to `null`.
+  final List<Color>? borderColors;
+
+  /// List of selected bar border colors.
+  ///
+  /// If provided, this colors will be used to paint border over the selected
+  /// bars.
+  ///
+  /// **Please note**, that list of colors must contain either 1 color or
+  /// quantity that is equal to bar quantity in an item.
+  ///
+  /// If only 1 color is provided and bar quantity is greater than 1 - every
+  /// subsequent bar will be using base color with opacity.
+  ///
+  /// **Also note**, that this setting will be ignored if neither
+  /// [borderColors] nor [selectedBorderColors] nor [borderStroke] is given.
+  ///
+  /// Defaults to `null`.
+  final List<Color>? selectedBorderColors;
+
+  /// Bars borders that should be painted.
+  ///
+  /// **Please note**, that this setting will be ignored if neither
+  /// [borderColors] nor [selectedBorderColors] nor [borderStroke] is given.
+  ///
+  /// Defaults to [BarBorder.none].
+  final BarBorder border;
+
+  /// Stroke of the border.
+  ///
+  /// **Please note**, that this setting will be ignored if neither
+  /// [borderColors] nor [selectedBorderColors] nor [borderStroke] is given.
+  ///
+  /// Defaults to [0].
+  final double borderStroke;
 
   /// Height of the zero bar.
   ///
@@ -306,40 +406,136 @@ class BarChartBarStyle {
   /// Defaults to `2`.
   final double zeroBarTopRadius;
 
+  /// Color of the shadow.
+  ///
+  /// **Please note**, that shadow will not be painted in case of absence
+  /// of [shadowColor] or [selectedShadowColor] and zero [shadowElevation].
+  ///
+  /// Defaults to `null`.
+  final Color? shadowColor;
+
+  /// Color of the selected bars shadow.
+  ///
+  /// **Please note**, that shadow will not be painted in case of absence
+  /// of [shadowColor] or [selectedShadowColor] and zero [shadowElevation].
+  ///
+  /// Defaults to `null`.
+  final Color? selectedShadowColor;
+
+  /// Elevation of the bar shadow.
+  ///
+  /// **Please note**, that shadow will not be painted in case of absence
+  /// of [shadowColor] or [selectedShadowColor] and zero [shadowElevation].
+  ///
+  /// Defaults to `0`.
+  final double shadowElevation;
+
   /// Whether zero bars are needed to be shown or not.
   bool get showZeroBars => zeroBarHeight > 0;
+
+  /// Whether bar shadow could to be painted or not.
+  bool get canPaintShadow =>
+      (shadowColor != null || selectedShadowColor != null) &&
+      shadowElevation > 0;
+
+  /// Whether bar border could to be painted or not.
+  bool get canPaintBorder =>
+      (borderColors != null || selectedBorderColors != null) &&
+      borderStroke > 0 &&
+      border != BarBorder.none;
+
+  /// Gets a [Paint] for the bar drawing.
+  Paint get barPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.fill;
+
+  /// Gets a [Paint] for the bar border drawing.
+  Paint get barBorderPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = borderStroke;
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartBarStyle copyWith({
+    bool allowNullSelectedColors = false,
+    bool allowNullBorderColors = false,
+    bool allowNullSelectedBorderColors = false,
+    bool allowNullShadowColor = false,
+    bool allowNullSelectedShadowColor = false,
     double? width,
     List<Color>? colors,
+    List<Color>? selectedColors,
+    List<Color>? borderColors,
+    List<Color>? selectedBorderColors,
+    BarBorder? border,
+    double? borderStroke,
     double? zeroBarHeight,
     double? topRadius,
     double? zeroBarTopRadius,
+    Color? shadowColor,
+    Color? selectedShadowColor,
+    double? shadowElevation,
   }) =>
       BarChartBarStyle(
         width: width ?? this.width,
         colors: colors ?? this.colors,
+        selectedColors: allowNullSelectedColors
+            ? selectedColors
+            : selectedColors ?? this.selectedColors,
+        borderColors: allowNullBorderColors
+            ? borderColors
+            : borderColors ?? this.borderColors,
+        selectedBorderColors: allowNullSelectedBorderColors
+            ? selectedBorderColors
+            : selectedBorderColors ?? this.selectedBorderColors,
+        border: border ?? this.border,
+        borderStroke: borderStroke ?? this.borderStroke,
         zeroBarHeight: zeroBarHeight ?? this.zeroBarHeight,
         topRadius: topRadius ?? this.topRadius,
         zeroBarTopRadius: zeroBarTopRadius ?? this.zeroBarTopRadius,
+        shadowColor: allowNullShadowColor
+            ? shadowColor
+            : shadowColor ?? this.shadowColor,
+        selectedShadowColor: allowNullSelectedShadowColor
+            ? selectedShadowColor
+            : selectedShadowColor ?? this.selectedShadowColor,
+        shadowElevation: shadowElevation ?? this.shadowElevation,
       );
 
   @override
   int get hashCode =>
       width.hashCode ^
       colors.hashCode ^
+      selectedColors.hashCode ^
+      borderColors.hashCode ^
+      selectedBorderColors.hashCode ^
+      border.hashCode ^
+      borderStroke.hashCode ^
       zeroBarHeight.hashCode ^
       topRadius.hashCode ^
-      zeroBarTopRadius.hashCode;
+      zeroBarTopRadius.hashCode ^
+      shadowColor.hashCode ^
+      selectedShadowColor.hashCode ^
+      shadowElevation.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is BarChartBarStyle &&
       width == other.width &&
       listEquals(colors, other.colors) &&
+      listEquals(selectedColors, other.selectedColors) &&
+      listEquals(borderColors, other.borderColors) &&
+      listEquals(selectedBorderColors, other.selectedBorderColors) &&
+      border == other.border &&
+      borderStroke == other.borderStroke &&
       zeroBarHeight == other.zeroBarHeight &&
       topRadius == other.topRadius &&
-      zeroBarTopRadius == other.zeroBarTopRadius;
+      zeroBarTopRadius == other.zeroBarTopRadius &&
+      shadowColor == other.shadowColor &&
+      selectedShadowColor == other.selectedShadowColor &&
+      shadowElevation == other.shadowElevation;
 }

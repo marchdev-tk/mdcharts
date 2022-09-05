@@ -11,13 +11,11 @@ class ColorListTile extends StatelessWidget {
     this.title,
     required this.value,
     required this.onChanged,
-    this.keyboardType = TextInputType.text,
   }) : super(key: key);
 
   final Widget? title;
   final Color value;
   final ValueChanged<Color> onChanged;
-  final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,6 @@ class ColorListTile extends StatelessWidget {
           builder: (context) => _Dialog(
             title: title,
             value: value,
-            keyboardType: keyboardType,
           ),
         );
 
@@ -49,12 +46,10 @@ class _Dialog extends StatefulWidget {
     Key? key,
     required this.title,
     required this.value,
-    required this.keyboardType,
   }) : super(key: key);
 
   final Widget? title;
   final Color value;
-  final TextInputType keyboardType;
 
   @override
   State<_Dialog> createState() => _DialogState();

@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'data.dart';
 import 'painter.dart';
@@ -48,7 +49,7 @@ class _BarChartState extends State<BarChart>
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
 
-  late StreamController<DateTime> _selectedPeriod;
+  late BehaviorSubject<DateTime> _selectedPeriod;
   StreamSubscription<DateTime>? _sub;
   BarChartData? _oldData;
 
@@ -242,7 +243,7 @@ class _BarChartState extends State<BarChart>
 
   @override
   void initState() {
-    _selectedPeriod = StreamController<DateTime>.broadcast();
+    _selectedPeriod = BehaviorSubject<DateTime>();
     _initSelectedPeriod();
     _initAnimation();
     _startAnimation();
@@ -315,6 +316,7 @@ class _BarChartState extends State<BarChart>
                   _oldData ?? widget.data,
                   widget.style,
                   widget.settings,
+                  _selectedPeriod,
                   valueCoef,
                 ),
                 size: Size.fromWidth(maxWidth),
