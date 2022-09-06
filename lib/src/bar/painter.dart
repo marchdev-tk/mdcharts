@@ -89,12 +89,29 @@ class BarChartPainter extends CustomPainter {
     final zeroBarTopRadius = Radius.circular(style.barStyle.zeroBarTopRadius);
 
     final barItemQuantity = data.data.values.first.length;
-    final barWidth = style.barStyle.width;
     final barSpacing = settings.barSpacing;
-    final itemSpacing = settings.itemSpacing;
+    var barWidth = style.barStyle.width;
+    var itemSpacing = settings.itemSpacing;
 
-    final itemWidth =
+    double _getItemWidth(double barWidth) =>
         barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
+
+    var itemWidth = _getItemWidth(barWidth);
+
+    if (settings.fit == BarFit.contain) {
+      double _getChartWidth(double itemWidth, double itemSpacing) =>
+          data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+
+      var chartWidth = _getChartWidth(itemWidth, itemSpacing);
+      final decreaseCoef = itemSpacing / barWidth;
+
+      while (chartWidth > size.width) {
+        barWidth -= 1;
+        itemSpacing -= decreaseCoef;
+        itemWidth = _getItemWidth(barWidth);
+        chartWidth = _getChartWidth(itemWidth, itemSpacing);
+      }
+    }
 
     final colors = List.of(style.barStyle.colors);
     final selectedColors = List.of(style.barStyle.selectedColors ?? <Color>[]);
@@ -554,6 +571,7 @@ class BarChartGridPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.onYAxisLabelSizeCalculated,
   );
 
   /// Set of required (and optional) data to construct the bar chart.
@@ -564,6 +582,9 @@ class BarChartGridPainter extends CustomPainter {
 
   /// Provides various settings for the bar chart.
   final BarChartSettings settings;
+
+  /// Callback that notifies that Y axis label size successfuly calculated.
+  final ValueChanged<double> onYAxisLabelSizeCalculated;
 
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
   /// [settings.yAxisDivisions] with "beautiful" integer chunks.
@@ -585,6 +606,7 @@ class BarChartGridPainter extends CustomPainter {
       return;
     }
 
+    var maxLabelWidth = .0;
     final yDivisions = settings.yAxisDivisions + 1;
     final heightFraction = size.height / yDivisions;
     final hasTop = settings.axisDivisionEdges == AxisDivisionEdges.all ||
@@ -617,11 +639,18 @@ class BarChartGridPainter extends CustomPainter {
         ),
       );
 
+      if (settings.yAxisLayout == YAxisLayout.displace &&
+          maxLabelWidth < textPainter.size.width) {
+        maxLabelWidth = textPainter.size.width;
+      }
+
       textPainter.paint(
         canvas,
         Offset(0, heightFraction * i + style.gridStyle.paint.strokeWidth),
       );
     }
+
+    onYAxisLabelSizeCalculated(maxLabelWidth);
   }
 
   @override

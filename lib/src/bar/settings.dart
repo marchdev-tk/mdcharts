@@ -19,6 +19,31 @@ enum BarAlignment {
   end,
 }
 
+/// How the bars should be inscribed into painting zone.
+enum BarFit {
+  /// Align the bars within the target scrollable box.
+  ///
+  /// Bars will not be resized.
+  ///
+  /// This is default option.
+  none,
+
+  /// As large as possible while still containing the bars within the
+  /// target box.
+  contain,
+}
+
+/// How Y axis labels should be laid out.
+enum YAxisLayout {
+  /// Y axis label will be pained over the bars.
+  ///
+  /// This is default option.
+  overlay,
+
+  /// Y axis labels will displace bar drawing zone.
+  displace,
+}
+
 /// Set of settings of the [BarChart].
 class BarChartSettings {
   /// Constructs an instance of [BarChartSettings].
@@ -28,12 +53,15 @@ class BarChartSettings {
     this.showAxisX = true,
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
+    this.yAxisLayout = YAxisLayout.overlay,
+    this.yAxisLabelSpacing = 0,
     this.barSpacing = 0,
     this.itemSpacing = 12,
     this.showSelection = true,
     this.duration = const Duration(milliseconds: 400),
     this.alignment = BarAlignment.end,
     this.reverse = false,
+    this.fit = BarFit.none,
   });
 
   /// Constructs an instance of [BarChartSettings] without grids.
@@ -41,12 +69,15 @@ class BarChartSettings {
     this.showAxisX = true,
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
+    this.yAxisLayout = YAxisLayout.overlay,
+    this.yAxisLabelSpacing = 0,
     this.barSpacing = 0,
     this.itemSpacing = 12,
     this.showSelection = true,
     this.duration = const Duration(milliseconds: 400),
     this.alignment = BarAlignment.end,
     this.reverse = false,
+    this.fit = BarFit.none,
   })  : yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
 
@@ -81,6 +112,19 @@ class BarChartSettings {
   ///
   /// Defaults to `true`.
   final bool showAxisYLabels;
+
+  /// Layout type of the Y axis labels.
+  ///
+  /// Defaults to [YAxisLayout.overlay].
+  final YAxisLayout yAxisLayout;
+
+  /// Spacing between the Y axis labels and chart itself.
+  ///
+  /// **Please note**, that this setting affects spacing only in case of
+  /// [yAxisLayout] is set to [YAxisLayout.displace], otherwise it does nothing.
+  ///
+  /// Defaults to `0`.
+  final double yAxisLabelSpacing;
 
   /// Spacing between bars in one item.
   ///
@@ -123,6 +167,11 @@ class BarChartSettings {
   /// Defaults to `false`.
   final bool reverse;
 
+  /// Insription type of the bars within target box (painting zone).
+  ///
+  /// Defaults to [BarFit.none].
+  final BarFit fit;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartSettings copyWith({
@@ -131,12 +180,15 @@ class BarChartSettings {
     bool? showAxisX,
     bool? showAxisXLabels,
     bool? showAxisYLabels,
+    YAxisLayout? yAxisLayout,
+    double? yAxisLabelSpacing,
     double? barSpacing,
     double? itemSpacing,
     bool? showSelection,
     Duration? duration,
     BarAlignment? alignment,
     bool? reverse,
+    BarFit? fit,
   }) =>
       BarChartSettings(
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
@@ -144,12 +196,15 @@ class BarChartSettings {
         showAxisX: showAxisX ?? this.showAxisX,
         showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
         showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
+        yAxisLayout: yAxisLayout ?? this.yAxisLayout,
+        yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
         barSpacing: barSpacing ?? this.barSpacing,
         itemSpacing: itemSpacing ?? this.itemSpacing,
         showSelection: showSelection ?? this.showSelection,
         duration: duration ?? this.duration,
         alignment: alignment ?? this.alignment,
         reverse: reverse ?? this.reverse,
+        fit: fit ?? this.fit,
       );
 
   @override
@@ -159,12 +214,15 @@ class BarChartSettings {
       showAxisX.hashCode ^
       showAxisXLabels.hashCode ^
       showAxisYLabels.hashCode ^
+      yAxisLayout.hashCode ^
+      yAxisLabelSpacing.hashCode ^
       barSpacing.hashCode ^
       itemSpacing.hashCode ^
       showSelection.hashCode ^
       duration.hashCode ^
       alignment.hashCode ^
-      reverse.hashCode;
+      reverse.hashCode ^
+      fit.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -174,10 +232,13 @@ class BarChartSettings {
       showAxisX == other.showAxisX &&
       showAxisXLabels == other.showAxisXLabels &&
       showAxisYLabels == other.showAxisYLabels &&
+      yAxisLayout == other.yAxisLayout &&
+      yAxisLabelSpacing == other.yAxisLabelSpacing &&
       barSpacing == other.barSpacing &&
       itemSpacing == other.itemSpacing &&
       showSelection == other.showSelection &&
       duration == other.duration &&
       alignment == other.alignment &&
-      reverse == other.reverse;
+      reverse == other.reverse &&
+      fit == other.fit;
 }

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../common.dart';
 import 'data.dart';
 import 'painter.dart';
 import 'settings.dart';
@@ -50,6 +51,7 @@ class _BarChartState extends State<BarChart>
   late Animation<double> _valueAnimation;
 
   late BehaviorSubject<DateTime> _selectedPeriod;
+  late BehaviorSubject<double> _yAxisLabelWidth;
   StreamSubscription<DateTime>? _sub;
   BarChartData? _oldData;
 
@@ -64,10 +66,10 @@ class _BarChartState extends State<BarChart>
     }
   }
 
-  double _getItemWidth() {
+  double _getItemWidth([double? predefinedBarWidth]) {
     final canDraw = widget.data.canDraw;
     final barItemQuantity = canDraw ? widget.data.data.values.first.length : 0;
-    final barWidth = widget.style.barStyle.width;
+    final barWidth = predefinedBarWidth ?? widget.style.barStyle.width;
     final barSpacing = widget.settings.barSpacing;
 
     final itemWidth =
@@ -82,6 +84,10 @@ class _BarChartState extends State<BarChart>
 
     final itemWidth = _getItemWidth();
     final totalWidth = itemLength * (itemSpacing + itemWidth) - itemSpacing;
+
+    if (widget.settings.fit == BarFit.contain) {
+      return totalWidth;
+    }
 
     return math.max(maxWidth, totalWidth);
   }
@@ -244,6 +250,7 @@ class _BarChartState extends State<BarChart>
   @override
   void initState() {
     _selectedPeriod = BehaviorSubject<DateTime>();
+    _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
     _initSelectedPeriod();
     _initAnimation();
     _startAnimation();
@@ -273,6 +280,7 @@ class _BarChartState extends State<BarChart>
         widget.data,
         widget.style,
         widget.settings,
+        _yAxisLabelWidth.add,
       ),
       size: Size.infinite,
     );
@@ -299,11 +307,13 @@ class _BarChartState extends State<BarChart>
       );
     }
 
+    var maxVisibleContentWidth = .0;
+    var maxWidth = .0;
     final content = LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = _getChartWidth(
-          constraints.maxWidth - (widget.padding?.horizontal ?? 0),
-        );
+        maxVisibleContentWidth =
+            constraints.maxWidth - (widget.padding?.horizontal ?? 0);
+        maxWidth = _getChartWidth(maxVisibleContentWidth);
 
         final chart = GestureDetector(
           onTapUp: (details) => _handleTapUp(details, maxWidth),
@@ -325,9 +335,28 @@ class _BarChartState extends State<BarChart>
           ),
         );
 
-        Widget child;
+        Widget chartContent;
         if (widget.settings.showAxisXLabels) {
-          final maxItemWidth = _getItemWidth();
+          var barWidth = widget.style.barStyle.width;
+          var itemSpacing = widget.settings.itemSpacing;
+          var maxItemWidth = _getItemWidth();
+
+          if (widget.settings.fit == BarFit.contain) {
+            double _getChartWidth(double itemWidth, double itemSpacing) =>
+                widget.data.data.length * (itemSpacing + itemWidth) -
+                itemSpacing;
+
+            var chartWidth = _getChartWidth(maxItemWidth, itemSpacing);
+            final decreaseCoef = itemSpacing / barWidth;
+
+            while (chartWidth > maxVisibleContentWidth) {
+              barWidth -= 1;
+              itemSpacing -= decreaseCoef;
+              maxItemWidth = _getItemWidth(barWidth);
+              chartWidth = _getChartWidth(maxItemWidth, itemSpacing);
+            }
+          }
+
           final xAxisLabels = Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -348,12 +377,12 @@ class _BarChartState extends State<BarChart>
                   selectedPeriod: _selectedPeriod,
                 ),
                 if (i != widget.data.data.length - 1)
-                  SizedBox(width: widget.settings.itemSpacing),
+                  SizedBox(width: itemSpacing),
               ],
             ],
           );
 
-          child = Column(
+          chartContent = Column(
             crossAxisAlignment: _convertAlignment(widget.settings.alignment),
             children: [
               Expanded(child: chart),
@@ -361,22 +390,72 @@ class _BarChartState extends State<BarChart>
             ],
           );
         } else {
-          child = chart;
+          chartContent = chart;
         }
 
-        return SingleChildScrollView(
-          reverse: widget.settings.reverse,
-          scrollDirection: Axis.horizontal,
-          padding: widget.padding,
-          child: child,
+        final builder = StreamBuilder<double>(
+          stream: _yAxisLabelWidth.distinct(),
+          initialData: _yAxisLabelWidth.value,
+          builder: (context, snapshot) {
+            final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
+                ? widget.settings.yAxisLabelSpacing
+                : .0;
+            final extraEmptySpace =
+                math.max(maxVisibleContentWidth - maxWidth, .0);
+            final inset =
+                math.max(extraEmptySpace, snapshot.requireData + spacing);
+
+            // TODO: fix padding if [YAxisLayout.displace] is set, and if
+            // [BarAlignment] is set to [BarAlignment.start] or
+            // [BarAlignment.center]
+            EdgeInsets padding;
+            switch (widget.settings.alignment) {
+              case BarAlignment.start:
+                padding = EdgeInsets.only(right: inset);
+                break;
+              case BarAlignment.center:
+                padding = EdgeInsets.symmetric(horizontal: inset / 2);
+                break;
+              case BarAlignment.end:
+                padding = EdgeInsets.only(left: inset);
+                break;
+            }
+
+            return Padding(
+              padding: padding,
+              child: chartContent,
+            );
+          },
         );
+
+        Widget child;
+        switch (widget.settings.fit) {
+          case BarFit.contain:
+            child = builder;
+            break;
+
+          case BarFit.none:
+          default:
+            child = ScrollConfiguration(
+              behavior: AdaptiveScrollBehavior(),
+              child: SingleChildScrollView(
+                reverse: widget.settings.reverse,
+                scrollDirection: Axis.horizontal,
+                padding: widget.padding,
+                child: builder,
+              ),
+            );
+            break;
+        }
+
+        return child;
       },
     );
 
     return Stack(
       clipBehavior: Clip.hardEdge,
       children: [
-        grid,
+        Positioned.fill(child: grid),
         content,
       ],
     );
@@ -386,6 +465,7 @@ class _BarChartState extends State<BarChart>
   void dispose() {
     _sub?.cancel();
     _selectedPeriod.close();
+    _yAxisLabelWidth.close();
     _valueController.dispose();
     super.dispose();
   }

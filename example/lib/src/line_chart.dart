@@ -25,18 +25,18 @@ final _data = BehaviorSubject<LineChartData>.seeded(LineChartData(
     DateTime(2022, 7, 04): -1185,
     DateTime(2022, 7, 05): -700,
     DateTime(2022, 7, 06): -700,
-    DateTime(2022, 7, 07): -960.0,
-    DateTime(2022, 7, 08): -1652.0,
-    DateTime(2022, 7, 09): -2593.0,
-    DateTime(2022, 7, 10): -690.0,
-    DateTime(2022, 7, 11): -139.0,
-    DateTime(2022, 7, 12): -55.0,
-    DateTime(2022, 7, 13): 398.0,
-    DateTime(2022, 7, 14): 742.0,
-    DateTime(2022, 7, 15): 681.0,
-    DateTime(2022, 7, 16): 711.0,
-    DateTime(2022, 7, 17): 127.0,
-    DateTime(2022, 7, 18): 110.0,
+    DateTime(2022, 7, 07): -960,
+    DateTime(2022, 7, 08): -1652,
+    DateTime(2022, 7, 09): -2593,
+    DateTime(2022, 7, 10): -690,
+    DateTime(2022, 7, 11): -139,
+    DateTime(2022, 7, 12): -55,
+    DateTime(2022, 7, 13): 398,
+    DateTime(2022, 7, 14): 742,
+    DateTime(2022, 7, 15): 681,
+    DateTime(2022, 7, 16): 711,
+    DateTime(2022, 7, 17): 127,
+    DateTime(2022, 7, 18): 110,
     DateTime(2022, 7, 19): 0,
     DateTime(2022, 7, 20): 100,
     DateTime(2022, 7, 21): 400,
@@ -250,7 +250,7 @@ class _GridTypeSetupGroup extends StatelessWidget {
       initialData: _data.value,
       builder: (context, data) {
         return SetupGroup(
-          title: 'Grid Type',
+          title: '└─ Grid Type',
           children: [
             for (var i = 0; i < LineChartGridType.values.length; i++)
               RadioListTile<LineChartGridType>(
@@ -278,7 +278,7 @@ class _DataTypeSetupGroup extends StatelessWidget {
       initialData: _data.value,
       builder: (context, data) {
         return SetupGroup(
-          title: 'Grid Type',
+          title: '└─ Grid Type',
           children: [
             for (var i = 0; i < LineChartDataType.values.length; i++)
               RadioListTile<LineChartDataType>(
@@ -399,7 +399,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
         final data = settings.requireData;
 
         return SetupGroup(
-          title: 'Axis Division Edges',
+          title: '└─ Axis Division Edges',
           children: [
             for (var i = 0; i < AxisDivisionEdges.values.length; i++)
               RadioListTile<AxisDivisionEdges>(
@@ -429,7 +429,7 @@ class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
         final data = settings.requireData;
 
         return SetupGroup(
-          title: 'Limit Label Snap Position',
+          title: '└─ Limit Label Snap Position',
           children: [
             for (var i = 0; i < LimitLabelSnapPosition.values.length; i++)
               RadioListTile<LimitLabelSnapPosition>(

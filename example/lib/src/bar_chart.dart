@@ -47,6 +47,10 @@ class BarChartExample extends StatelessWidget {
         SetupDivider(),
         _BarAlignmentSetupGroup(),
         SetupDivider(),
+        _BarFitSetupGroup(),
+        SetupDivider(),
+        _YAxisLayoutSetupGroup(),
+        SetupDivider(),
         _AxisDivisionsEdgesSetupGroup(),
         SetupDivider(),
         _GridStyleSetupGroup(),
@@ -214,6 +218,14 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               },
               title: const Text('itemSpacing'),
             ),
+            IntListTile(
+              value: data.yAxisLabelSpacing.toInt(),
+              onChanged: (value) {
+                final doubleValue = value.toDouble();
+                _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
+              },
+              title: const Text('yAxisLabelSpacing'),
+            ),
           ],
         );
       },
@@ -233,7 +245,7 @@ class _BarAlignmentSetupGroup extends StatelessWidget {
         final data = settings.requireData;
 
         return SetupGroup(
-          title: 'Bar Alignment',
+          title: '└─ Bar Alignment',
           children: [
             for (var i = 0; i < BarAlignment.values.length; i++)
               RadioListTile<BarAlignment>(
@@ -243,6 +255,65 @@ class _BarAlignmentSetupGroup extends StatelessWidget {
                 onChanged: (value) =>
                     _settings.add(data.copyWith(alignment: value)),
                 title: Text(BarAlignment.values[i].name),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BarFitSetupGroup extends StatelessWidget {
+  const _BarFitSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Bar Fit',
+          children: [
+            for (var i = 0; i < BarFit.values.length; i++)
+              RadioListTile<BarFit>(
+                controlAffinity: ListTileControlAffinity.leading,
+                groupValue: data.fit,
+                value: BarFit.values[i],
+                onChanged: (value) => _settings.add(data.copyWith(fit: value)),
+                title: Text(BarFit.values[i].name),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _YAxisLayoutSetupGroup extends StatelessWidget {
+  const _YAxisLayoutSetupGroup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Y Axis Layout',
+          children: [
+            for (var i = 0; i < YAxisLayout.values.length; i++)
+              RadioListTile<YAxisLayout>(
+                controlAffinity: ListTileControlAffinity.leading,
+                groupValue: data.yAxisLayout,
+                value: YAxisLayout.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(yAxisLayout: value)),
+                title: Text(YAxisLayout.values[i].name),
               ),
           ],
         );
@@ -263,7 +334,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
         final data = settings.requireData;
 
         return SetupGroup(
-          title: 'Axis Division Edges',
+          title: '└─ Axis Division Edges',
           children: [
             for (var i = 0; i < AxisDivisionEdges.values.length; i++)
               RadioListTile<AxisDivisionEdges>(
@@ -644,7 +715,7 @@ class _BardBorderSetupGroup extends StatelessWidget {
         final data = style.requireData;
 
         return SetupGroup(
-          title: 'Bar Borders',
+          title: '└─ Bar Borders',
           children: [
             for (var i = 0; i < BarBorder.values.length; i++)
               RadioListTile<BarBorder>(
