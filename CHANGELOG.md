@@ -1,11 +1,13 @@
 # Changelog
 
-## 4.0.0-dev.9 - 06.09.2022
+## 4.0.0-dev.9 - 07.09.2022
 
 * Changes of the `BarChart`:
   * Added separate colors for selected bars.
   * Added bar border customizations.
   * Added shadow customizations.
+  * Added Y axis label layout customizations.
+  * Added bar fitting customizations.
 
 ## 4.0.0-dev.8 - 18.08.2022
 
