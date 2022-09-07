@@ -108,12 +108,15 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
 * `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
+* `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
+* `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
 * `barSpacing` - spacing between bars in one item, defaults to `0`.
 * `itemSpacing` - spacing between group of bars, defaults to `12`.
 * `showSelection` - whether to show selection of the items or not, defaults to `true`.
-* `duration` - the length of time animation should last.
-* `alignment` - alignment of the bars within chart.
-* `reverse` - whether the scroll view scrolls in the reading direction.
+* `duration` - the length of time animation should last, defaults to `400 milliseconds`.
+* `alignment` - alignment of the bars within chart, defaults to `BarAlignment.end`.
+* `reverse` - whether the scroll view scrolls in the reading direction, defaults to `false`.
+* `fit` - insription type of the bars within target box (painting zone), defaults to `BarFit.none`.
 
 #### Style
 
