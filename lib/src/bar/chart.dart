@@ -389,6 +389,10 @@ class _BarChartState extends State<BarChart>
 
     switch (widget.settings.fit) {
       case BarFit.contain:
+        content = Padding(
+          padding: widget.padding ?? EdgeInsets.zero,
+          child: content,
+        );
         break;
 
       case BarFit.none:
