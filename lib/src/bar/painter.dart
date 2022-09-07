@@ -260,7 +260,14 @@ class BarChartPainter extends CustomPainter {
         canvas.drawRRect(
           rrect,
           style.barStyle.barPaint
-            ..color = _getBarColor(colors, selectedColors, item.key, j),
+            ..color = _getBarColor(
+              colors,
+              selectedColors,
+              borderColors,
+              selectedBorderColors,
+              item.key,
+              j,
+            ),
         );
         _paintBarBorder(
             canvas, rrect, borderColors, selectedBorderColors, item.key, j);
@@ -316,7 +323,14 @@ class BarChartPainter extends CustomPainter {
         canvas.drawRRect(
           rrect,
           style.barStyle.barPaint
-            ..color = _getBarColor(colors, selectedColors, item.key, j),
+            ..color = _getBarColor(
+              colors,
+              selectedColors,
+              borderColors,
+              selectedBorderColors,
+              item.key,
+              j,
+            ),
         );
         _paintBarBorder(
             canvas, rrect, borderColors, selectedBorderColors, item.key, j);
@@ -372,7 +386,14 @@ class BarChartPainter extends CustomPainter {
         canvas.drawRRect(
           rrect,
           style.barStyle.barPaint
-            ..color = _getBarColor(colors, selectedColors, item.key, j),
+            ..color = _getBarColor(
+              colors,
+              selectedColors,
+              borderColors,
+              selectedBorderColors,
+              item.key,
+              j,
+            ),
         );
         _paintBarBorder(
             canvas, rrect, borderColors, selectedBorderColors, item.key, j);
@@ -380,15 +401,45 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
-  Color _getBarColor(
-    List<Color> colors,
-    List<Color> selectedColors,
+  Color _getBarBorderColor(
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
     DateTime key,
     int index,
   ) {
-    return key == selectedPeriod.value && selectedColors.isNotEmpty
-        ? selectedColors[index]
-        : colors[index];
+    if (key == selectedPeriod.value && selectedBorderColors.isNotEmpty) {
+      return selectedBorderColors[index];
+    } else if (borderColors.isNotEmpty) {
+      return borderColors[index];
+    } else {
+      return const Color(0x00FFFFFF);
+    }
+  }
+
+  Color _getBarColor(
+    List<Color> colors,
+    List<Color> selectedColors,
+    List<Color> borderColors,
+    List<Color> selectedBorderColors,
+    DateTime key,
+    int index,
+  ) {
+    final borderColor = _getBarBorderColor(
+      borderColors,
+      selectedBorderColors,
+      key,
+      index,
+    );
+    final isBorderColorTransparent = borderColor.alpha == 0;
+    final isZeroBar = data.data[key]![index] == 0;
+
+    if (isZeroBar && !isBorderColorTransparent) {
+      return borderColor;
+    } else if (key == selectedPeriod.value && selectedColors.isNotEmpty) {
+      return selectedColors[index];
+    } else {
+      return colors[index];
+    }
   }
 
   void _paintBarShadow(Canvas canvas, RRect rrect, DateTime key) {
@@ -419,15 +470,16 @@ class BarChartPainter extends CustomPainter {
     DateTime key,
     int index,
   ) {
-    if (!style.barStyle.canPaintBorder) {
+    if (!style.barStyle.canPaintBorder || data.data[key]![index] == 0) {
       return;
     }
 
-    final color = key == selectedPeriod.value && selectedBorderColors.isNotEmpty
-        ? selectedBorderColors[index]
-        : borderColors.isNotEmpty
-            ? borderColors[index]
-            : const Color(0x00FFFFFF);
+    final color = _getBarBorderColor(
+      borderColors,
+      selectedBorderColors,
+      key,
+      index,
+    );
 
     final barStyle = style.barStyle;
     final strokeBias = barStyle.borderStroke / 2;
