@@ -93,12 +93,34 @@ class _BarChartState extends State<BarChart>
   }
 
   void _handleTapUp(TapUpDetails details, double maxWidth) {
-    final itemSpacing = widget.settings.itemSpacing;
-    final itemWidth = _getItemWidth();
-    final maxChartWidth = _getChartWidth(0);
-    final maxScreenWidth = _getChartWidth(maxWidth);
+    var itemSpacing = widget.settings.itemSpacing;
+    var itemWidth = _getItemWidth();
+    var maxChartWidth = _getChartWidth(0);
+    var maxScreenWidth = _getChartWidth(maxWidth);
 
     DateTime key;
+
+    if (widget.settings.fit == BarFit.contain) {
+      double _getChartWidth(double itemWidth, double itemSpacing) =>
+          widget.data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+
+      maxChartWidth = _getChartWidth(itemWidth, itemSpacing);
+      var barWidth = widget.style.barStyle.width;
+      final decreaseCoef = itemSpacing / barWidth;
+
+      final displaceInset = widget.settings.yAxisLayout == YAxisLayout.displace
+          ? _yAxisLabelWidth.value + widget.settings.yAxisLabelSpacing
+          : .0;
+
+      maxScreenWidth = math.min(maxWidth, maxScreenWidth);
+
+      while (maxChartWidth > maxScreenWidth - displaceInset) {
+        barWidth -= 1;
+        itemSpacing -= decreaseCoef;
+        itemWidth = _getItemWidth(barWidth);
+        maxChartWidth = _getChartWidth(itemWidth, itemSpacing);
+      }
+    }
 
     switch (widget.settings.alignment) {
       case BarAlignment.start:
