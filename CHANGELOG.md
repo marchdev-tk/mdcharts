@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.0-dev.10 - 07.09.2022
+
+* Fixes of the `BarChart`:
+  * Fixed padding issue of `BarChart` with `BarFit.contain` fit type.
+  * Fixed tap handling of `BarChart` with `BarFit.contain` fit type.
+
+* Changes of the `BarChart`:
+  * Redesigned zero bars to use border color as a main color if any provided, otherwise will fallback to normal color selection type.
+
 ## 4.0.0-dev.9 - 07.09.2022
 
 * Changes of the `BarChart`:
