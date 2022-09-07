@@ -273,49 +273,19 @@ class _BarChartState extends State<BarChart>
     super.didUpdateWidget(oldWidget);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget grid = CustomPaint(
-      painter: BarChartGridPainter(
-        widget.data,
-        widget.style,
-        widget.settings,
-        _yAxisLabelWidth.add,
-      ),
-      size: Size.infinite,
-    );
+  Widget _buildChart(double maxWidth) {
+    return StreamBuilder<double>(
+      stream: _yAxisLabelWidth.distinct(),
+      initialData: _yAxisLabelWidth.value,
+      builder: (context, snapshot) {
+        final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
+            ? widget.settings.yAxisLabelSpacing
+            : .0;
+        final displaceInset = widget.settings.fit == BarFit.none
+            ? snapshot.requireData + spacing
+            : .0;
 
-    if (widget.settings.showAxisXLabels) {
-      grid = Column(
-        children: [
-          Expanded(child: grid),
-          SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
-          SizedBox(
-            height: _XAxisLabel.getEstimatedHeight(
-              widget.style.axisStyle,
-              widget.style.axisStyle.xAxisLabelStyle,
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (widget.padding != null) {
-      grid = Padding(
-        padding: widget.padding!,
-        child: grid,
-      );
-    }
-
-    var maxVisibleContentWidth = .0;
-    var maxWidth = .0;
-    final content = LayoutBuilder(
-      builder: (context, constraints) {
-        maxVisibleContentWidth =
-            constraints.maxWidth - (widget.padding?.horizontal ?? 0);
-        maxWidth = _getChartWidth(maxVisibleContentWidth);
-
-        final chart = GestureDetector(
+        return GestureDetector(
           onTapUp: (details) => _handleTapUp(details, maxWidth),
           child: ValueListenableBuilder<double>(
             valueListenable: _valueAnimation,
@@ -329,35 +299,57 @@ class _BarChartState extends State<BarChart>
                   _selectedPeriod,
                   valueCoef,
                 ),
-                size: Size.fromWidth(maxWidth),
+                size: Size.fromWidth(maxWidth - displaceInset),
               );
             },
           ),
         );
+      },
+    );
+  }
 
-        Widget chartContent;
-        if (widget.settings.showAxisXLabels) {
+  Widget _buildContent(BoxConstraints constraints) {
+    final maxVisibleContentWidth =
+        constraints.maxWidth - (widget.padding?.horizontal ?? 0);
+    var maxWidth = _getChartWidth(maxVisibleContentWidth);
+
+    Widget content;
+    if (widget.settings.showAxisXLabels) {
+      var itemSpacing = widget.settings.itemSpacing;
+      var maxItemWidth = _getItemWidth();
+
+      void recalculateSizes() {
+        if (widget.settings.fit == BarFit.contain) {
+          double _getChartWidth(double itemWidth, double itemSpacing) =>
+              widget.data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+
+          maxWidth = _getChartWidth(maxItemWidth, itemSpacing);
           var barWidth = widget.style.barStyle.width;
-          var itemSpacing = widget.settings.itemSpacing;
-          var maxItemWidth = _getItemWidth();
+          final decreaseCoef = itemSpacing / barWidth;
 
-          if (widget.settings.fit == BarFit.contain) {
-            double _getChartWidth(double itemWidth, double itemSpacing) =>
-                widget.data.data.length * (itemSpacing + itemWidth) -
-                itemSpacing;
+          final displaceInset =
+              widget.settings.yAxisLayout == YAxisLayout.displace
+                  ? _yAxisLabelWidth.value + widget.settings.yAxisLabelSpacing
+                  : .0;
 
-            var chartWidth = _getChartWidth(maxItemWidth, itemSpacing);
-            final decreaseCoef = itemSpacing / barWidth;
-
-            while (chartWidth > maxVisibleContentWidth) {
-              barWidth -= 1;
-              itemSpacing -= decreaseCoef;
-              maxItemWidth = _getItemWidth(barWidth);
-              chartWidth = _getChartWidth(maxItemWidth, itemSpacing);
-            }
+          while (maxWidth > maxVisibleContentWidth - displaceInset) {
+            barWidth -= 1;
+            itemSpacing -= decreaseCoef;
+            maxItemWidth = _getItemWidth(barWidth);
+            maxWidth = _getChartWidth(maxItemWidth, itemSpacing);
           }
+        }
+      }
 
-          final xAxisLabels = Row(
+      recalculateSizes();
+
+      final xAxisLabels = StreamBuilder<double>(
+        stream: _yAxisLabelWidth.distinct(),
+        initialData: _yAxisLabelWidth.value,
+        builder: (context, snapshot) {
+          recalculateSizes();
+
+          return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (widget.data.data.isEmpty)
@@ -381,83 +373,95 @@ class _BarChartState extends State<BarChart>
               ],
             ],
           );
+        },
+      );
 
-          chartContent = Column(
-            crossAxisAlignment: _convertAlignment(widget.settings.alignment),
-            children: [
-              Expanded(child: chart),
-              xAxisLabels,
-            ],
-          );
-        } else {
-          chartContent = chart;
-        }
+      content = Column(
+        crossAxisAlignment: _convertAlignment(widget.settings.alignment),
+        children: [
+          Expanded(child: _buildChart(maxWidth)),
+          xAxisLabels,
+        ],
+      );
+    } else {
+      content = _buildChart(maxWidth);
+    }
 
-        final builder = StreamBuilder<double>(
-          stream: _yAxisLabelWidth.distinct(),
-          initialData: _yAxisLabelWidth.value,
-          builder: (context, snapshot) {
-            final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
-                ? widget.settings.yAxisLabelSpacing
-                : .0;
-            final extraEmptySpace =
-                math.max(maxVisibleContentWidth - maxWidth, .0);
-            final inset =
-                math.max(extraEmptySpace, snapshot.requireData + spacing);
+    switch (widget.settings.fit) {
+      case BarFit.contain:
+        break;
 
-            // TODO: fix padding if [YAxisLayout.displace] is set, and if
-            // [BarAlignment] is set to [BarAlignment.start] or
-            // [BarAlignment.center]
-            EdgeInsets padding;
-            switch (widget.settings.alignment) {
-              case BarAlignment.start:
-                padding = EdgeInsets.only(right: inset);
-                break;
-              case BarAlignment.center:
-                padding = EdgeInsets.symmetric(horizontal: inset / 2);
-                break;
-              case BarAlignment.end:
-                padding = EdgeInsets.only(left: inset);
-                break;
-            }
-
-            return Padding(
-              padding: padding,
-              child: chartContent,
-            );
-          },
+      case BarFit.none:
+      default:
+        content = ScrollConfiguration(
+          behavior: AdaptiveScrollBehavior(),
+          child: SingleChildScrollView(
+            reverse: widget.settings.reverse,
+            scrollDirection: Axis.horizontal,
+            padding: widget.padding,
+            child: content,
+          ),
         );
+        break;
+    }
 
-        Widget child;
-        switch (widget.settings.fit) {
-          case BarFit.contain:
-            child = builder;
+    return StreamBuilder<double>(
+      stream: _yAxisLabelWidth.distinct(),
+      initialData: _yAxisLabelWidth.value,
+      builder: (context, snapshot) {
+        final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
+            ? widget.settings.yAxisLabelSpacing
+            : .0;
+        final extraEmptySpace = math.max(maxVisibleContentWidth - maxWidth, .0);
+        final displaceInset = snapshot.requireData + spacing;
+
+        EdgeInsets padding;
+        switch (widget.settings.alignment) {
+          case BarAlignment.start:
+            final inset = math.max(extraEmptySpace - displaceInset, .0);
+            padding = EdgeInsets.only(left: displaceInset, right: inset);
             break;
-
-          case BarFit.none:
-          default:
-            child = ScrollConfiguration(
-              behavior: AdaptiveScrollBehavior(),
-              child: SingleChildScrollView(
-                reverse: widget.settings.reverse,
-                scrollDirection: Axis.horizontal,
-                padding: widget.padding,
-                child: builder,
-              ),
+          case BarAlignment.center:
+            final inset = math.max(extraEmptySpace - displaceInset, .0);
+            padding = EdgeInsets.only(
+              left: displaceInset + inset / 2,
+              right: inset / 2,
             );
+            break;
+          case BarAlignment.end:
+            final inset = math.max(extraEmptySpace, displaceInset);
+            padding = EdgeInsets.only(left: inset);
             break;
         }
 
-        return child;
+        return Padding(
+          padding: padding,
+          child: content,
+        );
       },
     );
+  }
 
-    return Stack(
-      clipBehavior: Clip.hardEdge,
-      children: [
-        Positioned.fill(child: grid),
-        content,
-      ],
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            Positioned.fill(
+              child: _Grid(
+                data: widget.data,
+                settings: widget.settings,
+                style: widget.style,
+                padding: widget.padding,
+                yAxisLabelWidth: _yAxisLabelWidth,
+              ),
+            ),
+            _buildContent(constraints),
+          ],
+        );
+      },
     );
   }
 
@@ -468,6 +472,60 @@ class _BarChartState extends State<BarChart>
     _yAxisLabelWidth.close();
     _valueController.dispose();
     super.dispose();
+  }
+}
+
+class _Grid extends StatelessWidget {
+  const _Grid({
+    Key? key,
+    required this.data,
+    required this.style,
+    required this.settings,
+    required this.padding,
+    required this.yAxisLabelWidth,
+  }) : super(key: key);
+
+  final BarChartData data;
+  final BarChartStyle style;
+  final BarChartSettings settings;
+  final EdgeInsetsGeometry? padding;
+  final BehaviorSubject<double> yAxisLabelWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget grid = CustomPaint(
+      painter: BarChartGridPainter(
+        data,
+        style,
+        settings,
+        yAxisLabelWidth.add,
+      ),
+      size: Size.infinite,
+    );
+
+    if (settings.showAxisXLabels) {
+      grid = Column(
+        children: [
+          Expanded(child: grid),
+          SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
+          SizedBox(
+            height: _XAxisLabel.getEstimatedHeight(
+              style.axisStyle,
+              style.axisStyle.xAxisLabelStyle,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (padding != null) {
+      grid = Padding(
+        padding: padding!,
+        child: grid,
+      );
+    }
+
+    return grid;
   }
 }
 
