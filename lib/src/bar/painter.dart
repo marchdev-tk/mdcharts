@@ -66,6 +66,18 @@ class BarChartPainter extends CustomPainter {
     return normalizedValue.isNaN ? 0 : normalizedValue;
   }
 
+  /// Whether border of the bar could be painted based on the top radius of
+  /// the bar and border stroke or not.
+  bool canPaintBorder(Size size, DateTime key, int index) {
+    final normalizedValue = normalize(data.data[key]![index]);
+    final valueHeight =
+        normalizedValue * (size.height - style.barStyle.zeroBarHeight);
+    final isTooSmall = size.height - valueHeight <
+        style.barStyle.borderStroke + style.barStyle.topRadius;
+
+    return !isTooSmall;
+  }
+
   /// Axis painter.
   void paintAxis(Canvas canvas, Size size) {
     if (!settings.showAxisX) {
@@ -261,6 +273,7 @@ class BarChartPainter extends CustomPainter {
           rrect,
           style.barStyle.barPaint
             ..color = _getBarColor(
+              size,
               colors,
               selectedColors,
               borderColors,
@@ -270,7 +283,14 @@ class BarChartPainter extends CustomPainter {
             ),
         );
         _paintBarBorder(
-            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
+          canvas,
+          size,
+          rrect,
+          borderColors,
+          selectedBorderColors,
+          item.key,
+          j,
+        );
       }
     }
   }
@@ -324,6 +344,7 @@ class BarChartPainter extends CustomPainter {
           rrect,
           style.barStyle.barPaint
             ..color = _getBarColor(
+              size,
               colors,
               selectedColors,
               borderColors,
@@ -333,7 +354,14 @@ class BarChartPainter extends CustomPainter {
             ),
         );
         _paintBarBorder(
-            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
+          canvas,
+          size,
+          rrect,
+          borderColors,
+          selectedBorderColors,
+          item.key,
+          j,
+        );
       }
     }
   }
@@ -387,6 +415,7 @@ class BarChartPainter extends CustomPainter {
           rrect,
           style.barStyle.barPaint
             ..color = _getBarColor(
+              size,
               colors,
               selectedColors,
               borderColors,
@@ -396,7 +425,14 @@ class BarChartPainter extends CustomPainter {
             ),
         );
         _paintBarBorder(
-            canvas, rrect, borderColors, selectedBorderColors, item.key, j);
+          canvas,
+          size,
+          rrect,
+          borderColors,
+          selectedBorderColors,
+          item.key,
+          j,
+        );
       }
     }
   }
@@ -417,6 +453,7 @@ class BarChartPainter extends CustomPainter {
   }
 
   Color _getBarColor(
+    Size size,
     List<Color> colors,
     List<Color> selectedColors,
     List<Color> borderColors,
@@ -432,8 +469,9 @@ class BarChartPainter extends CustomPainter {
     );
     final isBorderColorTransparent = borderColor.alpha == 0;
     final isZeroBar = data.data[key]![index] == 0;
+    final paintableBorder = canPaintBorder(size, key, index);
 
-    if (isZeroBar && !isBorderColorTransparent) {
+    if ((isZeroBar || !paintableBorder) && !isBorderColorTransparent) {
       return borderColor;
     } else if (key == selectedPeriod.value && selectedColors.isNotEmpty) {
       return selectedColors[index];
@@ -464,13 +502,16 @@ class BarChartPainter extends CustomPainter {
 
   void _paintBarBorder(
     Canvas canvas,
+    Size size,
     RRect rrect,
     List<Color> borderColors,
     List<Color> selectedBorderColors,
     DateTime key,
     int index,
   ) {
-    if (!style.barStyle.canPaintBorder || data.data[key]![index] == 0) {
+    final isZeroBar = data.data[key]![index] == 0;
+    final paintableBorder = canPaintBorder(size, key, index);
+    if (!style.barStyle.canPaintBorder || isZeroBar || !paintableBorder) {
       return;
     }
 
