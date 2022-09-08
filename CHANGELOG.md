@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.11 - 08.09.2022
+
+* Changes of the `BarChart`:
+  * Redesigned border painting on the bars that are smaller then border stroke plus top bar radius.
+
 ## 4.0.0-dev.10 - 07.09.2022
 
 * Fixes of the `BarChart`:
