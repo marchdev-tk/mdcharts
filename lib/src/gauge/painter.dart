@@ -52,13 +52,13 @@ class GaugeChartPainter extends CustomPainter {
   /// Provides various settings for the gauge chart.
   final GaugeChartSettings settings;
 
-  /// Multiplication coeficient of the value. It is used to create chart
-  /// animation.
-  final double valueCoef;
-
   /// Set of required (and optional) `BUT OLD` data to construct the gauge
   /// chart.
   final GaugeChartData oldData;
+
+  /// Multiplication coeficient of the value. It is used to create chart
+  /// animation.
+  final double valueCoef;
 
   /// Callbacks that reports that selected section index has changed.
   final ValueChanged<int> onSelectionChanged;

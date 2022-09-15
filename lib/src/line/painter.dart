@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 
 import '../common.dart';
 import '../utils.dart';
+import 'cache.dart';
 import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
@@ -20,8 +21,10 @@ class LineChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.oldDataHashCode,
     this.padding,
     this.selectedXPosition,
+    this.valueCoef,
   );
 
   /// Set of required (and optional) data to construct the line chart.
@@ -32,6 +35,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
+
+  /// Set of required (and optional) `BUT OLD` data to construct the line
+  /// chart.
+  final int oldDataHashCode;
 
   /// Padding around the chart.
   ///
@@ -48,29 +55,21 @@ class LineChartPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
-  /// Cached value of [data.typedData].
-  ///
-  /// It is needed to store this cache due to lots of calculations that
-  /// "low-end" devices couldn't complete fast enough (escpecially on mobile
-  /// devices).
-  Map<DateTime, double>? _cachedTypedData;
-
-  /// Cached value of [roundedDivisionSize].
-  ///
-  /// It is needed to store this cache due to VERY insufficient way of it's
-  /// calculation.
-  double? _cachedRoundedDivisionSize;
+  /// Multiplication coeficient of the value. It is used to create chart
+  /// animation.
+  final double valueCoef;
 
   /// Smart getter of the [data.typedData].
   ///
   /// If there's cache - it will be used instead of basic [data.typedData].
   Map<DateTime, double> get _typedData {
-    if (_cachedTypedData != null) {
-      return _cachedTypedData!;
+    final cachedTypedData = cache.getTypedData(data.hashCode);
+    if (cachedTypedData != null) {
+      return cachedTypedData;
     }
 
     final typedData = data.typedData;
-    _cachedTypedData = typedData;
+    cache.saveTypedData(data.hashCode, typedData);
 
     return typedData;
   }
@@ -79,8 +78,9 @@ class LineChartPainter extends CustomPainter {
   ///
   /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
   double get roundedDivisionSize {
-    if (_cachedRoundedDivisionSize != null) {
-      return _cachedRoundedDivisionSize!;
+    final cachedRoundedSize = cache.getRoundedDivisionSize(data.hashCode);
+    if (cachedRoundedSize != null) {
+      return cachedRoundedSize;
     }
 
     final yDivisions = settings.yAxisDivisions + 1;
@@ -111,7 +111,7 @@ class LineChartPainter extends CustomPainter {
 
     final roundedSize =
         getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
-    _cachedRoundedDivisionSize = roundedSize;
+    cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
 
     return roundedSize;
   }
@@ -121,13 +121,20 @@ class LineChartPainter extends CustomPainter {
   ///
   /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
   double get roundedMinValue {
+    final cachedMinValue = cache.getRoundedMinValue(data.hashCode);
+    if (cachedMinValue != null) {
+      return cachedMinValue;
+    }
+
+    double minValue = 0;
     if (data.hasNegativeMinValue) {
       final size = roundedDivisionSize;
       final divisions = (data.minValue.abs() / size).ceil();
-      return size * divisions;
+      minValue = size * divisions;
     }
+    cache.saveRoundedMinValue(data.hashCode, minValue);
 
-    return 0;
+    return minValue;
   }
 
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
@@ -139,27 +146,36 @@ class LineChartPainter extends CustomPainter {
   ///
   /// So, based on these values maxValue will be rounded to `90`.
   double get roundedMaxValue {
-    if (data.hasNegativeMinValue) {
-      final yDivisions = settings.yAxisDivisions + 1;
-      return roundedDivisionSize * yDivisions;
+    final cachedMaxValue = cache.getRoundedMaxValue(data.hashCode);
+    if (cachedMaxValue != null) {
+      return cachedMaxValue;
     }
 
-    return getRoundedMaxValue(
-      data.maxValueRoundingMap,
-      data.maxValue,
-      settings.yAxisDivisions,
-    );
+    double maxValue;
+    if (data.hasNegativeMinValue) {
+      final yDivisions = settings.yAxisDivisions + 1;
+      maxValue = roundedDivisionSize * yDivisions;
+    } else {
+      maxValue = getRoundedMaxValue(
+        data.maxValueRoundingMap,
+        data.maxValue,
+        settings.yAxisDivisions,
+      );
+    }
+    cache.saveRoundedMaxValue(data.hashCode, maxValue);
+
+    return maxValue;
   }
 
   /// Normalization method.
   ///
-  /// Converts provided [value] based on [roundedMaxValue] into a percentage
+  /// Converts provided [value] based on [maxValue] into a percentage
   /// proportion with valid values in inclusive range [0..1].
   ///
   /// Returns `1 - result`, where `result` was calculated in the previously
   /// metioned step.
-  double normalize(double value) {
-    final normalizedValue = 1 - value / roundedMaxValue;
+  double normalize(double value, double maxValue) {
+    final normalizedValue = 1 - value / maxValue;
     return normalizedValue.isNaN ? 0 : normalizedValue;
   }
 
@@ -180,9 +196,34 @@ class LineChartPainter extends CustomPainter {
     return index;
   }
 
+  Map<DateTime, double> _adjustMap(
+    Map<DateTime, double> sourceMap,
+    Map<DateTime, double>? mapToAdjust,
+  ) {
+    Map<DateTime, double> adjustedMap;
+    if (mapToAdjust != null) {
+      adjustedMap = Map.of(mapToAdjust);
+    } else {
+      adjustedMap = {
+        for (var i = 0; i < sourceMap.length; i++)
+          sourceMap.keys.elementAt(i): 0,
+      };
+    }
+
+    if (adjustedMap.length <= sourceMap.length) {
+      adjustedMap = Map.fromEntries([
+        ...adjustedMap.entries,
+        for (var i = adjustedMap.length; i < sourceMap.length; i++)
+          MapEntry(sourceMap.keys.elementAt(i), 0),
+      ]);
+    }
+
+    return adjustedMap;
+  }
+
   /// Height of the X axis.
   double _getZeroHeight(Size size) => data.hasNegativeMinValue
-      ? normalize(roundedMinValue) * size.height
+      ? normalize(roundedMinValue, roundedMaxValue) * size.height
       : size.height;
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
@@ -198,8 +239,13 @@ class LineChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * index;
-    final y = normalize(entry.value + roundedMinValue) * size.height;
+    final y =
+        normalize(entry.value + roundedMinValue, roundedMaxValue) * size.height;
     final point = Offset(x, y);
+
+    if (!_showDetails) {
+      cache.saveDefaultPointOffset(data.hashCode, point);
+    }
 
     return point;
   }
@@ -285,7 +331,7 @@ class LineChartPainter extends CustomPainter {
     // x axis
     if (settings.showAxisX) {
       if (data.hasNegativeMinValue) {
-        final y = normalize(roundedMinValue) * size.height;
+        final y = normalize(roundedMinValue, roundedMaxValue) * size.height;
         canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
       } else {
         canvas.drawLine(bottomLeft, bottomRight, axisPaint);
@@ -306,6 +352,7 @@ class LineChartPainter extends CustomPainter {
     final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = _typedData;
+    final oldMap = _adjustMap(map, cache.getTypedData(oldDataHashCode));
     final zeroHeight = _getZeroHeight(size);
     final path = Path();
 
@@ -319,9 +366,18 @@ class LineChartPainter extends CustomPainter {
     double y = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
+      final oldValue = oldMap.entries.elementAt(i).value;
+
+      final normalizedOldY = normalize(
+        oldValue + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
+        cache.getRoundedMaxValue(oldDataHashCode) ?? 1,
+      );
+      final normalizedY = normalize(value + roundedMinValue, roundedMaxValue);
+      final animatedY =
+          normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
 
       x = widthFraction * i;
-      y = normalize(value + roundedMinValue) * size.height;
+      y = animatedY * size.height;
 
       path.lineTo(x, y);
 
@@ -378,7 +434,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y = normalize(data.limit!) * _getZeroHeight(size);
+    final y = normalize(data.limit!, roundedMaxValue) * _getZeroHeight(size);
 
     path.moveTo(0, y);
 
@@ -403,7 +459,8 @@ class LineChartPainter extends CustomPainter {
         settings.limitLabelSnapPosition == LimitLabelSnapPosition.chartBoundary
             ? (padding?.left ?? style.pointStyle.tooltipHorizontalOverflowWidth)
             : .0;
-    final yCenter = normalize(data.limit!) * _getZeroHeight(size);
+    final yCenter =
+        normalize(data.limit!, roundedMaxValue) * _getZeroHeight(size);
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused
@@ -474,7 +531,16 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final point = _getPoint(size);
+    var point = _getPoint(size);
+
+    // if cannot show details (default point position) - animation is needed
+    if (!_showDetails) {
+      final oldPoint = cache.getDefaultPointOffset(oldDataHashCode) ??
+          Offset(size.width, size.height);
+      final pointDiff = point - oldPoint;
+      point =
+          oldPoint + Offset(pointDiff.dx * valueCoef, pointDiff.dy * valueCoef);
+    }
 
     canvas.drawCircle(
       point + style.pointStyle.shadowOffset,
@@ -594,7 +660,9 @@ class LineChartPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||
-      selectedXPosition != oldDelegate.selectedXPosition;
+      oldDataHashCode != oldDelegate.oldDataHashCode ||
+      selectedXPosition != oldDelegate.selectedXPosition ||
+      valueCoef != oldDelegate.valueCoef;
 }
 
 /// X axis label painter of the [LineChart].

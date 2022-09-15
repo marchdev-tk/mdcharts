@@ -323,6 +323,7 @@ class LineChartLineStyle {
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = stroke
+    ..strokeJoin = StrokeJoin.round
     ..color = color;
 
   /// Gets a [Paint] for the inactive line drawing.
@@ -332,6 +333,7 @@ class LineChartLineStyle {
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round
     ..strokeWidth = stroke
+    ..strokeJoin = StrokeJoin.round
     ..color = colorInactive;
 
   /// Gets a [Paint] for the drawing of the shadow beneath the line.

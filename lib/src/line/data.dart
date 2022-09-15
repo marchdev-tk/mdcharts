@@ -465,9 +465,9 @@ class LineChartData {
 
   @override
   int get hashCode =>
-      data.hashCode ^
+      hashMap(data) ^
       predefinedMaxValue.hashCode ^
-      maxValueRoundingMap.hashCode ^
+      hashMap(maxValueRoundingMap) ^
       limit.hashCode ^
       limitText.hashCode ^
       titleBuilder.hashCode ^

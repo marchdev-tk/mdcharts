@@ -5,6 +5,7 @@
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
 
+import 'cache.dart';
 import 'data.dart';
 import 'painter.dart';
 import 'settings.dart';
@@ -42,8 +43,24 @@ class LineChart extends StatefulWidget {
   State<LineChart> createState() => _LineChartState();
 }
 
-class _LineChartState extends State<LineChart> {
+class _LineChartState extends State<LineChart>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _valueController;
+  late Animation<double> _valueAnimation;
+
+  late LineChartData data;
+  LineChartData? oldData;
+  int? oldDataHashCode;
+
   double? xPosition;
+
+  void _adjustOldData() {
+    oldData ??= data.copyWith(
+      data: Map.fromEntries(
+        data.data.entries.map((e) => MapEntry(e.key, 0)),
+      ),
+    );
+  }
 
   void _clearXPosition([dynamic details]) {
     setState(() => xPosition = null);
@@ -53,17 +70,67 @@ class _LineChartState extends State<LineChart> {
     setState(() => xPosition = details.localPosition.dx);
   }
 
+  void _startAnimation() {
+    if (data == oldData) {
+      return;
+    }
+
+    _valueController.forward(from: 0);
+  }
+
+  @override
+  void initState() {
+    data = widget.data;
+    _adjustOldData();
+    oldDataHashCode = oldData.hashCode;
+    LineChartCacheHolder().add(data.hashCode, oldDataHashCode);
+
+    _valueController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _valueController,
+      curve: Curves.easeInOut,
+    ));
+    _startAnimation();
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant LineChart oldWidget) {
+    data = widget.data;
+    if (data != oldWidget.data) {
+      oldData = oldWidget.data;
+    }
+    oldDataHashCode = oldData.hashCode;
+    _adjustOldData();
+    if (data != oldData) {
+      LineChartCacheHolder().add(data.hashCode, oldDataHashCode);
+    }
+    _startAnimation();
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget chart = CustomPaint(
-      painter: LineChartPainter(
-        widget.data,
-        widget.style,
-        widget.settings,
-        widget.padding,
-        xPosition,
-      ),
-      size: Size.infinite,
+    Widget chart = AnimatedBuilder(
+      animation: _valueAnimation,
+      builder: (context, _) {
+        return CustomPaint(
+          painter: LineChartPainter(
+            widget.data,
+            widget.style,
+            widget.settings,
+            oldDataHashCode!,
+            widget.padding,
+            xPosition,
+            _valueAnimation.value,
+          ),
+          size: Size.infinite,
+        );
+      },
     );
 
     if (Platform.isMobile) {
@@ -114,5 +181,11 @@ class _LineChartState extends State<LineChart> {
           ),
       child: child,
     );
+  }
+
+  @override
+  void dispose() {
+    _valueController.dispose();
+    super.dispose();
   }
 }
