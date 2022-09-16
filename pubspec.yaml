@@ -14,9 +14,13 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   
+  # common
+  meta: ^1.7.0
+  rxdart: ^0.27.5
+
+  # marchdev.tk
   cross_platform: ^3.0.1
   flinq: ^2.0.2
-  rxdart: ^0.27.5
 
 dev_dependencies:
   flutter_test:
