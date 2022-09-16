@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.12 - 16.09.2022
+
+* Changes of the `LineChart`:
+  * Added line and point animation.
+
 ## 4.0.0-dev.11 - 08.09.2022
 
 * Changes of the `BarChart`:
