@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.13 - 28.09.2022
+
+* Changes of the `GaugeChart`:
+  * Fixed normalized lists mismatch in case of initial zero only data.
+
 ## 4.0.0-dev.12 - 16.09.2022
 
 * Changes of the `LineChart`:
