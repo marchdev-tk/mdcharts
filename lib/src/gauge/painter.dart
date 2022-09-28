@@ -93,7 +93,7 @@ class GaugeChartPainter extends CustomPainter {
     final rest = 1 - values.sum;
 
     if (rest == 1) {
-      return [1];
+      return List.generate(values.length, (index) => index == 0 ? 1 : 0);
     }
 
     if (rest == 0) {
