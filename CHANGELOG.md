@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-dev.14 - 14.10.2022
+
+* Changes of the `LineChart`:
+  * Fixed initial dot position
+
 ## 4.0.0-dev.13 - 28.09.2022
 
 * Changes of the `GaugeChart`:

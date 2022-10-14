@@ -536,7 +536,7 @@ class LineChartPainter extends CustomPainter {
     // if cannot show details (default point position) - animation is needed
     if (!_showDetails) {
       final oldPoint = cache.getDefaultPointOffset(oldDataHashCode) ??
-          Offset(size.width, size.height);
+          Offset(point.dx, size.height);
       final pointDiff = point - oldPoint;
       point =
           oldPoint + Offset(pointDiff.dx * valueCoef, pointDiff.dy * valueCoef);
