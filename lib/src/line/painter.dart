@@ -36,8 +36,7 @@ class LineChartPainter extends CustomPainter {
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
-  /// Set of required (and optional) `BUT OLD` data to construct the line
-  /// chart.
+  /// Hash code of the `old data` to perform animation of the chart.
   final int oldDataHashCode;
 
   /// Padding around the chart.

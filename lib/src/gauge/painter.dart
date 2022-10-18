@@ -7,29 +7,12 @@ import 'dart:ui';
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mdcharts/src/gauge/cache.dart';
 
 import '../utils.dart';
 import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
-
-/// Holder of the start/end angles of the path alongside with path itself.
-class _PathDataHolder {
-  const _PathDataHolder(
-    this.startAngle,
-    this.endAngle,
-    this.path,
-  );
-
-  /// Start andgle of the path.
-  final double startAngle;
-
-  /// End andgle of the path.
-  final double endAngle;
-
-  /// Path.
-  final Path path;
-}
 
 /// Main painter of the [GaugeChart].
 class GaugeChartPainter extends CustomPainter {
@@ -39,8 +22,8 @@ class GaugeChartPainter extends CustomPainter {
     this.style,
     this.settings,
     this.oldData,
+    this.dataHashCode,
     this.valueCoef,
-    this.onSelectionChanged,
   );
 
   /// Set of required (and optional) data to construct the gauge chart.
@@ -56,17 +39,15 @@ class GaugeChartPainter extends CustomPainter {
   /// chart.
   final GaugeChartData oldData;
 
+  /// Hash code of the `data` to use for cache storing.
+  final int dataHashCode;
+
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
   final double valueCoef;
 
-  /// Callbacks that reports that selected section index has changed.
-  final ValueChanged<int> onSelectionChanged;
-
-  // TODO: it is needed to make this field non-static in order to remove single
-  // chart limitation
   /// List of path holders for hit tests and selection.
-  static final pathHolders = <_PathDataHolder>[];
+  final pathHolders = <GaugeChartPathDataHolder>[];
 
   /// Path of the background border to paint.
   Path? _borderPath;
@@ -268,7 +249,7 @@ class GaugeChartPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
-      pathHolders.add(_PathDataHolder(startAngle, endAngle, path));
+      pathHolders.add(GaugeChartPathDataHolder(startAngle, endAngle, path));
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),
@@ -350,6 +331,8 @@ class GaugeChartPainter extends CustomPainter {
     paintSections(canvas, size);
     paintBackgroundBorder(canvas, size);
     paintSelectedSection(canvas, size);
+
+    cache.savePathHolders(dataHashCode, pathHolders);
   }
 
   @override
@@ -361,23 +344,5 @@ class GaugeChartPainter extends CustomPainter {
       valueCoef != oldDelegate.valueCoef;
 
   @override
-  bool? hitTest(Offset position) {
-    if (!settings.selectionEnabled) {
-      return super.hitTest(position);
-    }
-
-    if (pathHolders.isEmpty) {
-      return defualtHitTestResult;
-    }
-
-    for (var i = 0; i < data.data.length; i++) {
-      final contains = pathHolders[i].path.contains(position);
-
-      if (contains) {
-        onSelectionChanged(i);
-      }
-    }
-
-    return defualtHitTestResult;
-  }
+  bool? hitTest(Offset position) => defualtHitTestResult;
 }

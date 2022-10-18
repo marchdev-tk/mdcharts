@@ -83,7 +83,7 @@ class _LineChartState extends State<LineChart>
     data = widget.data;
     _adjustOldData();
     oldDataHashCode = oldData.hashCode;
-    LineChartCacheHolder().add(data.hashCode, oldDataHashCode);
+    cache.add(data.hashCode, oldDataHashCode);
 
     _valueController = AnimationController(
       vsync: this,
@@ -107,7 +107,7 @@ class _LineChartState extends State<LineChart>
     oldDataHashCode = oldData.hashCode;
     _adjustOldData();
     if (data != oldData) {
-      LineChartCacheHolder().add(data.hashCode, oldDataHashCode);
+      cache.add(data.hashCode, oldDataHashCode);
     }
     _startAnimation();
     super.didUpdateWidget(oldWidget);

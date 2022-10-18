@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 
 /// Data for the [GaugeChart].
@@ -41,7 +43,7 @@ class GaugeChartData {
       );
 
   @override
-  int get hashCode => data.hashCode ^ selectedIndex.hashCode;
+  int get hashCode => hashList(data) ^ selectedIndex.hashCode;
 
   @override
   bool operator ==(Object other) =>
