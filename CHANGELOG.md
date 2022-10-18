@@ -1,9 +1,19 @@
 # Changelog
 
+## 4.0.0 - 18.10.2022
+
+* Changes of the `LineChart`:
+  * Fixed documentation.
+
+* Changes of the `GaugeChart`:
+  * Redesigned section tap handling (moved it from painter to widget).
+  * Fixed `GaugeChartData` hash code generation.
+  * Fixed limitation that prevented from drawing more then one chart on the screen.
+
 ## 4.0.0-dev.14 - 14.10.2022
 
 * Changes of the `LineChart`:
-  * Fixed initial dot position
+  * Fixed initial dot position.
 
 ## 4.0.0-dev.13 - 28.09.2022
 
