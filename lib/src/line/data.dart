@@ -362,7 +362,7 @@ class LineChartData {
     final dates = <DateTime>[];
     final startOfMonth = data.keys.first.startOfMonth;
     final endOfMonthDay = data.keys.first.endOfMonth.day;
-    for (var i = 0; i < endOfMonthDay; i++) {
+    for (var i = 0; i <= endOfMonthDay; i++) {
       final date = startOfMonth.add(Duration(days: i));
       dates.add(date);
     }
