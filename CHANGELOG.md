@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.1 - 28.10.2022
+
+* Changes of the `LineChart`:
+  * Fixed typedData dates generator.
+
 ## 4.0.0 - 18.10.2022
 
 * Changes of the `LineChart`:
