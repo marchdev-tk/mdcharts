@@ -813,6 +813,8 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       innerCount = innerCount - 1;
     }
 
+    _normalizeDates(datesToPaint);
+
     for (var i = 0; i < datesToPaint.length; i++) {
       final item = datesToPaint[i];
       final text = data.xAxisLabelBuilder(item);
@@ -857,4 +859,15 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
+
+  void _normalizeDates(List<DateTime> dates) {
+    for (var i = 0; i < dates.length; i++) {
+      if (dates[i].hour == 1) {
+        final wrongDate = dates[i];
+        dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
+      } else if (dates[i].hour == 23) {
+        dates[i].add(const Duration(hours: 1));
+      }
+    }
+  }
 }
