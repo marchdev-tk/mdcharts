@@ -131,3 +131,8 @@ To see usage example navigate to the [Example](example/README.md) section.
 ## Feature requests and Bug reports
 
 Feel free to post a feature requests or report a bug [here](https://github.com/marchdev-tk/mdcharts/issues).
+
+## TODO
+
+* Add MdDate to all charts (with unit-tests)
+* Add ability to accept custom painters (requires ENORMOUS amount of time)
