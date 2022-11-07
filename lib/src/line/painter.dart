@@ -866,7 +866,8 @@ class LineChartXAxisLabelPainter extends CustomPainter {
         final wrongDate = dates[i];
         dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
       } else if (dates[i].hour == 23) {
-        dates[i].add(const Duration(hours: 1));
+        final newDate = dates[i].add(const Duration(hours: 1));
+        dates[i] = newDate;
       }
     }
   }
