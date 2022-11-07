@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.4 - 07.11.2022
+
+* Changes of the `LineChart`:
+  * Fixed temp solution of summer/winter time shifts.
+
 ## 4.0.3 - 03.11.2022
 
 * Changes of the `LineChart`:
