@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.5 - 02.03.2023
+
+* Changes of the `LineChart`:
+  * Removed builder functions from LineChartData `hashCode` and `equals`;
+  * Changed `hashMap` usage to default `hashCode` due to unexpected behaviour.
+
 ## 4.0.4 - 07.11.2022
 
 * Changes of the `LineChart`:
