@@ -465,15 +465,15 @@ class LineChartData {
 
   @override
   int get hashCode =>
-      hashMap(data) ^
+      // [hasMap] causes unexpected behaviour, using default hashCode for now
+      // hashMap(data) ^
+      data.hashCode ^
       predefinedMaxValue.hashCode ^
-      hashMap(maxValueRoundingMap) ^
+      // [hasMap] causes unexpected behaviour, using default hashCode for now
+      // hashMap(maxValueRoundingMap) ^
+      maxValueRoundingMap.hashCode ^
       limit.hashCode ^
       limitText.hashCode ^
-      titleBuilder.hashCode ^
-      subtitleBuilder.hashCode ^
-      xAxisLabelBuilder.hashCode ^
-      yAxisLabelBuilder.hashCode ^
       gridType.hashCode ^
       dataType.hashCode;
 
@@ -485,10 +485,6 @@ class LineChartData {
       mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
       limit == other.limit &&
       limitText == other.limitText &&
-      titleBuilder == other.titleBuilder &&
-      subtitleBuilder == other.subtitleBuilder &&
-      xAxisLabelBuilder == other.xAxisLabelBuilder &&
-      yAxisLabelBuilder == other.yAxisLabelBuilder &&
       gridType == other.gridType &&
       dataType == other.dataType;
 }
