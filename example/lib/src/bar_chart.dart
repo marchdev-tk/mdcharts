@@ -110,9 +110,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
           children: [
             Button(
               onPressed: () {
+                const length = 10;
                 final randomizedData = <DateTime, List<double>>{};
-                for (var i = 0; i < 11; i++) {
-                  randomizedData[DateTime(DateTime.now().year - i)] = [
+                for (var i = 0; i <= length; i++) {
+                  randomizedData[DateTime(DateTime.now().year - length + i)] = [
                     Random().nextInt(50000).toDouble(),
                     Random().nextInt(50000).toDouble(),
                   ];
@@ -120,6 +121,20 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize Data'),
+            ),
+            Button(
+              onPressed: () {
+                final length = Random().nextInt(10);
+                final randomizedData = <DateTime, List<double>>{};
+                for (var i = 0; i <= length; i++) {
+                  randomizedData[DateTime(DateTime.now().year - length + i)] = [
+                    Random().nextInt(50000).toDouble(),
+                    Random().nextInt(50000).toDouble(),
+                  ];
+                }
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize Mixed Data'),
             ),
             DialogListTile(
               keyboardType:
