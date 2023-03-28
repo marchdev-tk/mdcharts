@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.7 - 28.03.2023
+
+* Changes of the `BarChart`:
+  * Reimplemented animations to firstly animate backward with old data/style/settings and then animate forward with new data/style/settings.
+
 ## 4.0.6 - 03.03.2023
 
 * Changes of the `GaugeChart`:
