@@ -19,17 +19,17 @@ final _settings =
 final _style = BehaviorSubject<BarChartStyle>.seeded(const BarChartStyle());
 final _data = BehaviorSubject<BarChartData>.seeded(BarChartData(
   data: {
-    DateTime(2012): [0, 0],
-    DateTime(2013): [0, 20],
-    DateTime(2014): [20, 0],
-    DateTime(2015): [0, 0],
+    DateTime(2013): [0, 0],
+    DateTime(2014): [0, 20],
+    DateTime(2015): [20, 0],
     DateTime(2016): [0, 0],
-    DateTime(2017): [0, 200],
-    DateTime(2018): [200, 0],
-    DateTime(2019): [0, 0],
-    DateTime(2020): [500, 500],
-    DateTime(2021): [1234, 1000],
-    DateTime(2022): [12345, 23456],
+    DateTime(2017): [0, 0],
+    DateTime(2018): [0, 200],
+    DateTime(2019): [200, 0],
+    DateTime(2020): [0, 0],
+    DateTime(2021): [500, 500],
+    DateTime(2022): [1234, 1000],
+    DateTime(2023): [12345, 23456],
   },
 ));
 
@@ -113,7 +113,8 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 const length = 10;
                 final randomizedData = <DateTime, List<double>>{};
                 for (var i = 0; i <= length; i++) {
-                  randomizedData[DateTime(DateTime.now().year - length + i)] = [
+                  final year = DateTime.now().year - length + i;
+                  randomizedData[DateTime(year)] = [
                     Random().nextInt(50000).toDouble(),
                     Random().nextInt(50000).toDouble(),
                   ];
@@ -127,7 +128,8 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 final length = Random().nextInt(10);
                 final randomizedData = <DateTime, List<double>>{};
                 for (var i = 0; i <= length; i++) {
-                  randomizedData[DateTime(DateTime.now().year - length + i)] = [
+                  final year = DateTime.now().year - length + i;
+                  randomizedData[DateTime(year)] = [
                     Random().nextInt(50000).toDouble(),
                     Random().nextInt(50000).toDouble(),
                   ];
