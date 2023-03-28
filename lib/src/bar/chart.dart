@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -53,7 +52,9 @@ class _BarChartState extends State<BarChart>
   late BehaviorSubject<DateTime> _selectedPeriod;
   late BehaviorSubject<double> _yAxisLabelWidth;
   StreamSubscription<DateTime>? _sub;
-  BarChartData? _oldData;
+  late BarChartData _data;
+  late BarChartStyle _style;
+  late BarChartSettings _settings;
 
   CrossAxisAlignment _convertAlignment(BarAlignment alignment) {
     switch (alignment) {
@@ -67,10 +68,10 @@ class _BarChartState extends State<BarChart>
   }
 
   double _getItemWidth([double? predefinedBarWidth]) {
-    final canDraw = widget.data.canDraw;
-    final barItemQuantity = canDraw ? widget.data.data.values.first.length : 0;
-    final barWidth = predefinedBarWidth ?? widget.style.barStyle.width;
-    final barSpacing = widget.settings.barSpacing;
+    final canDraw = _data.canDraw;
+    final barItemQuantity = canDraw ? _data.data.values.first.length : 0;
+    final barWidth = predefinedBarWidth ?? _style.barStyle.width;
+    final barSpacing = _settings.barSpacing;
 
     final itemWidth =
         barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
@@ -79,13 +80,13 @@ class _BarChartState extends State<BarChart>
   }
 
   double _getChartWidth(double maxWidth) {
-    final itemLength = widget.data.data.length;
-    final itemSpacing = widget.settings.itemSpacing;
+    final itemLength = _data.data.length;
+    final itemSpacing = _settings.itemSpacing;
 
     final itemWidth = _getItemWidth();
     final totalWidth = itemLength * (itemSpacing + itemWidth) - itemSpacing;
 
-    if (widget.settings.fit == BarFit.contain) {
+    if (_settings.fit == BarFit.contain) {
       return totalWidth;
     }
 
@@ -93,23 +94,23 @@ class _BarChartState extends State<BarChart>
   }
 
   void _handleTapUp(TapUpDetails details, double maxWidth) {
-    var itemSpacing = widget.settings.itemSpacing;
+    var itemSpacing = _settings.itemSpacing;
     var itemWidth = _getItemWidth();
     var maxChartWidth = _getChartWidth(0);
     var maxScreenWidth = _getChartWidth(maxWidth);
 
     DateTime key;
 
-    if (widget.settings.fit == BarFit.contain) {
+    if (_settings.fit == BarFit.contain) {
       double _getChartWidth(double itemWidth, double itemSpacing) =>
-          widget.data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+          _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
 
       maxChartWidth = _getChartWidth(itemWidth, itemSpacing);
-      var barWidth = widget.style.barStyle.width;
+      var barWidth = _style.barStyle.width;
       final decreaseCoef = itemSpacing / barWidth;
 
-      final displaceInset = widget.settings.yAxisLayout == YAxisLayout.displace
-          ? _yAxisLabelWidth.value + widget.settings.yAxisLabelSpacing
+      final displaceInset = _settings.yAxisLayout == YAxisLayout.displace
+          ? _yAxisLabelWidth.value + _settings.yAxisLabelSpacing
           : .0;
 
       maxScreenWidth = math.min(maxWidth, maxScreenWidth);
@@ -122,7 +123,7 @@ class _BarChartState extends State<BarChart>
       }
     }
 
-    switch (widget.settings.alignment) {
+    switch (_settings.alignment) {
       case BarAlignment.start:
         key = _getKeyStart(
             details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
@@ -138,7 +139,7 @@ class _BarChartState extends State<BarChart>
     }
 
     _selectedPeriod.add(key);
-    widget.data.onSelectedPeriodChanged?.call(key);
+    _data.onSelectedPeriodChanged?.call(key);
   }
 
   DateTime _getKeyStart(
@@ -157,19 +158,19 @@ class _BarChartState extends State<BarChart>
 
     // last item
     if (invertedX <= edgeItemWidth) {
-      key = widget.data.data.keys.last;
+      key = _data.data.keys.last;
     }
 
     // first item
     else if (x <= edgeItemWidth) {
-      key = widget.data.data.keys.first;
+      key = _data.data.keys.first;
     }
 
     // other items
     else {
       var index = (x - edgeItemWidth) ~/ (itemWidth + itemSpacing);
       // plus 1 due to exclusion of the first item
-      key = widget.data.data.keys.elementAt(index + 1);
+      key = _data.data.keys.elementAt(index + 1);
     }
 
     return key;
@@ -191,20 +192,20 @@ class _BarChartState extends State<BarChart>
 
     // last item
     if (invertedX <= edgeItemWidth) {
-      key = widget.data.data.keys.last;
+      key = _data.data.keys.last;
     }
 
     // first item
     else if (x <= edgeItemWidth) {
-      key = widget.data.data.keys.first;
+      key = _data.data.keys.first;
     }
 
     // other items
     else {
-      final lastIndex = widget.data.data.length - 1;
+      final lastIndex = _data.data.length - 1;
       var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
       // minus 1 due to exclusion of the last item
-      key = widget.data.data.keys.elementAt(lastIndex - index - 1);
+      key = _data.data.keys.elementAt(lastIndex - index - 1);
     }
 
     return key;
@@ -226,38 +227,38 @@ class _BarChartState extends State<BarChart>
 
     // last item
     if (invertedX <= edgeItemWidth) {
-      key = widget.data.data.keys.last;
+      key = _data.data.keys.last;
     }
 
     // first item
     else if (x <= edgeItemWidth) {
-      key = widget.data.data.keys.first;
+      key = _data.data.keys.first;
     }
 
     // other items
     else {
-      final lastIndex = widget.data.data.length - 1;
+      final lastIndex = _data.data.length - 1;
       var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
       // minus 1 due to exclusion of the last item
-      key = widget.data.data.keys.elementAt(lastIndex - index - 1);
+      key = _data.data.keys.elementAt(lastIndex - index - 1);
     }
 
     return key;
   }
 
   void _initSelectedPeriod() {
-    if (widget.data.selectedPeriod != null) {
-      _selectedPeriod.add(widget.data.selectedPeriod!);
+    if (_data.selectedPeriod != null) {
+      _selectedPeriod.add(_data.selectedPeriod!);
     }
-    if (widget.data.onSelectedPeriodChanged != null) {
-      _sub = _selectedPeriod.stream.listen(widget.data.onSelectedPeriodChanged);
+    if (_data.onSelectedPeriodChanged != null) {
+      _sub = _selectedPeriod.stream.listen(_data.onSelectedPeriodChanged);
     }
   }
 
   void _initAnimation() {
     _valueController = AnimationController(
       vsync: this,
-      duration: widget.settings.duration,
+      duration: _settings.duration,
     );
     _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _valueController,
@@ -273,6 +274,9 @@ class _BarChartState extends State<BarChart>
   void initState() {
     _selectedPeriod = BehaviorSubject<DateTime>();
     _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
+    _data = widget.data;
+    _style = widget.style;
+    _settings = widget.settings;
     _initSelectedPeriod();
     _initAnimation();
     _startAnimation();
@@ -283,14 +287,31 @@ class _BarChartState extends State<BarChart>
   void didUpdateWidget(covariant BarChart oldWidget) {
     _sub?.cancel();
     _initSelectedPeriod();
+    _data = oldWidget.data;
+    _style = oldWidget.style;
+    _settings = oldWidget.settings;
 
-    if (!mapEquals(oldWidget.data.data, widget.data.data)) {
-      _oldData = widget.data.copyWith(data: oldWidget.data.data);
+    if (!_valueController.isAnimating) {
       _revertAnimation().whenCompleteOrCancel(() {
-        _oldData = null;
+        _data = widget.data;
+        _style = widget.style;
+        _settings = widget.settings;
+        setState(() {});
         _startAnimation();
       });
     }
+
+    // if (!mapEquals(oldWidget.data.data, _data.data)) {
+    //   _oldData = _data.copyWith(data: oldWidget.data.data);
+    //   _oldStyle = oldWidget.style;
+    //   _oldSettings = oldWidget.settings;
+    //   _revertAnimation().whenCompleteOrCancel(() {
+    //     _oldData = null;
+    //     _oldStyle = null;
+    //     _oldSettings = null;
+    //     _startAnimation();
+    //   });
+    // }
 
     super.didUpdateWidget(oldWidget);
   }
@@ -300,12 +321,11 @@ class _BarChartState extends State<BarChart>
       stream: _yAxisLabelWidth.distinct(),
       initialData: _yAxisLabelWidth.value,
       builder: (context, snapshot) {
-        final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
-            ? widget.settings.yAxisLabelSpacing
+        final spacing = _settings.yAxisLayout == YAxisLayout.displace
+            ? _settings.yAxisLabelSpacing
             : .0;
-        final displaceInset = widget.settings.fit == BarFit.none
-            ? snapshot.requireData + spacing
-            : .0;
+        final displaceInset =
+            _settings.fit == BarFit.none ? snapshot.requireData + spacing : .0;
 
         return GestureDetector(
           onTapUp: (details) => _handleTapUp(details, maxWidth),
@@ -315,9 +335,9 @@ class _BarChartState extends State<BarChart>
               return CustomPaint(
                 key: ValueKey(valueCoef),
                 painter: BarChartPainter(
-                  _oldData ?? widget.data,
-                  widget.style,
-                  widget.settings,
+                  _data,
+                  _style,
+                  _settings,
                   _selectedPeriod,
                   valueCoef,
                 ),
@@ -336,23 +356,22 @@ class _BarChartState extends State<BarChart>
     var maxWidth = _getChartWidth(maxVisibleContentWidth);
 
     Widget content;
-    if (widget.settings.showAxisXLabels) {
-      var itemSpacing = widget.settings.itemSpacing;
+    if (_settings.showAxisXLabels) {
+      var itemSpacing = _settings.itemSpacing;
       var maxItemWidth = _getItemWidth();
 
       void recalculateSizes() {
-        if (widget.settings.fit == BarFit.contain) {
+        if (_settings.fit == BarFit.contain) {
           double _getChartWidth(double itemWidth, double itemSpacing) =>
-              widget.data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+              _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
 
           maxWidth = _getChartWidth(maxItemWidth, itemSpacing);
-          var barWidth = widget.style.barStyle.width;
+          var barWidth = _style.barStyle.width;
           final decreaseCoef = itemSpacing / barWidth;
 
-          final displaceInset =
-              widget.settings.yAxisLayout == YAxisLayout.displace
-                  ? _yAxisLabelWidth.value + widget.settings.yAxisLabelSpacing
-                  : .0;
+          final displaceInset = _settings.yAxisLayout == YAxisLayout.displace
+              ? _yAxisLabelWidth.value + _settings.yAxisLabelSpacing
+              : .0;
 
           while (maxWidth > maxVisibleContentWidth - displaceInset) {
             barWidth -= 1;
@@ -374,24 +393,23 @@ class _BarChartState extends State<BarChart>
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (widget.data.data.isEmpty)
+              if (_data.data.isEmpty)
                 SizedBox(
                   height: _XAxisLabel.getEstimatedHeight(
-                    widget.style.axisStyle,
-                    widget.style.axisStyle.xAxisLabelStyle,
+                    _style.axisStyle,
+                    _style.axisStyle.xAxisLabelStyle,
                   ),
                 ),
-              for (var i = 0; i < widget.data.data.length; i++) ...[
+              for (var i = 0; i < _data.data.length; i++) ...[
                 _XAxisLabel(
-                  settings: widget.settings,
-                  style: widget.style.axisStyle,
-                  data: widget.data,
+                  settings: _settings,
+                  style: _style.axisStyle,
+                  data: _data,
                   index: i,
                   maxWidth: maxItemWidth,
                   selectedPeriod: _selectedPeriod,
                 ),
-                if (i != widget.data.data.length - 1)
-                  SizedBox(width: itemSpacing),
+                if (i != _data.data.length - 1) SizedBox(width: itemSpacing),
               ],
             ],
           );
@@ -399,7 +417,7 @@ class _BarChartState extends State<BarChart>
       );
 
       content = Column(
-        crossAxisAlignment: _convertAlignment(widget.settings.alignment),
+        crossAxisAlignment: _convertAlignment(_settings.alignment),
         children: [
           Expanded(child: _buildChart(maxWidth)),
           xAxisLabels,
@@ -409,7 +427,7 @@ class _BarChartState extends State<BarChart>
       content = _buildChart(maxWidth);
     }
 
-    switch (widget.settings.fit) {
+    switch (_settings.fit) {
       case BarFit.contain:
         content = Padding(
           padding: widget.padding ?? EdgeInsets.zero,
@@ -422,7 +440,7 @@ class _BarChartState extends State<BarChart>
         content = ScrollConfiguration(
           behavior: AdaptiveScrollBehavior(),
           child: SingleChildScrollView(
-            reverse: widget.settings.reverse,
+            reverse: _settings.reverse,
             scrollDirection: Axis.horizontal,
             padding: widget.padding,
             child: content,
@@ -435,14 +453,14 @@ class _BarChartState extends State<BarChart>
       stream: _yAxisLabelWidth.distinct(),
       initialData: _yAxisLabelWidth.value,
       builder: (context, snapshot) {
-        final spacing = widget.settings.yAxisLayout == YAxisLayout.displace
-            ? widget.settings.yAxisLabelSpacing
+        final spacing = _settings.yAxisLayout == YAxisLayout.displace
+            ? _settings.yAxisLabelSpacing
             : .0;
         final extraEmptySpace = math.max(maxVisibleContentWidth - maxWidth, .0);
         final displaceInset = snapshot.requireData + spacing;
 
         EdgeInsets padding;
-        switch (widget.settings.alignment) {
+        switch (_settings.alignment) {
           case BarAlignment.start:
             final inset = math.max(extraEmptySpace - displaceInset, .0);
             padding = EdgeInsets.only(left: displaceInset, right: inset);
@@ -477,9 +495,9 @@ class _BarChartState extends State<BarChart>
           children: [
             Positioned.fill(
               child: _Grid(
-                data: widget.data,
-                settings: widget.settings,
-                style: widget.style,
+                data: _data,
+                style: _style,
+                settings: _settings,
                 padding: widget.padding,
                 yAxisLabelWidth: _yAxisLabelWidth,
               ),
