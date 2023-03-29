@@ -110,13 +110,9 @@ class _BarChartState extends State<BarChart>
       var barWidth = _style.barStyle.width;
       final decreaseCoef = itemSpacing / barWidth;
 
-      final displaceInset = _settings.yAxisLayout == YAxisLayout.displace
-          ? _yAxisLabelWidth.value + _settings.yAxisLabelSpacing
-          : .0;
-
       maxScreenWidth = math.min(maxWidth, maxScreenWidth);
 
-      while (maxChartWidth > maxScreenWidth - displaceInset) {
+      while (maxChartWidth > maxScreenWidth) {
         barWidth -= 1;
         itemSpacing -= decreaseCoef;
         itemWidth = _getItemWidth(barWidth);
@@ -304,18 +300,6 @@ class _BarChartState extends State<BarChart>
         _startAnimation();
       });
     }
-
-    // if (!mapEquals(oldWidget.data.data, _data.data)) {
-    //   _oldData = _data.copyWith(data: oldWidget.data.data);
-    //   _oldStyle = oldWidget.style;
-    //   _oldSettings = oldWidget.settings;
-    //   _revertAnimation().whenCompleteOrCancel(() {
-    //     _oldData = null;
-    //     _oldStyle = null;
-    //     _oldSettings = null;
-    //     _startAnimation();
-    //   });
-    // }
 
     super.didUpdateWidget(oldWidget);
   }

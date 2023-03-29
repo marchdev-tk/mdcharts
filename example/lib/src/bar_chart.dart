@@ -14,6 +14,8 @@ import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
+int _counter = 0;
+
 final _settings =
     BehaviorSubject<BarChartSettings>.seeded(const BarChartSettings());
 final _style = BehaviorSubject<BarChartStyle>.seeded(const BarChartStyle());
@@ -99,23 +101,6 @@ class _Chart extends StatelessWidget {
 class _GeneralDataSetupGroup extends StatelessWidget {
   const _GeneralDataSetupGroup({Key? key}) : super(key: key);
 
-  Color blend(
-    Color input1,
-    Color input2, {
-    double intensityAlpha = 1,
-    double intensityRed = 1,
-    double intensityGreen = 1,
-    double intensityBlue = 1,
-  }) {
-    final color = Color.fromARGB(
-      (input2.alpha + input2.alpha) ~/ 2,
-      (input2.red + input2.red) ~/ 2,
-      (input2.green + input2.green) ~/ 2,
-      (input2.blue + input2.blue) ~/ 2,
-    );
-    return color;
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<BarChartData>(
@@ -155,6 +140,93 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize Mixed Data'),
+            ),
+            Button(
+              onPressed: () {
+                final gridColor = Colors.white.withOpacity(0.1);
+                final bar1Color = blend(
+                  Colors.white,
+                  Colors.blue,
+                  intensityRed: 0.2,
+                  intensityGreen: 0.2,
+                  intensityBlue: 0.2,
+                );
+                final bar2Color = bar1Color.withOpacity(0.3);
+                const selectedBar1Color = Colors.white;
+                final selectedBar2Color = selectedBar1Color.withOpacity(0.8);
+                final barWidth = _counter % 2 == 0
+                    ? MediaQuery.of(context).size.width * 0.207
+                    : 40.0;
+                final alignment =
+                    _counter % 2 == 0 ? BarAlignment.center : BarAlignment.end;
+
+                const showAxisX = false;
+                const yAxisDivisions = 3;
+                const axisDivisionEdges = AxisDivisionEdges.vertical;
+                const yAxisLayout = YAxisLayout.displace;
+                const zeroBarTopRadius = 2.0;
+                const barTopRadius = 6.0;
+                const zeroBarHeight = 2.0;
+                const gridStroke = 1.0;
+                const barSpacing = -13.0;
+                const borderStroke = 4.0;
+                const border = BarBorder.bottom;
+                const selectedShadowColor = Colors.black;
+                const shadowElevation = 40.0;
+                const fit = BarFit.contain;
+
+                final data = BarChartData(
+                  data: _counter % 2 == 0
+                      ? {
+                          DateTime(2000, 12): [1200, 800],
+                        }
+                      : {
+                          DateTime(2020): [200, 100],
+                          DateTime(2021): [50, 300],
+                          DateTime(2022): [900, 900],
+                          DateTime(2023): [1500, 300]
+                        },
+                  xAxisLabelBuilder: _counter % 2 == 0
+                      ? (value, style) =>
+                          TextSpan(text: 'Custom Label', style: style)
+                      : BarChartData.defaultXAxisLabelBuilder,
+                );
+                final settings = BarChartSettings(
+                  showAxisX: showAxisX,
+                  yAxisDivisions: yAxisDivisions,
+                  axisDivisionEdges: axisDivisionEdges,
+                  barSpacing: barSpacing,
+                  alignment: alignment,
+                  fit: fit,
+                  yAxisLayout: yAxisLayout,
+                );
+                final style = BarChartStyle(
+                  gridStyle: BarChartGridStyle(
+                    color: gridColor,
+                    stroke: gridStroke,
+                  ),
+                  barStyle: BarChartBarStyle(
+                    width: barWidth,
+                    colors: [bar1Color, bar2Color],
+                    selectedColors: [selectedBar1Color, selectedBar2Color],
+                    selectedBorderColors: [Colors.green, Colors.red],
+                    borderStroke: borderStroke,
+                    border: border,
+                    selectedShadowColor: selectedShadowColor,
+                    shadowElevation: shadowElevation,
+                    zeroBarHeight: zeroBarHeight,
+                    topRadius: barTopRadius,
+                    zeroBarTopRadius: zeroBarTopRadius,
+                  ),
+                );
+
+                _data.add(data);
+                _style.add(style);
+                _settings.add(settings);
+
+                _counter++;
+              },
+              title: const Text('Randomize Test Data'),
             ),
             DialogListTile(
               keyboardType:
@@ -773,4 +845,21 @@ class _BardBorderSetupGroup extends StatelessWidget {
       },
     );
   }
+}
+
+Color blend(
+  Color input1,
+  Color input2, {
+  double intensityAlpha = 1,
+  double intensityRed = 1,
+  double intensityGreen = 1,
+  double intensityBlue = 1,
+}) {
+  final color = Color.fromARGB(
+    (input2.alpha + input2.alpha) ~/ 2,
+    (input2.red + input2.red) ~/ 2,
+    (input2.green + input2.green) ~/ 2,
+    (input2.blue + input2.blue) ~/ 2,
+  );
+  return color;
 }
