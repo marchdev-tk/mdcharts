@@ -252,7 +252,10 @@ class _BarChartState extends State<BarChart>
       _selectedPeriod.add(_data.selectedPeriod!);
     }
     if (_data.onSelectedPeriodChanged != null) {
-      _sub = _selectedPeriod.stream.listen(_data.onSelectedPeriodChanged);
+      _sub?.cancel();
+      _sub = _selectedPeriod.stream
+          .distinct()
+          .listen(_data.onSelectedPeriodChanged);
     }
   }
 
@@ -290,7 +293,6 @@ class _BarChartState extends State<BarChart>
     _data = oldWidget.data;
     _style = oldWidget.style;
     _settings = oldWidget.settings;
-    _initSelectedPeriod();
 
     if (!_valueController.isAnimating) {
       _revertAnimation().whenCompleteOrCancel(() {
