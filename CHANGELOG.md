@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.8 - 29.03.2023
+
+* Changes of the `BarChart`:
+  * Fixed selected period calculation.
+
 ## 4.0.7 - 28.03.2023
 
 * Changes of the `BarChart`:
