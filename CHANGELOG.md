@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.9 - 29.03.2023
+
+* Changes of the `BarChart`:
+  * Fixed `onSelectedPeriodChanged` extra subscriptions and false triggering
+
 ## 4.0.8 - 29.03.2023
 
 * Changes of the `BarChart`:
