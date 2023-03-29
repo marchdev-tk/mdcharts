@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.0 - 29.03.2023
+
+* Changes of the `BarChart`:
+  * Fixed `YAxisLayout.displace` issue that caused wrong tap zones when `BarFit.contain` was set.
+
 ## 4.0.9 - 29.03.2023
 
 * Changes of the `BarChart`:
