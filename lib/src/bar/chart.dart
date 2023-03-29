@@ -52,6 +52,7 @@ class _BarChartState extends State<BarChart>
   late BehaviorSubject<DateTime> _selectedPeriod;
   late BehaviorSubject<double> _yAxisLabelWidth;
   StreamSubscription<DateTime>? _sub;
+
   late BarChartData _data;
   late BarChartStyle _style;
   late BarChartSettings _settings;
@@ -286,16 +287,17 @@ class _BarChartState extends State<BarChart>
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
     _sub?.cancel();
-    _initSelectedPeriod();
     _data = oldWidget.data;
     _style = oldWidget.style;
     _settings = oldWidget.settings;
+    _initSelectedPeriod();
 
     if (!_valueController.isAnimating) {
       _revertAnimation().whenCompleteOrCancel(() {
         _data = widget.data;
         _style = widget.style;
         _settings = widget.settings;
+        _initSelectedPeriod();
         setState(() {});
         _startAnimation();
       });
