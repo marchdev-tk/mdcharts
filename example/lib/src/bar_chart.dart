@@ -99,6 +99,23 @@ class _Chart extends StatelessWidget {
 class _GeneralDataSetupGroup extends StatelessWidget {
   const _GeneralDataSetupGroup({Key? key}) : super(key: key);
 
+  Color blend(
+    Color input1,
+    Color input2, {
+    double intensityAlpha = 1,
+    double intensityRed = 1,
+    double intensityGreen = 1,
+    double intensityBlue = 1,
+  }) {
+    final color = Color.fromARGB(
+      (input2.alpha + input2.alpha) ~/ 2,
+      (input2.red + input2.red) ~/ 2,
+      (input2.green + input2.green) ~/ 2,
+      (input2.blue + input2.blue) ~/ 2,
+    );
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<BarChartData>(
@@ -126,9 +143,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
             Button(
               onPressed: () {
                 final length = Random().nextInt(10);
+                final yearBias = Random().nextInt(10);
                 final randomizedData = <DateTime, List<double>>{};
                 for (var i = 0; i <= length; i++) {
-                  final year = DateTime.now().year - length + i;
+                  final year = DateTime.now().year - yearBias - length + i;
                   randomizedData[DateTime(year)] = [
                     Random().nextInt(50000).toDouble(),
                     Random().nextInt(50000).toDouble(),
