@@ -46,12 +46,12 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart>
     with SingleTickerProviderStateMixin {
+  final _selectedPeriod = BehaviorSubject<DateTime>();
+  final _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
+  StreamSubscription<DateTime>? _selectedPeriodSub;
+
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
-
-  late BehaviorSubject<DateTime> _selectedPeriod;
-  late BehaviorSubject<double> _yAxisLabelWidth;
-  StreamSubscription<DateTime>? _sub;
 
   late BarChartData _data;
   late BarChartStyle _style;
@@ -247,9 +247,9 @@ class _BarChartState extends State<BarChart>
     if (_data.selectedPeriod != null) {
       _selectedPeriod.add(_data.selectedPeriod!);
     }
+    _selectedPeriodSub?.cancel();
     if (_data.onSelectedPeriodChanged != null) {
-      _sub?.cancel();
-      _sub = _selectedPeriod.stream
+      _selectedPeriodSub = _selectedPeriod.stream
           .distinct()
           .listen(_data.onSelectedPeriodChanged);
     }
@@ -272,8 +272,6 @@ class _BarChartState extends State<BarChart>
 
   @override
   void initState() {
-    _selectedPeriod = BehaviorSubject<DateTime>();
-    _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
     _data = widget.data;
     _style = widget.style;
     _settings = widget.settings;
@@ -285,7 +283,6 @@ class _BarChartState extends State<BarChart>
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
-    _sub?.cancel();
     _data = oldWidget.data;
     _style = oldWidget.style;
     _settings = oldWidget.settings;
@@ -499,7 +496,7 @@ class _BarChartState extends State<BarChart>
 
   @override
   void dispose() {
-    _sub?.cancel();
+    _selectedPeriodSub?.cancel();
     _selectedPeriod.close();
     _yAxisLabelWidth.close();
     _valueController.dispose();

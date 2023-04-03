@@ -443,7 +443,7 @@ class BarChartPainter extends CustomPainter {
     DateTime key,
     int index,
   ) {
-    if (key == selectedPeriod.value && selectedBorderColors.isNotEmpty) {
+    if (key == selectedPeriod.valueOrNull && selectedBorderColors.isNotEmpty) {
       return selectedBorderColors[index];
     } else if (borderColors.isNotEmpty) {
       return borderColors[index];
@@ -473,7 +473,7 @@ class BarChartPainter extends CustomPainter {
 
     if ((isZeroBar || !paintableBorder) && !isBorderColorTransparent) {
       return borderColor;
-    } else if (key == selectedPeriod.value && selectedColors.isNotEmpty) {
+    } else if (key == selectedPeriod.valueOrNull && selectedColors.isNotEmpty) {
       return selectedColors[index];
     } else {
       return colors[index];
@@ -485,7 +485,7 @@ class BarChartPainter extends CustomPainter {
       return;
     }
 
-    final color = key == selectedPeriod.value &&
+    final color = key == selectedPeriod.valueOrNull &&
             style.barStyle.selectedShadowColor != null
         ? style.barStyle.selectedShadowColor!
         : style.barStyle.shadowColor ?? const Color(0x00FFFFFF);
