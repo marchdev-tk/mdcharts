@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.1 - 03.04.2023
+
+* Changes of the `BarChart`:
+  * Improved stability of painter `selectedPeriod` usages.
+  * Moved creation of charts BehaviorSubjects into state itself instead of initState method.
+  * Improved stability of subscriptions of chart widget.
+
 ## 4.1.0 - 29.03.2023
 
 * Changes of the `BarChart`:
