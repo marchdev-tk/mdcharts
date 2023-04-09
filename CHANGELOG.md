@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.3 - 09.04.2023
+
+* Changes of the `BarChart`:
+  * Added check for data equality on didUpdateWidget.
+
 ## 4.1.2 - 09.04.2023
 
 * Changes of the `BarChart`:
