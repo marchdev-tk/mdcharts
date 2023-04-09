@@ -57,6 +57,8 @@ class _BarChartState extends State<BarChart>
   late BarChartStyle _style;
   late BarChartSettings _settings;
 
+  bool _initialized = false;
+
   CrossAxisAlignment _convertAlignment(BarAlignment alignment) {
     switch (alignment) {
       case BarAlignment.start:
@@ -283,21 +285,24 @@ class _BarChartState extends State<BarChart>
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
-    _data = oldWidget.data;
-    _style = oldWidget.style;
-    _settings = oldWidget.settings;
+    if (_initialized) {
+      _data = oldWidget.data;
+      _style = oldWidget.style;
+      _settings = oldWidget.settings;
 
-    if (!_valueController.isAnimating) {
-      _revertAnimation().whenCompleteOrCancel(() {
-        _data = widget.data;
-        _style = widget.style;
-        _settings = widget.settings;
-        _initSelectedPeriod();
-        setState(() {});
-        _startAnimation();
-      });
+      if (!_valueController.isAnimating) {
+        _revertAnimation().whenCompleteOrCancel(() {
+          _data = widget.data;
+          _style = widget.style;
+          _settings = widget.settings;
+          _initSelectedPeriod();
+          setState(() {});
+          _startAnimation();
+        });
+      }
     }
 
+    _initialized = true;
     super.didUpdateWidget(oldWidget);
   }
 
