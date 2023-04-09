@@ -58,8 +58,6 @@ class _BarChartState extends State<BarChart>
   late BarChartStyle _style;
   late BarChartSettings _settings;
 
-  bool _initialized = false;
-
   CrossAxisAlignment _convertAlignment(BarAlignment alignment) {
     switch (alignment) {
       case BarAlignment.start:
@@ -286,9 +284,9 @@ class _BarChartState extends State<BarChart>
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
-    final changed = !mapEquals(_data.data, oldWidget.data.data);
+    final changed = !mapEquals(widget.data.data, oldWidget.data.data);
 
-    if (_initialized && changed) {
+    if (changed) {
       _data = oldWidget.data;
       _style = oldWidget.style;
       _settings = oldWidget.settings;
@@ -305,41 +303,44 @@ class _BarChartState extends State<BarChart>
       }
     }
 
-    _initialized = true;
     super.didUpdateWidget(oldWidget);
   }
 
   Widget _buildChart(double maxWidth) {
-    return StreamBuilder<double>(
-      stream: _yAxisLabelWidth.distinct(),
-      initialData: _yAxisLabelWidth.value,
-      builder: (context, snapshot) {
-        final spacing = _settings.yAxisLayout == YAxisLayout.displace
-            ? _settings.yAxisLabelSpacing
-            : .0;
-        final displaceInset =
-            _settings.fit == BarFit.none ? snapshot.requireData + spacing : .0;
+    return GestureDetector(
+      onTapUp: (details) => _handleTapUp(details, maxWidth),
+      child: AnimatedBuilder(
+        animation: _valueAnimation,
+        builder: (context, _) {
+          return CustomPaint(
+            key: ValueKey(_valueAnimation.value),
+            painter: BarChartPainter(
+              _data,
+              _style,
+              _settings,
+              _selectedPeriod,
+              _valueAnimation.value,
+            ),
+            child: StreamBuilder<double>(
+              stream: _yAxisLabelWidth.distinct(),
+              initialData: _yAxisLabelWidth.value,
+              builder: (context, snapshot) {
+                final spacing = _settings.yAxisLayout == YAxisLayout.displace
+                    ? _settings.yAxisLabelSpacing
+                    : .0;
+                final displaceInset = _settings.fit == BarFit.none
+                    ? snapshot.requireData + spacing
+                    : .0;
 
-        return GestureDetector(
-          onTapUp: (details) => _handleTapUp(details, maxWidth),
-          child: ValueListenableBuilder<double>(
-            valueListenable: _valueAnimation,
-            builder: (context, valueCoef, child) {
-              return CustomPaint(
-                key: ValueKey(valueCoef),
-                painter: BarChartPainter(
-                  _data,
-                  _style,
-                  _settings,
-                  _selectedPeriod,
-                  valueCoef,
-                ),
-                size: Size.fromWidth(maxWidth - displaceInset),
-              );
-            },
-          ),
-        );
-      },
+                return SizedBox(
+                  width: math.max(0, maxWidth - displaceInset),
+                  height: double.infinity,
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
