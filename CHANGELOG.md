@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.2 - 09.04.2023
+
+* Changes of the `BarChart`:
+  * Removed redundant animation triggered by didUpdateWidget instantly after initState.
+
 ## 4.1.1 - 03.04.2023
 
 * Changes of the `BarChart`:
