@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -285,7 +286,9 @@ class _BarChartState extends State<BarChart>
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
-    if (_initialized) {
+    final changed = !mapEquals(_data.data, oldWidget.data.data);
+
+    if (_initialized && changed) {
       _data = oldWidget.data;
       _style = oldWidget.style;
       _settings = oldWidget.settings;
