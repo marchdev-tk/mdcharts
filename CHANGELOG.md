@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.5 - 10.04.2023
+
+* Changes of the `BarChart`:
+  * Fixed issue with initial animation.
+
 ## 4.1.4 - 09.04.2023
 
 * Changes of the `BarChart`:
