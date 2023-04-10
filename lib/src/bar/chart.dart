@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -284,23 +283,28 @@ class _BarChartState extends State<BarChart>
 
   @override
   void didUpdateWidget(covariant BarChart oldWidget) {
-    final changed = !mapEquals(widget.data.data, oldWidget.data.data);
+    final changed = widget.data != oldWidget.data ||
+        widget.style != oldWidget.style ||
+        widget.settings != oldWidget.settings;
 
     if (changed) {
       _data = oldWidget.data;
       _style = oldWidget.style;
       _settings = oldWidget.settings;
 
-      if (!_valueController.isAnimating) {
-        _revertAnimation().whenCompleteOrCancel(() {
-          _data = widget.data;
-          _style = widget.style;
-          _settings = widget.settings;
-          _initSelectedPeriod();
-          setState(() {});
-          _startAnimation();
-        });
-      }
+      _revertAnimation().whenCompleteOrCancel(() {
+        _data = widget.data;
+        _style = widget.style;
+        _settings = widget.settings;
+        _initSelectedPeriod();
+        setState(() {});
+        _startAnimation();
+      });
+    } else {
+      _data = widget.data;
+      _style = widget.style;
+      _settings = widget.settings;
+      _initSelectedPeriod();
     }
 
     super.didUpdateWidget(oldWidget);
