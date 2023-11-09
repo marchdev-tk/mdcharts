@@ -105,23 +105,23 @@ class BarChartPainter extends CustomPainter {
     var barWidth = style.barStyle.width;
     var itemSpacing = settings.itemSpacing;
 
-    double _getItemWidth(double barWidth) =>
+    double getItemWidth(double barWidth) =>
         barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
 
-    var itemWidth = _getItemWidth(barWidth);
+    var itemWidth = getItemWidth(barWidth);
 
     if (settings.fit == BarFit.contain) {
-      double _getChartWidth(double itemWidth, double itemSpacing) =>
+      double getChartWidth(double itemWidth, double itemSpacing) =>
           data.data.length * (itemSpacing + itemWidth) - itemSpacing;
 
-      var chartWidth = _getChartWidth(itemWidth, itemSpacing);
+      var chartWidth = getChartWidth(itemWidth, itemSpacing);
       final decreaseCoef = itemSpacing / barWidth;
 
       while (chartWidth > size.width) {
         barWidth -= 1;
         itemSpacing -= decreaseCoef;
-        itemWidth = _getItemWidth(barWidth);
-        chartWidth = _getChartWidth(itemWidth, itemSpacing);
+        itemWidth = getItemWidth(barWidth);
+        chartWidth = getChartWidth(itemWidth, itemSpacing);
       }
     }
 

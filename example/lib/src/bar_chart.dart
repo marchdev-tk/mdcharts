@@ -36,7 +36,7 @@ final _data = BehaviorSubject<BarChartData>.seeded(BarChartData(
 ));
 
 class BarChartExample extends StatelessWidget {
-  const BarChartExample({Key? key}) : super(key: key);
+  const BarChartExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class BarChartExample extends StatelessWidget {
 }
 
 class _Chart extends StatelessWidget {
-  const _Chart({Key? key}) : super(key: key);
+  const _Chart();
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +99,7 @@ class _Chart extends StatelessWidget {
 }
 
 class _GeneralDataSetupGroup extends StatelessWidget {
-  const _GeneralDataSetupGroup({Key? key}) : super(key: key);
+  const _GeneralDataSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +255,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
 }
 
 class _GeneralSettingsSetupGroup extends StatelessWidget {
-  const _GeneralSettingsSetupGroup({Key? key}) : super(key: key);
+  const _GeneralSettingsSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +341,7 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
 }
 
 class _BarAlignmentSetupGroup extends StatelessWidget {
-  const _BarAlignmentSetupGroup({Key? key}) : super(key: key);
+  const _BarAlignmentSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +371,7 @@ class _BarAlignmentSetupGroup extends StatelessWidget {
 }
 
 class _BarFitSetupGroup extends StatelessWidget {
-  const _BarFitSetupGroup({Key? key}) : super(key: key);
+  const _BarFitSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +400,7 @@ class _BarFitSetupGroup extends StatelessWidget {
 }
 
 class _YAxisLayoutSetupGroup extends StatelessWidget {
-  const _YAxisLayoutSetupGroup({Key? key}) : super(key: key);
+  const _YAxisLayoutSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +430,7 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
 }
 
 class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
-  const _AxisDivisionsEdgesSetupGroup({Key? key}) : super(key: key);
+  const _AxisDivisionsEdgesSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +460,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
 }
 
 class _GridStyleSetupGroup extends StatelessWidget {
-  const _GridStyleSetupGroup({Key? key}) : super(key: key);
+  const _GridStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -507,7 +507,7 @@ class _GridStyleSetupGroup extends StatelessWidget {
 }
 
 class _AxisStyleSetupGroup extends StatelessWidget {
-  const _AxisStyleSetupGroup({Key? key}) : super(key: key);
+  const _AxisStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -596,7 +596,7 @@ class _AxisStyleSetupGroup extends StatelessWidget {
 }
 
 class _BarStyleSetupGroup extends StatelessWidget {
-  const _BarStyleSetupGroup({Key? key}) : super(key: key);
+  const _BarStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -811,7 +811,7 @@ class _BarStyleSetupGroup extends StatelessWidget {
 }
 
 class _BardBorderSetupGroup extends StatelessWidget {
-  const _BardBorderSetupGroup({Key? key}) : super(key: key);
+  const _BardBorderSetupGroup();
 
   @override
   Widget build(BuildContext context) {

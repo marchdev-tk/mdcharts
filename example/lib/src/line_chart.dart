@@ -54,7 +54,7 @@ final _data = BehaviorSubject<LineChartData>.seeded(LineChartData(
 ));
 
 class LineChartExample extends StatelessWidget {
-  const LineChartExample({Key? key}) : super(key: key);
+  const LineChartExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class LineChartExample extends StatelessWidget {
 }
 
 class _Chart extends StatelessWidget {
-  const _Chart({Key? key}) : super(key: key);
+  const _Chart();
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class _Chart extends StatelessWidget {
 }
 
 class _GeneralDataSetupGroup extends StatelessWidget {
-  const _GeneralDataSetupGroup({Key? key}) : super(key: key);
+  const _GeneralDataSetupGroup();
 
   Map<DateTime, double> getRandomizedData({required bool positive}) {
     final year = DateTime.now().year;
@@ -241,7 +241,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
 }
 
 class _GridTypeSetupGroup extends StatelessWidget {
-  const _GridTypeSetupGroup({Key? key}) : super(key: key);
+  const _GridTypeSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +269,7 @@ class _GridTypeSetupGroup extends StatelessWidget {
 }
 
 class _DataTypeSetupGroup extends StatelessWidget {
-  const _DataTypeSetupGroup({Key? key}) : super(key: key);
+  const _DataTypeSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -297,7 +297,7 @@ class _DataTypeSetupGroup extends StatelessWidget {
 }
 
 class _GeneralSettingsSetupGroup extends StatelessWidget {
-  const _GeneralSettingsSetupGroup({Key? key}) : super(key: key);
+  const _GeneralSettingsSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -388,7 +388,7 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
 }
 
 class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
-  const _AxisDivisionsEdgesSetupGroup({Key? key}) : super(key: key);
+  const _AxisDivisionsEdgesSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -418,7 +418,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
 }
 
 class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
-  const _LimitLabelSnapPositionSetupGroup({Key? key}) : super(key: key);
+  const _LimitLabelSnapPositionSetupGroup();
 
   @override
   Widget build(BuildContext context) {

@@ -9,9 +9,9 @@ final _selected = BehaviorSubject<int>.seeded(0);
 
 class ExampleScaffold extends StatelessWidget {
   const ExampleScaffold({
-    Key? key,
+    super.key,
     required this.tabs,
-  }) : super(key: key);
+  });
 
   final Map<String, Widget> tabs;
 
@@ -45,9 +45,8 @@ class ExampleScaffold extends StatelessWidget {
 
 class _AppMenu extends StatelessWidget implements PreferredSizeWidget {
   const _AppMenu({
-    Key? key,
     required this.tabs,
-  }) : super(key: key);
+  });
 
   final List<String> tabs;
 

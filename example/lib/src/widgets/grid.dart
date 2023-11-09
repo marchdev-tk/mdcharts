@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 class Grid extends StatelessWidget {
   const Grid({
-    Key? key,
+    super.key,
     required this.rows,
     required this.columns,
     required this.children,
-  }) : super(key: key);
+  });
 
   final int rows;
   final int columns;

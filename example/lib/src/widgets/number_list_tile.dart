@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 class IntListTile extends StatelessWidget {
   const IntListTile({
-    Key? key,
+    super.key,
     this.title,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final int value;

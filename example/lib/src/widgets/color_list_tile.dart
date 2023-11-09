@@ -7,11 +7,11 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ColorListTile extends StatelessWidget {
   const ColorListTile({
-    Key? key,
+    super.key,
     this.title,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final Color value;
@@ -43,10 +43,9 @@ class ColorListTile extends StatelessWidget {
 
 class _Dialog extends StatefulWidget {
   const _Dialog({
-    Key? key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final Color value;

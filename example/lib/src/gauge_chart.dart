@@ -29,7 +29,7 @@ final _data = BehaviorSubject<GaugeChartData>.seeded(
 );
 
 class GaugeChartExample extends StatelessWidget {
-  const GaugeChartExample({Key? key}) : super(key: key);
+  const GaugeChartExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class GaugeChartExample extends StatelessWidget {
 }
 
 class _Chart extends StatelessWidget {
-  const _Chart({Key? key}) : super(key: key);
+  const _Chart();
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class _Chart extends StatelessWidget {
 }
 
 class _GeneralDataSetupGroup extends StatelessWidget {
-  const _GeneralDataSetupGroup({Key? key}) : super(key: key);
+  const _GeneralDataSetupGroup();
 
   List<double> getRandomizedData({required bool fixedQty}) {
     if (fixedQty) {
@@ -141,7 +141,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
 }
 
 class _GeneralSettingsSetupGroup extends StatelessWidget {
-  const _GeneralSettingsSetupGroup({Key? key}) : super(key: key);
+  const _GeneralSettingsSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +213,7 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
 }
 
 class _BackgroundStyleSetupGroup extends StatelessWidget {
-  const _BackgroundStyleSetupGroup({Key? key}) : super(key: key);
+  const _BackgroundStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +271,7 @@ class _BackgroundStyleSetupGroup extends StatelessWidget {
 }
 
 class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
-  const _BackgroundBorderStyleSetupGroup({Key? key}) : super(key: key);
+  const _BackgroundBorderStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +392,7 @@ class _BackgroundBorderStyleSetupGroup extends StatelessWidget {
 }
 
 class _SectionStyleSetupGroup extends StatelessWidget {
-  const _SectionStyleSetupGroup({Key? key}) : super(key: key);
+  const _SectionStyleSetupGroup();
 
   @override
   Widget build(BuildContext context) {

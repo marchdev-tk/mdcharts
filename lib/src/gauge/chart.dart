@@ -15,12 +15,12 @@ import 'style.dart';
 class GaugeChart extends StatefulWidget {
   /// Constructs an instance of [GaugeChart].
   const GaugeChart({
-    Key? key,
+    super.key,
     required this.data,
     this.style = const GaugeChartStyle(),
     this.settings = const GaugeChartSettings(),
     this.onSelectionChanged,
-  }) : super(key: key);
+  });
 
   /// Set of required (and optional) data to construct the line chart.
   final GaugeChartData data;
@@ -148,26 +148,28 @@ class _GaugeChartState extends State<GaugeChart>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapUp: widget.settings.selectionEnabled
-          ? (details) => hitTest(details.localPosition)
-          : null,
-      child: AnimatedBuilder(
-        animation: _valueAnimation,
-        builder: (context, _) {
-          return CustomPaint(
-            isComplex: true,
-            painter: GaugeChartPainter(
-              data,
-              widget.style,
-              widget.settings,
-              oldData!,
-              dataHashCode!,
-              _valueAnimation.value,
-            ),
-            size: Size.infinite,
-          );
-        },
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTapUp: widget.settings.selectionEnabled
+            ? (details) => hitTest(details.localPosition)
+            : null,
+        child: AnimatedBuilder(
+          animation: _valueAnimation,
+          builder: (context, _) {
+            return CustomPaint(
+              isComplex: true,
+              painter: GaugeChartPainter(
+                data,
+                widget.style,
+                widget.settings,
+                oldData!,
+                dataHashCode!,
+                _valueAnimation.value,
+              ),
+              size: Size.infinite,
+            );
+          },
+        ),
       ),
     );
   }

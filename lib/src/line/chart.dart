@@ -15,12 +15,12 @@ import 'style.dart';
 class LineChart extends StatefulWidget {
   /// Constructs an instance of [LineChart].
   const LineChart({
-    Key? key,
+    super.key,
     required this.data,
     this.style = const LineChartStyle(),
     this.settings = const LineChartSettings(),
     this.padding,
-  }) : super(key: key);
+  });
 
   /// Set of required (and optional) data to construct the line chart.
   final LineChartData data;
@@ -171,15 +171,17 @@ class _LineChartState extends State<LineChart>
       child = chart;
     }
 
-    return Padding(
-      padding: widget.padding ??
-          EdgeInsets.fromLTRB(
-            widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-            widget.style.pointStyle.tooltipHeight,
-            widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-            0,
-          ),
-      child: child,
+    return RepaintBoundary(
+      child: Padding(
+        padding: widget.padding ??
+            EdgeInsets.fromLTRB(
+              widget.style.pointStyle.tooltipHorizontalOverflowWidth,
+              widget.style.pointStyle.tooltipHeight,
+              widget.style.pointStyle.tooltipHorizontalOverflowWidth,
+              0,
+            ),
+        child: child,
+      ),
     );
   }
 

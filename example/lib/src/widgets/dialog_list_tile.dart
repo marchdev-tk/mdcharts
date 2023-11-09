@@ -7,12 +7,12 @@ import 'package:flutter/services.dart';
 
 class DialogListTile extends StatelessWidget {
   const DialogListTile({
-    Key? key,
+    super.key,
     this.title,
     required this.value,
     required this.onChanged,
     this.keyboardType = TextInputType.text,
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final String? value;
@@ -48,11 +48,10 @@ class DialogListTile extends StatelessWidget {
 
 class _Dialog extends StatefulWidget {
   const _Dialog({
-    Key? key,
     required this.title,
     required this.value,
     required this.keyboardType,
-  }) : super(key: key);
+  });
 
   final Widget? title;
   final String? value;

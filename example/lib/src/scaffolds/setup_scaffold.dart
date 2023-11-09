@@ -8,10 +8,10 @@ const setupWidth = 315.0;
 
 class SetupScaffold extends StatefulWidget {
   const SetupScaffold({
-    Key? key,
+    super.key,
     required this.setupChildren,
     required this.body,
-  }) : super(key: key);
+  });
 
   final List<Widget> setupChildren;
   final Widget body;
@@ -121,10 +121,9 @@ class _SetupScaffoldState extends State<SetupScaffold>
 
 class _Setup extends StatelessWidget {
   const _Setup({
-    Key? key,
     required this.controller,
     required this.children,
-  }) : super(key: key);
+  });
 
   final ScrollController controller;
   final List<Widget> children;
@@ -157,7 +156,7 @@ class _Setup extends StatelessWidget {
 }
 
 class SetupDivider extends StatelessWidget {
-  const SetupDivider({Key? key}) : super(key: key);
+  const SetupDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -171,10 +170,10 @@ class SetupDivider extends StatelessWidget {
 
 class SetupGroup extends StatelessWidget {
   const SetupGroup({
-    Key? key,
+    super.key,
     required this.title,
     required this.children,
-  }) : super(key: key);
+  });
 
   final String title;
   final List<Widget> children;

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
   const Button({
-    Key? key,
+    super.key,
     required this.title,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final VoidCallback onPressed;

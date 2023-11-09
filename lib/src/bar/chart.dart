@@ -18,12 +18,12 @@ import 'style.dart';
 class BarChart extends StatefulWidget {
   /// Constructs an instance of [BarChart].
   const BarChart({
-    Key? key,
+    super.key,
     required this.data,
     this.style = const BarChartStyle(),
     this.settings = const BarChartSettings(),
     this.padding,
-  }) : super(key: key);
+  });
 
   /// Set of required (and optional) data to construct the bar chart.
   final BarChartData data;
@@ -103,10 +103,10 @@ class _BarChartState extends State<BarChart>
     DateTime key;
 
     if (_settings.fit == BarFit.contain) {
-      double _getChartWidth(double itemWidth, double itemSpacing) =>
+      double getChartWidth(double itemWidth, double itemSpacing) =>
           _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
 
-      maxChartWidth = _getChartWidth(itemWidth, itemSpacing);
+      maxChartWidth = getChartWidth(itemWidth, itemSpacing);
       var barWidth = _style.barStyle.width;
       final decreaseCoef = itemSpacing / barWidth;
 
@@ -116,7 +116,7 @@ class _BarChartState extends State<BarChart>
         barWidth -= 1;
         itemSpacing -= decreaseCoef;
         itemWidth = _getItemWidth(barWidth);
-        maxChartWidth = _getChartWidth(itemWidth, itemSpacing);
+        maxChartWidth = getChartWidth(itemWidth, itemSpacing);
       }
     }
 
@@ -360,10 +360,10 @@ class _BarChartState extends State<BarChart>
 
       void recalculateSizes() {
         if (_settings.fit == BarFit.contain) {
-          double _getChartWidth(double itemWidth, double itemSpacing) =>
+          double getChartWidth(double itemWidth, double itemSpacing) =>
               _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
 
-          maxWidth = _getChartWidth(maxItemWidth, itemSpacing);
+          maxWidth = getChartWidth(maxItemWidth, itemSpacing);
           var barWidth = _style.barStyle.width;
           final decreaseCoef = itemSpacing / barWidth;
 
@@ -375,7 +375,7 @@ class _BarChartState extends State<BarChart>
             barWidth -= 1;
             itemSpacing -= decreaseCoef;
             maxItemWidth = _getItemWidth(barWidth);
-            maxWidth = _getChartWidth(maxItemWidth, itemSpacing);
+            maxWidth = getChartWidth(maxItemWidth, itemSpacing);
           }
         }
       }
@@ -519,13 +519,12 @@ class _BarChartState extends State<BarChart>
 
 class _Grid extends StatelessWidget {
   const _Grid({
-    Key? key,
     required this.data,
     required this.style,
     required this.settings,
     required this.padding,
     required this.yAxisLabelWidth,
-  }) : super(key: key);
+  });
 
   final BarChartData data;
   final BarChartStyle style;
@@ -573,14 +572,13 @@ class _Grid extends StatelessWidget {
 
 class _XAxisLabel extends StatelessWidget {
   const _XAxisLabel({
-    Key? key,
     required this.settings,
     required this.style,
     required this.data,
     required this.index,
     required this.maxWidth,
     required this.selectedPeriod,
-  }) : super(key: key);
+  });
 
   final BarChartSettings settings;
   final BarChartAxisStyle style;
@@ -619,41 +617,43 @@ class _XAxisLabel extends StatelessWidget {
       );
     }
 
-    return GestureDetector(
-      onTap: () => selectedPeriod.add(currentDate),
-      child: StreamBuilder<DateTime>(
-        stream: selectedPeriod.stream,
-        initialData: data.selectedPeriod,
-        builder: (context, selectedPeriod) {
-          final isSelected = currentDate == selectedPeriod.requireData;
-          final currentStyle = isSelected
-              ? style.xAxisSelectedLabelStyle
-              : style.xAxisLabelStyle;
-          final currentDecoration = isSelected
-              ? BoxDecoration(
-                  borderRadius: style.xAxisSelectedLabelBorderRadius,
-                  color: style.xAxisSelectedLabelBackgroundColor,
-                )
-              : null;
-          final maxHeight = getEstimatedHeight(style, currentStyle);
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: () => selectedPeriod.add(currentDate),
+        child: StreamBuilder<DateTime>(
+          stream: selectedPeriod.stream,
+          initialData: data.selectedPeriod,
+          builder: (context, selectedPeriod) {
+            final isSelected = currentDate == selectedPeriod.requireData;
+            final currentStyle = isSelected
+                ? style.xAxisSelectedLabelStyle
+                : style.xAxisLabelStyle;
+            final currentDecoration = isSelected
+                ? BoxDecoration(
+                    borderRadius: style.xAxisSelectedLabelBorderRadius,
+                    color: style.xAxisSelectedLabelBackgroundColor,
+                  )
+                : null;
+            final maxHeight = getEstimatedHeight(style, currentStyle);
 
-          return Container(
-            color: Colors.transparent,
-            padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
-            child: SizedOverflowBox(
-              size: Size(maxWidth, maxHeight),
-              child: Container(
-                padding: style.xAxisLabelPadding,
-                decoration: currentDecoration,
-                child: Text.rich(
-                  data.xAxisLabelBuilder(currentDate, currentStyle),
-                  style: currentStyle,
-                  textAlign: TextAlign.center,
+            return Container(
+              color: Colors.transparent,
+              padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
+              child: SizedOverflowBox(
+                size: Size(maxWidth, maxHeight),
+                child: Container(
+                  padding: style.xAxisLabelPadding,
+                  decoration: currentDecoration,
+                  child: Text.rich(
+                    data.xAxisLabelBuilder(currentDate, currentStyle),
+                    style: currentStyle,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
