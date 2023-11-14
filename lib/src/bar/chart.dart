@@ -608,18 +608,22 @@ class _XAxisLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentDate = data.data.entries.elementAt(index).key;
 
-    if (!settings.showSelection) {
+    if (settings.interation != InterationType.selection) {
       final maxHeight = getEstimatedHeight(style, style.xAxisLabelStyle);
 
-      return SizedOverflowBox(
-        size: Size(maxWidth, maxHeight),
-        child: Container(
-          key: ValueKey(currentDate.toIso8601String()),
-          padding: style.xAxisLabelPadding,
-          child: Text.rich(
-            data.xAxisLabelBuilder(currentDate, style.xAxisLabelStyle),
-            style: style.xAxisLabelStyle,
-            textAlign: TextAlign.center,
+      return Container(
+        color: Colors.transparent,
+        padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
+        child: SizedOverflowBox(
+          size: Size(maxWidth, maxHeight),
+          child: Container(
+            key: ValueKey(currentDate.toIso8601String()),
+            padding: style.xAxisLabelPadding,
+            child: Text.rich(
+              data.xAxisLabelBuilder(currentDate, style.xAxisLabelStyle),
+              style: style.xAxisLabelStyle,
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       );

@@ -16,7 +16,7 @@ dependencies:
   
   # common
   meta: ^1.9.1
-  rxdart: ^0.27.5
+  rxdart: ^0.27.7
 
   # marchdev.tk
   cross_platform: ^3.0.1

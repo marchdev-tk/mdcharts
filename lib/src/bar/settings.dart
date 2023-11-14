@@ -44,6 +44,21 @@ enum YAxisLayout {
   displace,
 }
 
+/// How one will be interacting with the [BarChart].
+enum InterationType {
+  /// Bar could be selected by tap.
+  ///
+  /// This is default option.
+  selection,
+
+  /// Always last bar is selected, but previous could be overviewed by long
+  /// pressing LMB or touch screen.
+  overview,
+
+  /// No interactions available.
+  none,
+}
+
 /// Set of settings of the [BarChart].
 class BarChartSettings {
   /// Constructs an instance of [BarChartSettings].
@@ -57,7 +72,7 @@ class BarChartSettings {
     this.yAxisLabelSpacing = 0,
     this.barSpacing = 0,
     this.itemSpacing = 12,
-    this.showSelection = true,
+    this.interation = InterationType.selection,
     this.duration = const Duration(milliseconds: 400),
     this.alignment = BarAlignment.end,
     this.reverse = false,
@@ -73,7 +88,7 @@ class BarChartSettings {
     this.yAxisLabelSpacing = 0,
     this.barSpacing = 0,
     this.itemSpacing = 12,
-    this.showSelection = true,
+    this.interation = InterationType.selection,
     this.duration = const Duration(milliseconds: 400),
     this.alignment = BarAlignment.end,
     this.reverse = false,
@@ -140,10 +155,10 @@ class BarChartSettings {
   /// Defaults to `12`.
   final double itemSpacing;
 
-  /// Whether to show selection of the items or not.
+  /// How to interact with the [BarChart].
   ///
-  /// Defaults to `true`.
-  final bool showSelection;
+  /// Defaults to [InterationType.selection].
+  final InterationType interation;
 
   /// The length of time animation should last.
   ///
@@ -184,7 +199,7 @@ class BarChartSettings {
     double? yAxisLabelSpacing,
     double? barSpacing,
     double? itemSpacing,
-    bool? showSelection,
+    InterationType? interation,
     Duration? duration,
     BarAlignment? alignment,
     bool? reverse,
@@ -200,7 +215,7 @@ class BarChartSettings {
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
         barSpacing: barSpacing ?? this.barSpacing,
         itemSpacing: itemSpacing ?? this.itemSpacing,
-        showSelection: showSelection ?? this.showSelection,
+        interation: interation ?? this.interation,
         duration: duration ?? this.duration,
         alignment: alignment ?? this.alignment,
         reverse: reverse ?? this.reverse,
@@ -218,7 +233,7 @@ class BarChartSettings {
       yAxisLabelSpacing.hashCode ^
       barSpacing.hashCode ^
       itemSpacing.hashCode ^
-      showSelection.hashCode ^
+      interation.hashCode ^
       duration.hashCode ^
       alignment.hashCode ^
       reverse.hashCode ^
@@ -236,7 +251,7 @@ class BarChartSettings {
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
       barSpacing == other.barSpacing &&
       itemSpacing == other.itemSpacing &&
-      showSelection == other.showSelection &&
+      interation == other.interation &&
       duration == other.duration &&
       alignment == other.alignment &&
       reverse == other.reverse &&

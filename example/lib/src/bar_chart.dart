@@ -47,6 +47,8 @@ class BarChartExample extends StatelessWidget {
         SetupDivider(),
         _GeneralSettingsSetupGroup(),
         SetupDivider(),
+        _IteractionTypeSetupGroup(),
+        SetupDivider(),
         _BarAlignmentSetupGroup(),
         SetupDivider(),
         _BarFitSetupGroup(),
@@ -291,13 +293,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.leading,
-              value: data.showSelection,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showSelection: value == true)),
-              title: const Text('showSelection'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
               value: data.reverse,
               onChanged: (value) =>
                   _settings.add(data.copyWith(reverse: value == true)),
@@ -333,6 +328,36 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               },
               title: const Text('yAxisLabelSpacing'),
             ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _IteractionTypeSetupGroup extends StatelessWidget {
+  const _IteractionTypeSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Interaction Type',
+          children: [
+            for (var i = 0; i < InterationType.values.length; i++)
+              RadioListTile<InterationType>(
+                controlAffinity: ListTileControlAffinity.leading,
+                groupValue: data.interation,
+                value: InterationType.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(interation: value)),
+                title: Text(InterationType.values[i].name),
+              ),
           ],
         );
       },
