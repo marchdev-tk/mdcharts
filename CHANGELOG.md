@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.0 - 14.11.2023
+
+* Changes of the `BarChart`:
+  * Changed from `BarChartSettings.showSelection` to `InterationType` enum.
+* Added `RepaintBoundary` to all charts.
+
 ## 4.1.5 - 10.04.2023
 
 * Changes of the `BarChart`:
