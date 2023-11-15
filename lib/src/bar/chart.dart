@@ -608,7 +608,7 @@ class _XAxisLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentDate = data.data.entries.elementAt(index).key;
 
-    if (settings.interation != InterationType.selection) {
+    if (settings.interaction != InteractionType.selection) {
       final maxHeight = getEstimatedHeight(style, style.xAxisLabelStyle);
 
       return Container(

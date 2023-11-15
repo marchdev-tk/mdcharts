@@ -349,14 +349,14 @@ class _IteractionTypeSetupGroup extends StatelessWidget {
         return SetupGroup(
           title: '└─ Interaction Type',
           children: [
-            for (var i = 0; i < InterationType.values.length; i++)
-              RadioListTile<InterationType>(
+            for (var i = 0; i < InteractionType.values.length; i++)
+              RadioListTile<InteractionType>(
                 controlAffinity: ListTileControlAffinity.leading,
-                groupValue: data.interation,
-                value: InterationType.values[i],
+                groupValue: data.interaction,
+                value: InteractionType.values[i],
                 onChanged: (value) =>
-                    _settings.add(data.copyWith(interation: value)),
-                title: Text(InterationType.values[i].name),
+                    _settings.add(data.copyWith(interaction: value)),
+                title: Text(InteractionType.values[i].name),
               ),
           ],
         );
