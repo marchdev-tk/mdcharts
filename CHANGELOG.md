@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.2.0 - 14.11.2023
+## 4.1.6 - 14.11.2023
 
 * Changes of the `BarChart`:
   * Changed from `BarChartSettings.showSelection` to `InterationType` enum.
