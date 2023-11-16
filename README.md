@@ -104,6 +104,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 #### Settings
 
 * `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
+* `xAxisLabelQuantity` - quantity of the X axis labels to draw, defaults to `null`.
 * `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
@@ -112,7 +113,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
 * `barSpacing` - spacing between bars in one item, defaults to `0`.
 * `itemSpacing` - spacing between group of bars, defaults to `12`.
-* `showSelection` - whether to show selection of the items or not, defaults to `true`.
+* `interaction` - describes how user will be interacting with chart, defaults to `InteractionType.selection`.
 * `duration` - the length of time animation should last, defaults to `400 milliseconds`.
 * `alignment` - alignment of the bars within chart, defaults to `BarAlignment.end`.
 * `reverse` - whether the scroll view scrolls in the reading direction, defaults to `false`.

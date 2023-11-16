@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.8 - 16.11.2023
+
+* Changes of the `BarChart`:
+  * Implemented `InteractionType.overview`, now in this mode the chart will be able to track the drag gesture to temporarily change the currently selected bar group.
+  * Added `BarChartSettings.xAxisLabelQuantity` that is working in a conjunction with `InteractionType.overview` mode to limit the quantity of X axis labels.
+* Changes of the `LineChart`:
+  * Fixed doc comment of `LineChartSettings.xAxisLabelQuantity`.
+
 ## 4.1.7 - 15.11.2023
 
 * Changes of the `BarChart`:
