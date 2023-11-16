@@ -76,7 +76,7 @@ class LineChartSettings {
   ///
   /// Defaults to `null`.
   ///
-  /// If set - X axis label quantity could be less than or equal to a
+  /// If X axis label quantity is set - it could be less than or equal to a
   /// specified value, but no less than `2`.
   ///
   /// **Note**: that X axis labels are dynamically displaying beneath X axis

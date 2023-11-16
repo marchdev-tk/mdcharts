@@ -64,6 +64,7 @@ class BarChartSettings {
   /// Constructs an instance of [BarChartSettings].
   const BarChartSettings({
     this.yAxisDivisions = 2,
+    this.xAxisLabelQuantity,
     this.axisDivisionEdges = AxisDivisionEdges.none,
     this.showAxisX = true,
     this.showAxisXLabels = true,
@@ -81,6 +82,7 @@ class BarChartSettings {
 
   /// Constructs an instance of [BarChartSettings] without grids.
   const BarChartSettings.gridless({
+    this.xAxisLabelQuantity,
     this.showAxisX = true,
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
@@ -107,6 +109,20 @@ class BarChartSettings {
   /// and [yAxisDivisions] to `0` or consider using [BarChartSettings.gridless]
   /// constructor.
   final int yAxisDivisions;
+
+  /// Quantity of the X axis labels to draw.
+  ///
+  /// Defaults to `null`.
+  ///
+  /// If X axis label quantity is set - it could be less than or equal to a
+  /// specified value, but no less than `2`.
+  ///
+  /// **Note**: that X axis labels are dynamically displaying beneath X axis
+  /// based on width that they occupy and available drawing space.
+  ///
+  /// **Also Note**: that this setting is working only in a conjunction with
+  /// [InteractionType.overview].
+  final int? xAxisLabelQuantity;
 
   /// Axis division edges to be painted.
   ///
@@ -190,7 +206,9 @@ class BarChartSettings {
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartSettings copyWith({
+    bool allowNullXAxisLabelQuantity = false,
     int? yAxisDivisions,
+    int? xAxisLabelQuantity,
     AxisDivisionEdges? axisDivisionEdges,
     bool? showAxisX,
     bool? showAxisXLabels,
@@ -207,6 +225,9 @@ class BarChartSettings {
   }) =>
       BarChartSettings(
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
+        xAxisLabelQuantity: allowNullXAxisLabelQuantity
+            ? xAxisLabelQuantity
+            : xAxisLabelQuantity ?? this.xAxisLabelQuantity,
         axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
         showAxisX: showAxisX ?? this.showAxisX,
         showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
@@ -225,6 +246,7 @@ class BarChartSettings {
   @override
   int get hashCode =>
       yAxisDivisions.hashCode ^
+      xAxisLabelQuantity.hashCode ^
       axisDivisionEdges.hashCode ^
       showAxisX.hashCode ^
       showAxisXLabels.hashCode ^
@@ -243,6 +265,7 @@ class BarChartSettings {
   bool operator ==(Object other) =>
       other is BarChartSettings &&
       yAxisDivisions == other.yAxisDivisions &&
+      xAxisLabelQuantity == other.xAxisLabelQuantity &&
       axisDivisionEdges == other.axisDivisionEdges &&
       showAxisX == other.showAxisX &&
       showAxisXLabels == other.showAxisXLabels &&

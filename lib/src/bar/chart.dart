@@ -52,6 +52,8 @@ class _BarChartState extends State<BarChart>
 
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
+  TickerFuture _startAnimation() => _valueController.forward(from: 0);
+  TickerFuture _revertAnimation() => _valueController.reverse(from: 1);
 
   late BarChartData _data;
   late BarChartStyle _style;
@@ -95,12 +97,14 @@ class _BarChartState extends State<BarChart>
   }
 
   void _handleTapUp(TapUpDetails details, double maxWidth) {
+    if (_settings.interaction != InteractionType.selection) {
+      return;
+    }
+
     var itemSpacing = _settings.itemSpacing;
     var itemWidth = _getItemWidth();
     var maxChartWidth = _getChartWidth(0);
     var maxScreenWidth = _getChartWidth(maxWidth);
-
-    DateTime key;
 
     if (_settings.fit == BarFit.contain) {
       double getChartWidth(double itemWidth, double itemSpacing) =>
@@ -120,127 +124,71 @@ class _BarChartState extends State<BarChart>
       }
     }
 
-    switch (_settings.alignment) {
-      case BarAlignment.start:
-        key = _getKeyStart(
-            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
-        break;
-      case BarAlignment.center:
-        key = _getKeyCenter(
-            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
-        break;
-      case BarAlignment.end:
-        key = _getKeyEnd(
-            details, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth);
-        break;
-    }
+    final key = _KeyUtils.getKey(
+      details.localPosition.dx,
+      itemSpacing,
+      itemWidth,
+      maxChartWidth,
+      maxScreenWidth,
+      _settings.alignment,
+      _data,
+    );
 
     _selectedPeriod.add(key);
     _data.onSelectedPeriodChanged?.call(key);
+    setState(() {});
   }
 
-  DateTime _getKeyStart(
-    TapUpDetails details,
-    double itemSpacing,
-    double itemWidth,
-    double maxChartWidth,
-    double maxScreenWidth,
-  ) {
-    final widthBias = maxScreenWidth - maxChartWidth;
-    final x = details.localPosition.dx;
-    final invertedX = maxChartWidth + widthBias - x;
-    final edgeItemWidth = itemWidth + itemSpacing / 2;
-
-    DateTime key;
-
-    // last item
-    if (invertedX <= edgeItemWidth) {
-      key = _data.data.keys.last;
+  void _handleDragEnd([dynamic details]) {
+    if (_settings.interaction != InteractionType.overview) {
+      return;
     }
 
-    // first item
-    else if (x <= edgeItemWidth) {
-      key = _data.data.keys.first;
-    }
-
-    // other items
-    else {
-      var index = (x - edgeItemWidth) ~/ (itemWidth + itemSpacing);
-      // plus 1 due to exclusion of the first item
-      key = _data.data.keys.elementAt(index + 1);
-    }
-
-    return key;
+    _initSelectedPeriod();
+    setState(() {});
   }
 
-  DateTime _getKeyCenter(
-    TapUpDetails details,
-    double itemSpacing,
-    double itemWidth,
-    double maxChartWidth,
-    double maxScreenWidth,
-  ) {
-    final widthBias = (maxScreenWidth - maxChartWidth) / 2;
-    final x = details.localPosition.dx - widthBias;
-    final invertedX = maxChartWidth - x;
-    final edgeItemWidth = itemWidth + itemSpacing / 2;
-
-    DateTime key;
-
-    // last item
-    if (invertedX <= edgeItemWidth) {
-      key = _data.data.keys.last;
+  void _handleDragUpdate(dynamic details, double maxWidth) {
+    if (_settings.interaction != InteractionType.overview) {
+      return;
     }
 
-    // first item
-    else if (x <= edgeItemWidth) {
-      key = _data.data.keys.first;
+    var itemSpacing = _settings.itemSpacing;
+    var itemWidth = _getItemWidth();
+    var maxChartWidth = _getChartWidth(0);
+    var maxScreenWidth = _getChartWidth(maxWidth);
+
+    if (_settings.fit == BarFit.contain) {
+      double getChartWidth(double itemWidth, double itemSpacing) =>
+          _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+
+      maxChartWidth = getChartWidth(itemWidth, itemSpacing);
+      var barWidth = _style.barStyle.width;
+      final decreaseCoef = itemSpacing / barWidth;
+
+      maxScreenWidth = math.min(maxWidth, maxScreenWidth);
+
+      while (maxChartWidth > maxScreenWidth) {
+        barWidth -= 1;
+        itemSpacing -= decreaseCoef;
+        itemWidth = _getItemWidth(barWidth);
+        maxChartWidth = getChartWidth(itemWidth, itemSpacing);
+      }
     }
 
-    // other items
-    else {
-      final lastIndex = _data.data.length - 1;
-      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
-      // minus 1 due to exclusion of the last item
-      key = _data.data.keys.elementAt(lastIndex - index - 1);
-    }
+    final key = _KeyUtils.getKey(
+      details.localPosition.dx,
+      itemSpacing,
+      itemWidth,
+      maxChartWidth,
+      maxScreenWidth,
+      _settings.alignment,
+      _data,
+    );
 
-    return key;
-  }
-
-  DateTime _getKeyEnd(
-    TapUpDetails details,
-    double itemSpacing,
-    double itemWidth,
-    double maxChartWidth,
-    double maxScreenWidth,
-  ) {
-    final widthBias = maxScreenWidth - maxChartWidth;
-    final x = details.localPosition.dx - widthBias;
-    final invertedX = maxChartWidth - x;
-    final edgeItemWidth = itemWidth + itemSpacing / 2;
-
-    DateTime key;
-
-    // last item
-    if (invertedX <= edgeItemWidth) {
-      key = _data.data.keys.last;
-    }
-
-    // first item
-    else if (x <= edgeItemWidth) {
-      key = _data.data.keys.first;
-    }
-
-    // other items
-    else {
-      final lastIndex = _data.data.length - 1;
-      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
-      // minus 1 due to exclusion of the last item
-      key = _data.data.keys.elementAt(lastIndex - index - 1);
-    }
-
-    return key;
+    _selectedPeriod.add(key);
+    _data.onSelectedPeriodChanged?.call(key);
+    setState(() {});
   }
 
   void _initSelectedPeriod() {
@@ -265,10 +213,6 @@ class _BarChartState extends State<BarChart>
       curve: Curves.easeInOut,
     ));
   }
-
-  TickerFuture _startAnimation() => _valueController.forward(from: 0);
-
-  TickerFuture _revertAnimation() => _valueController.reverse(from: 1);
 
   @override
   void initState() {
@@ -313,6 +257,10 @@ class _BarChartState extends State<BarChart>
   Widget _buildChart(double maxWidth) {
     return GestureDetector(
       onTapUp: (details) => _handleTapUp(details, maxWidth),
+      onHorizontalDragCancel: _handleDragEnd,
+      onHorizontalDragEnd: _handleDragEnd,
+      onHorizontalDragStart: (details) => _handleDragUpdate(details, maxWidth),
+      onHorizontalDragUpdate: (details) => _handleDragUpdate(details, maxWidth),
       child: AnimatedBuilder(
         animation: _valueAnimation,
         builder: (context, _) {
@@ -349,13 +297,26 @@ class _BarChartState extends State<BarChart>
   }
 
   Widget _buildXAxisLabels(double maxWidth, double maxVisibleContentWidth) {
+    final length = _data.data.length;
+    final labelStep = _settings.xAxisLabelQuantity != null
+        ? length / _settings.xAxisLabelQuantity!
+        : .0;
+    final labelQty = (_settings.xAxisLabelQuantity ?? 0) ~/ 2;
+    final labelQtyIsOdd = (_settings.xAxisLabelQuantity ?? 0) % 2 == 1;
+    final steps = [
+      for (var i = 0; i < labelQty; i++) ...[
+        (i * labelStep).round(),
+        (length - 1 - (i * labelStep).round()),
+      ],
+      if (labelQtyIsOdd) length ~/ 2,
+    ]..sort();
     var itemSpacing = _settings.itemSpacing;
     var maxItemWidth = _getItemWidth();
 
     void recalculateSizes() {
       if (_settings.fit == BarFit.contain) {
         double getChartWidth(double itemWidth, double itemSpacing) =>
-            _data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+            length * (itemSpacing + itemWidth) - itemSpacing;
 
         maxWidth = getChartWidth(maxItemWidth, itemSpacing);
         var barWidth = _style.barStyle.width;
@@ -392,7 +353,7 @@ class _BarChartState extends State<BarChart>
                   _style.axisStyle.xAxisLabelStyle,
                 ),
               ),
-            for (var i = 0; i < _data.data.length; i++) ...[
+            for (var i = 0; i < length; i++) ...[
               _XAxisLabel(
                 settings: _settings,
                 style: _style.axisStyle,
@@ -400,8 +361,10 @@ class _BarChartState extends State<BarChart>
                 index: i,
                 maxWidth: maxItemWidth,
                 selectedPeriod: _selectedPeriod,
+                visible:
+                    _settings.xAxisLabelQuantity == null || steps.contains(i),
               ),
-              if (i != _data.data.length - 1) SizedBox(width: itemSpacing),
+              if (i != length - 1) SizedBox(width: itemSpacing),
             ],
           ],
         );
@@ -582,6 +545,7 @@ class _XAxisLabel extends StatelessWidget {
     required this.index,
     required this.maxWidth,
     required this.selectedPeriod,
+    this.visible = true,
   });
 
   final BarChartSettings settings;
@@ -590,6 +554,7 @@ class _XAxisLabel extends StatelessWidget {
   final int index;
   final double maxWidth;
   final StreamController<DateTime> selectedPeriod;
+  final bool visible;
 
   static double getEstimatedHeight(
     BarChartAxisStyle style,
@@ -610,6 +575,9 @@ class _XAxisLabel extends StatelessWidget {
 
     if (settings.interaction != InteractionType.selection) {
       final maxHeight = getEstimatedHeight(style, style.xAxisLabelStyle);
+      final textStyle = visible
+          ? style.xAxisLabelStyle
+          : style.xAxisLabelStyle.copyWith(color: Colors.transparent);
 
       return Container(
         color: Colors.transparent,
@@ -620,8 +588,8 @@ class _XAxisLabel extends StatelessWidget {
             key: ValueKey(currentDate.toIso8601String()),
             padding: style.xAxisLabelPadding,
             child: Text.rich(
-              data.xAxisLabelBuilder(currentDate, style.xAxisLabelStyle),
-              style: style.xAxisLabelStyle,
+              data.xAxisLabelBuilder(currentDate, textStyle),
+              style: textStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -666,5 +634,138 @@ class _XAxisLabel extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class _KeyUtils {
+  const _KeyUtils._();
+
+  static DateTime getKey(
+    double dx,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+    BarAlignment alignment,
+    BarChartData data,
+  ) {
+    switch (alignment) {
+      case BarAlignment.start:
+        return _getKeyStart(
+            dx, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth, data);
+      case BarAlignment.center:
+        return _getKeyCenter(
+            dx, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth, data);
+      case BarAlignment.end:
+        return _getKeyEnd(
+            dx, itemSpacing, itemWidth, maxChartWidth, maxScreenWidth, data);
+    }
+  }
+
+  static DateTime _getKeyStart(
+    double dx,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+    BarChartData data,
+  ) {
+    final widthBias = maxScreenWidth - maxChartWidth;
+    final x = dx;
+    final invertedX = maxChartWidth + widthBias - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // last item
+    if (invertedX <= edgeItemWidth) {
+      key = data.data.keys.last;
+    }
+
+    // first item
+    else if (x <= edgeItemWidth) {
+      key = data.data.keys.first;
+    }
+
+    // other items
+    else {
+      var index = (x - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // plus 1 due to exclusion of the first item
+      key = data.data.keys.elementAt(index + 1);
+    }
+
+    return key;
+  }
+
+  static DateTime _getKeyCenter(
+    double dx,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+    BarChartData data,
+  ) {
+    final widthBias = (maxScreenWidth - maxChartWidth) / 2;
+    final x = dx - widthBias;
+    final invertedX = maxChartWidth - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // last item
+    if (invertedX <= edgeItemWidth) {
+      key = data.data.keys.last;
+    }
+
+    // first item
+    else if (x <= edgeItemWidth) {
+      key = data.data.keys.first;
+    }
+
+    // other items
+    else {
+      final lastIndex = data.data.length - 1;
+      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // minus 1 due to exclusion of the last item
+      key = data.data.keys.elementAt(lastIndex - index - 1);
+    }
+
+    return key;
+  }
+
+  static DateTime _getKeyEnd(
+    double dx,
+    double itemSpacing,
+    double itemWidth,
+    double maxChartWidth,
+    double maxScreenWidth,
+    BarChartData data,
+  ) {
+    final widthBias = maxScreenWidth - maxChartWidth;
+    final x = dx - widthBias;
+    final invertedX = maxChartWidth - x;
+    final edgeItemWidth = itemWidth + itemSpacing / 2;
+
+    DateTime key;
+
+    // last item
+    if (invertedX <= edgeItemWidth) {
+      key = data.data.keys.last;
+    }
+
+    // first item
+    else if (x <= edgeItemWidth) {
+      key = data.data.keys.first;
+    }
+
+    // other items
+    else {
+      final lastIndex = data.data.length - 1;
+      var index = (invertedX - edgeItemWidth) ~/ (itemWidth + itemSpacing);
+      // minus 1 due to exclusion of the last item
+      key = data.data.keys.elementAt(lastIndex - index - 1);
+    }
+
+    return key;
   }
 }

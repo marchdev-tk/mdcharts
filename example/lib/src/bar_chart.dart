@@ -328,6 +328,15 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               },
               title: const Text('yAxisLabelSpacing'),
             ),
+            DialogListTile(
+              value: data.xAxisLabelQuantity?.toString(),
+              onChanged: (value) => _settings.add(data.copyWith(
+                allowNullXAxisLabelQuantity: true,
+                xAxisLabelQuantity: value != null ? int.parse(value) : null,
+              )),
+              keyboardType: TextInputType.number,
+              title: const Text('xAxisLabelQuantity'),
+            ),
           ],
         );
       },
