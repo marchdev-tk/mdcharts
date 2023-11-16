@@ -17,10 +17,16 @@ class BarChartData {
     this.onSelectedPeriodChanged,
     this.predefinedMaxValue,
     this.maxValueRoundingMap = defaultMaxValueRoundingMap,
+    this.titleBuilder = defaultTitleBuilder,
+    this.subtitleBuilder = defaultSubtitleBuilder,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
   });
 
+  static String defaultTitleBuilder(DateTime key, List<double> value) =>
+      '${key.year}-${key.month}-${key.day}';
+  static String defaultSubtitleBuilder(DateTime key, List<double> value) =>
+      value.toString();
   static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
       TextSpan(text: '${key.month}-${key.year}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
@@ -78,6 +84,16 @@ class BarChartData {
   /// As a sample of correctly formed map [defaultMaxValueRoundingMap] could be
   /// used.
   final Map<num, num> maxValueRoundingMap;
+
+  /// Text builder for the tooltip title.
+  ///
+  /// If not set explicitly, [defaultTitleBuilder] will be used.
+  final TooltipBuilder<List<double>> titleBuilder;
+
+  /// Text builder for the tooltip subtitle.
+  ///
+  /// If not set explicitly, [defaultSubtitleBuilder] will be used.
+  final TooltipBuilder<List<double>> subtitleBuilder;
 
   /// Text builder for the X axis label.
   ///

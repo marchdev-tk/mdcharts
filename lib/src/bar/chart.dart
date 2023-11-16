@@ -59,6 +59,8 @@ class _BarChartState extends State<BarChart>
   late BarChartStyle _style;
   late BarChartSettings _settings;
 
+  bool _dragInProgress = false;
+
   CrossAxisAlignment _convertAlignment(BarAlignment alignment) {
     switch (alignment) {
       case BarAlignment.start:
@@ -145,6 +147,7 @@ class _BarChartState extends State<BarChart>
     }
 
     _initSelectedPeriod();
+    _dragInProgress = false;
     setState(() {});
   }
 
@@ -188,6 +191,7 @@ class _BarChartState extends State<BarChart>
 
     _selectedPeriod.add(key);
     _data.onSelectedPeriodChanged?.call(key);
+    _dragInProgress = true;
     setState(() {});
   }
 
@@ -272,6 +276,7 @@ class _BarChartState extends State<BarChart>
               _settings,
               _selectedPeriod,
               _valueAnimation.value,
+              _dragInProgress,
             ),
             child: StreamBuilder<double>(
               stream: _yAxisLabelWidth.distinct(),
@@ -533,7 +538,7 @@ class _Grid extends StatelessWidget {
       );
     }
 
-    return grid;
+    return RepaintBoundary(child: grid);
   }
 }
 

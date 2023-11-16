@@ -10,10 +10,6 @@ import 'package:flutter/foundation.dart';
 import '../common.dart';
 import '../utils.dart';
 
-/// Signature for callbacks that builds tooltip text based on the provided [key]
-/// and [value].
-typedef TooltipBuilder = String Function(DateTime key, double value);
-
 /// Defines how values of the [LineChartData.data] must be represented.
 ///
 /// Main usage of this type comes in periodical types of [LineChartGridType],
@@ -164,12 +160,12 @@ class LineChartData {
   /// Text builder for the tooltip title.
   ///
   /// If not set explicitly, [defaultTitleBuilder] will be used.
-  final TooltipBuilder titleBuilder;
+  final TooltipBuilder<double> titleBuilder;
 
   /// Text builder for the tooltip subtitle.
   ///
   /// If not set explicitly, [defaultSubtitleBuilder] will be used.
-  final TooltipBuilder subtitleBuilder;
+  final TooltipBuilder<double> subtitleBuilder;
 
   /// Text builder for the X axis label.
   ///

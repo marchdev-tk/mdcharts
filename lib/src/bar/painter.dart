@@ -22,6 +22,7 @@ class BarChartPainter extends CustomPainter {
     this.settings,
     this.selectedPeriod,
     this.valueCoef,
+    this.dragInProgress,
   );
 
   /// Set of required (and optional) data to construct the bar chart.
@@ -39,6 +40,9 @@ class BarChartPainter extends CustomPainter {
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
   final double valueCoef;
+
+  /// Whether drag in progress or not, this will affect tooltip drawing.
+  final bool dragInProgress;
 
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
   /// [settings.yAxisDivisions] with "beautiful" integer chunks.
@@ -77,6 +81,9 @@ class BarChartPainter extends CustomPainter {
 
     return !isTooSmall;
   }
+
+  bool get _showTooltip =>
+      settings.interaction == InteractionType.overview && dragInProgress;
 
   /// Axis painter.
   void paintAxis(Canvas canvas, Size size) {
@@ -644,10 +651,96 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
+  /// Tooltip painter.
+  void paintTooltip(Canvas canvas, Size size) {
+    if (!data.canDraw || !_showTooltip) {
+      return;
+    }
+
+    final entryKey = selectedPeriod.value;
+    final entryValue = data.data[selectedPeriod.value] ?? [];
+    // final selectedIndex =
+    //     data.data.entries.toList().indexWhere((e) => e.key == entryKey);
+    final titlePainter = MDTextPainter(TextSpan(
+      text: data.titleBuilder(entryKey, entryValue),
+      style: style.tooltipStyle.titleStyle,
+    ));
+    final subtitlePainter = MDTextPainter(TextSpan(
+      text: data.subtitleBuilder(entryKey, entryValue),
+      style: style.tooltipStyle.subtitleStyle,
+    ));
+    const point = Offset(0, 100);
+    // final point = _getPoint(size, selectedIndex);
+    final triangleWidth = style.tooltipStyle.triangleWidth;
+    final triangleHeight = style.tooltipStyle.triangleHeight;
+    final bottomMargin = style.tooltipStyle.bottomMargin + triangleHeight;
+    final titleSize = titlePainter.size;
+    final subtitleSize = subtitlePainter.size;
+    final spacing = style.tooltipStyle.spacing;
+    final padding = style.tooltipStyle.padding;
+    final contentWidth = math.max(titleSize.width, subtitleSize.width);
+    final tooltipSize = Size(
+      contentWidth + padding.horizontal,
+      titleSize.height + spacing + subtitleSize.height + padding.vertical,
+    );
+    final radius = Radius.circular(style.tooltipStyle.radius);
+    final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
+    final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
+    final xBias = isSelectedIndexFirst
+        ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
+        : isSelectedIndexLast
+            ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
+            : 0;
+    final titleOffset = Offset(
+      point.dx - titleSize.width / 2 + xBias,
+      point.dy -
+          bottomMargin -
+          padding.bottom -
+          subtitleSize.height -
+          spacing -
+          titleSize.height,
+    );
+    final subtitleOffset = Offset(
+      point.dx - subtitleSize.width / 2 + xBias,
+      point.dy - bottomMargin - padding.bottom - subtitleSize.height,
+    );
+    final rrect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(
+          point.dx + xBias,
+          point.dy - bottomMargin - tooltipSize.height / 2,
+        ),
+        width: tooltipSize.width,
+        height: tooltipSize.height,
+      ),
+      radius,
+    );
+
+    final path = Path();
+    path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
+    path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
+    path.relativeLineTo(triangleWidth, 0);
+    path.relativeLineTo(-triangleWidth / 2, triangleHeight);
+    path.close();
+    path.addRRect(rrect);
+
+    canvas.drawShadow(
+      path,
+      style.tooltipStyle.shadowColor,
+      style.tooltipStyle.shadowElevation,
+      false,
+    );
+    canvas.drawPath(path, style.tooltipStyle.tooltipPaint);
+
+    titlePainter.paint(canvas, titleOffset);
+    subtitlePainter.paint(canvas, subtitleOffset);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     paintAxis(canvas, size);
     paintBar(canvas, size);
+    paintTooltip(canvas, size);
   }
 
   @override

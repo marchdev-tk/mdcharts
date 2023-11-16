@@ -4,6 +4,10 @@
 
 import 'package:flutter/rendering.dart';
 
+/// Signature for callbacks that builds tooltip text based on the provided [key]
+/// and [value].
+typedef TooltipBuilder<T> = String Function(DateTime key, T value);
+
 /// Signature for callbacks that builds label text based on the provided [key].
 typedef LabelBuilder<T> = String Function(T value);
 
