@@ -45,6 +45,7 @@ class BarChartStyle {
     this.gridStyle = const BarChartGridStyle(),
     this.axisStyle = const BarChartAxisStyle(),
     this.barStyle = const BarChartBarStyle(),
+    this.tooltipStyle = const BarChartTooltipStyle(),
   });
 
   /// Style of the grid lines.
@@ -56,29 +57,38 @@ class BarChartStyle {
   /// Style of the bar.
   final BarChartBarStyle barStyle;
 
+  /// Style of the tooltip.
+  final BarChartTooltipStyle tooltipStyle;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartStyle copyWith({
     BarChartGridStyle? gridStyle,
     BarChartAxisStyle? axisStyle,
     BarChartBarStyle? barStyle,
+    BarChartTooltipStyle? tooltipStyle,
   }) =>
       BarChartStyle(
         gridStyle: gridStyle ?? this.gridStyle,
         axisStyle: axisStyle ?? this.axisStyle,
         barStyle: barStyle ?? this.barStyle,
+        tooltipStyle: tooltipStyle ?? this.tooltipStyle,
       );
 
   @override
   int get hashCode =>
-      gridStyle.hashCode ^ axisStyle.hashCode ^ barStyle.hashCode;
+      gridStyle.hashCode ^
+      axisStyle.hashCode ^
+      barStyle.hashCode ^
+      tooltipStyle.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is BarChartStyle &&
       gridStyle == other.gridStyle &&
       axisStyle == other.axisStyle &&
-      barStyle == other.barStyle;
+      barStyle == other.barStyle &&
+      tooltipStyle == other.tooltipStyle;
 }
 
 /// Contains various customization options for the grid lines of the chart.
@@ -538,4 +548,184 @@ class BarChartBarStyle {
       shadowColor == other.shadowColor &&
       selectedShadowColor == other.selectedShadowColor &&
       shadowElevation == other.shadowElevation;
+}
+
+/// Contains various customization options for the tooltip.
+class BarChartTooltipStyle {
+  /// Constructs an instance of [BarChartTooltipStyle].
+  const BarChartTooltipStyle({
+    this.color = const Color(0xFFFFFFFF),
+    this.titleStyle = defaultTitleStyle,
+    this.subtitleStyle = defaultSubtitleStyle,
+    this.padding = defaultPadding,
+    this.spacing = 2,
+    this.radius = 8,
+    this.triangleWidth = 12,
+    this.triangleHeight = 5,
+    this.shadowColor = const Color(0xFF000000),
+    this.shadowElevation = 4,
+    this.bottomMargin = 6,
+  });
+
+  static const defaultTitleStyle = TextStyle(
+    height: 1,
+    fontSize: 10,
+    color: Color(0xCC000000),
+  );
+  static const defaultSubtitleStyle = TextStyle(
+    height: 16 / 12,
+    fontSize: 12,
+    color: Color(0xFF000000),
+  );
+  static const defaultPadding = EdgeInsets.fromLTRB(12, 4, 12, 4);
+
+  /// Color of the tooltip.
+  ///
+  /// Defaults to `0xFFFFFFFF`.
+  final Color color;
+
+  /// Title style of the tooltip.
+  ///
+  /// Defaults to [defaultTitleStyle].
+  final TextStyle titleStyle;
+
+  /// Subtitle style of the tooltip.
+  ///
+  /// Defaults to [defaultSubtitleStyle].
+  final TextStyle subtitleStyle;
+
+  /// Padding around title and subtitle of the tooltip.
+  ///
+  /// Defaults to [defaultPadding].
+  final EdgeInsets padding;
+
+  /// Spacing between title and subtitle of the tooltip.
+  ///
+  /// Defaults to `2`.
+  final double spacing;
+
+  /// Circular radius of the tooltip.
+  ///
+  /// Defaults to `8`.
+  final double radius;
+
+  /// Width of the tooltip triangle.
+  ///
+  /// Defaults to `12`.
+  final double triangleWidth;
+
+  /// Height of the tooltip triangle.
+  ///
+  /// Defaults to `5`.
+  final double triangleHeight;
+
+  /// Shadow color of the tooltip.
+  ///
+  /// Defaults to `0xFF000000`.
+  final Color shadowColor;
+
+  /// Elevation of the tooltip.
+  ///
+  /// Defaults to `4`.
+  final double shadowElevation;
+
+  /// Bottom margin of the tooltip.
+  ///
+  /// Defaults to `6`.
+  final double bottomMargin;
+
+  /// Gets size of the tooltip based on following:
+  /// - [bottomMargin];
+  /// - [padding.vertical];
+  /// - [spacing];
+  /// - [titleStyle];
+  /// - [subtitleStyle].
+  double get tooltipHeight {
+    final titleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: titleStyle,
+    )).size.height;
+    final subtitleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: subtitleStyle,
+    )).size.height;
+
+    return bottomMargin +
+        padding.vertical +
+        spacing +
+        titleHeight +
+        subtitleHeight;
+  }
+
+  /// Gets horizontal overflow width of the tooltip based on following:
+  /// - [radius];
+  /// - half size of [triangleWidth].
+  double get tooltipHorizontalOverflowWidth {
+    return radius + triangleWidth / 2;
+  }
+
+  /// Gets a [Paint] for the tooltip drawing.
+  Paint get tooltipPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.fill
+    ..color = color;
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  BarChartTooltipStyle copyWith({
+    Color? color,
+    TextStyle? titleStyle,
+    TextStyle? subtitleStyle,
+    EdgeInsets? padding,
+    double? spacing,
+    double? radius,
+    double? triangleWidth,
+    double? triangleHeight,
+    Color? shadowColor,
+    double? shadowElevation,
+    double? bottomMargin,
+  }) =>
+      BarChartTooltipStyle(
+        color: color ?? this.color,
+        titleStyle: titleStyle ?? this.titleStyle,
+        subtitleStyle: subtitleStyle ?? this.subtitleStyle,
+        padding: padding ?? this.padding,
+        spacing: spacing ?? this.spacing,
+        radius: radius ?? this.radius,
+        triangleWidth: triangleWidth ?? this.triangleWidth,
+        triangleHeight: triangleHeight ?? this.triangleHeight,
+        shadowColor: shadowColor ?? this.shadowColor,
+        shadowElevation: shadowElevation ?? this.shadowElevation,
+        bottomMargin: bottomMargin ?? this.bottomMargin,
+      );
+
+  @override
+  int get hashCode =>
+      color.hashCode ^
+      titleStyle.hashCode ^
+      subtitleStyle.hashCode ^
+      padding.hashCode ^
+      spacing.hashCode ^
+      radius.hashCode ^
+      triangleWidth.hashCode ^
+      triangleHeight.hashCode ^
+      shadowColor.hashCode ^
+      shadowElevation.hashCode ^
+      bottomMargin.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is BarChartTooltipStyle &&
+      color == other.color &&
+      titleStyle == other.titleStyle &&
+      subtitleStyle == other.subtitleStyle &&
+      padding == other.padding &&
+      spacing == other.spacing &&
+      radius == other.radius &&
+      triangleWidth == other.triangleWidth &&
+      triangleHeight == other.triangleHeight &&
+      shadowColor == other.shadowColor &&
+      shadowElevation == other.shadowElevation &&
+      bottomMargin == other.bottomMargin;
 }

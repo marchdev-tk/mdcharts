@@ -64,6 +64,8 @@ class BarChartExample extends StatelessWidget {
         _BarStyleSetupGroup(),
         SetupDivider(),
         _BardBorderSetupGroup(),
+        SetupDivider(),
+        _TooltipStyleSetupGroup(),
       ],
     );
   }
@@ -874,6 +876,131 @@ class _BardBorderSetupGroup extends StatelessWidget {
                 },
                 title: Text(AxisDivisionEdges.values[i].name),
               ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _TooltipStyleSetupGroup extends StatelessWidget {
+  const _TooltipStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<BarChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Tooltip Style',
+          children: [
+            ColorListTile(
+              value: data.tooltipStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.spacing.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      spacing: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('spacing'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.radius.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      radius: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('radius'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.triangleWidth.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      triangleWidth: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('triangleWidth'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.triangleHeight.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      triangleHeight: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('triangleHeight'),
+            ),
+            ColorListTile(
+              value: data.tooltipStyle.shadowColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      shadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowColor'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.shadowElevation.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      shadowElevation: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowElevation'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.bottomMargin.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      bottomMargin: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('bottomMargin'),
+            ),
           ],
         );
       },
