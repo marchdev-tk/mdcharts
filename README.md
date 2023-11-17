@@ -96,6 +96,11 @@ march.dev charts library. Provides highly customizable and configurable charts.
   * `initialSelectedPeriod` - initial selected period of the bar chart, defaults to `null`.
   * `onSelectedPeriodChanged` - callback that notifies if selected period has changed, defaults to `null`.
 
+* ##### Tooltip builders
+
+  * `titleBuilder` - builds title of the tooltip based on `DateTime` key and/or `List<double>` value from provided data.
+  * `subtitleBuilder` - builds subtitle of the tooltip based on `DateTime` key and/or `List<double>` value from provided data.
+
 * ##### Label builder
 
   * `xAxisLabelBuilder` - builds X axis label based on `DateTime` value from provided data.
@@ -124,6 +129,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `gridStyle` - styling options for the grid, for more details please refer to the source code of the `BarChartGridStyle`.
 * `axisStyle` - styling options for the axis, for more details please refer to the source code of the `BarChartAxisStyle`.
 * `barStyle` - styling options for the chart line, for more details please refer to the source code of the `BarChartBarStyle`.
+* `tooltipStyle` - styling options for the tooltip, for more details please refer to the source code of the `BarChartTooltipStyle`.
 
 ## Examples
 

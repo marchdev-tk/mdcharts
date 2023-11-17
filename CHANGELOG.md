@@ -1,10 +1,12 @@
 # Changelog
 
-## 4.1.9 - 16.11.2023
+## 4.2.0 - 17.11.2023
 
 * Changes of the `BarChart`:
-  * Added `BarChartTooltipStyle`.
+  * Added `BarChartTooltipStyle` to `BarChartStyle`.
+  * Added tooltip builders to `BarChartData`.
   * Added `Tooltip Style` section to example app.
+  * Implemented tooltip painter. 
 
 ## 4.1.8 - 16.11.2023
 
