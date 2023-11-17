@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -651,6 +652,45 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
+  Offset _getPoint(Size size, DateTime entryKey, List<double> entryValue) {
+    final selectedIndex =
+        data.data.entries.toList().indexWhere((e) => e.key == entryKey);
+
+    final barItemQuantity = data.data.values.first.length;
+    final barSpacing = settings.barSpacing;
+
+    double getItemWidth(double barWidth) =>
+        barWidth * barItemQuantity + barSpacing * (barItemQuantity - 1);
+
+    var barWidth = style.barStyle.width;
+    var itemSpacing = settings.itemSpacing;
+    var itemWidth = getItemWidth(barWidth);
+
+    if (settings.fit == BarFit.contain) {
+      double getChartWidth(double itemWidth, double itemSpacing) =>
+          data.data.length * (itemSpacing + itemWidth) - itemSpacing;
+
+      var chartWidth = getChartWidth(itemWidth, itemSpacing);
+      final decreaseCoef = itemSpacing / barWidth;
+
+      while (chartWidth > size.width) {
+        barWidth -= 1;
+        itemSpacing -= decreaseCoef;
+        itemWidth = getItemWidth(barWidth);
+        chartWidth = getChartWidth(itemWidth, itemSpacing);
+      }
+    }
+
+    final barValue = entryValue.max;
+    final top = normalize(barValue * valueCoef) *
+        (size.height - style.barStyle.zeroBarHeight);
+    final itemOffset =
+        (itemSpacing + itemWidth) * (data.data.length - 1 - selectedIndex);
+    final barRight = size.width - itemOffset;
+
+    return Offset(barRight - itemWidth / 2, top);
+  }
+
   /// Tooltip painter.
   void paintTooltip(Canvas canvas, Size size) {
     if (!data.canDraw || !_showTooltip) {
@@ -659,8 +699,6 @@ class BarChartPainter extends CustomPainter {
 
     final entryKey = selectedPeriod.value;
     final entryValue = data.data[selectedPeriod.value] ?? [];
-    // final selectedIndex =
-    //     data.data.entries.toList().indexWhere((e) => e.key == entryKey);
     final titlePainter = MDTextPainter(TextSpan(
       text: data.titleBuilder(entryKey, entryValue),
       style: style.tooltipStyle.titleStyle,
@@ -669,8 +707,7 @@ class BarChartPainter extends CustomPainter {
       text: data.subtitleBuilder(entryKey, entryValue),
       style: style.tooltipStyle.subtitleStyle,
     ));
-    const point = Offset(0, 100);
-    // final point = _getPoint(size, selectedIndex);
+    final point = _getPoint(size, entryKey, entryValue);
     final triangleWidth = style.tooltipStyle.triangleWidth;
     final triangleHeight = style.tooltipStyle.triangleHeight;
     final bottomMargin = style.tooltipStyle.bottomMargin + triangleHeight;
