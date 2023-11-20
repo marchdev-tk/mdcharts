@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.2.1 - 20.11.2023
+
+* Changes of the `BarChart`:
+  * Added `titleBuilder` and `subtitleBuilder` of `BarChartData` to hashCode and equality operator.
+
 ## 4.2.0 - 17.11.2023
 
 * Changes of the `BarChart`:
