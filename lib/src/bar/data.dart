@@ -155,6 +155,8 @@ class BarChartData {
     DateTime? initialSelectedPeriod,
     double? predefinedMaxValue,
     Map<num, num>? maxValueRoundingMap,
+    TooltipBuilder<List<double>>? titleBuilder,
+    TooltipBuilder<List<double>>? subtitleBuilder,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,
     LabelBuilder<double>? yAxisLabelBuilder,
   }) =>
@@ -165,6 +167,8 @@ class BarChartData {
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
         maxValueRoundingMap: maxValueRoundingMap ?? this.maxValueRoundingMap,
+        titleBuilder: titleBuilder ?? this.titleBuilder,
+        subtitleBuilder: subtitleBuilder ?? this.subtitleBuilder,
         xAxisLabelBuilder: xAxisLabelBuilder ?? this.xAxisLabelBuilder,
         yAxisLabelBuilder: yAxisLabelBuilder ?? this.yAxisLabelBuilder,
       );
@@ -175,6 +179,8 @@ class BarChartData {
       initialSelectedPeriod.hashCode ^
       predefinedMaxValue.hashCode ^
       maxValueRoundingMap.hashCode ^
+      titleBuilder.hashCode ^
+      subtitleBuilder.hashCode ^
       xAxisLabelBuilder.hashCode ^
       yAxisLabelBuilder.hashCode;
 
@@ -185,6 +191,8 @@ class BarChartData {
       initialSelectedPeriod == other.initialSelectedPeriod &&
       predefinedMaxValue == other.predefinedMaxValue &&
       mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
+      titleBuilder == other.titleBuilder &&
+      subtitleBuilder == other.subtitleBuilder &&
       xAxisLabelBuilder == other.xAxisLabelBuilder &&
       yAxisLabelBuilder == other.yAxisLabelBuilder;
 }
