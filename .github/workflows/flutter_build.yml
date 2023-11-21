@@ -2,17 +2,33 @@ name: build
 
 on:
   push:
-    branches: 
-      - main
-      - master
-      - develop
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build:
+    
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - uses: subosito/flutter-action@v2
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: 'Setup Flutter'
+      uses: subosito/flutter-action@v2
       with:
+        flutter-version: '3.13.9'
         channel: 'stable'
-    - run: flutter pub get
+
+    - name: 'Get Packages'
+      run: flutter pub get
+
+    - name: 'Dry Run Publishing'
+      run: flutter packages pub publish --dry-run
+    
+    - name: 'Publish Artifact'
+      uses: k-paxian/dart-package-publisher@v1.6
+        with:
+          credentialJson: ${{ secrets.PUB_CREDS }}
+          flutter: true
+          skipTests: true
