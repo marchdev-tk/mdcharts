@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.3.0 - 21.11.2023
+
+* Changes of the `BarChart`:
+  * Fixed user input point interpolation to chart coordinate system.
+
 ## 4.2.1 - 20.11.2023
 
 * Changes of the `BarChart`:
