@@ -7,6 +7,7 @@ on:
 
 jobs:
   publish:
+    environment: ${{ inputs.environment }}
     permissions:
       id-token: write
     
