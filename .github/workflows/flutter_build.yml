@@ -28,7 +28,7 @@ jobs:
     
     - name: 'Publish Artifact'
       uses: k-paxian/dart-package-publisher@v1.6
-        with:
-          credentialJson: ${{ secrets.PUB_CREDS }}
-          flutter: true
-          skipTests: true
+      with:
+        credentialJson: ${{ secrets.PUB_CREDS }}
+        flutter: true
+        skipTests: true
