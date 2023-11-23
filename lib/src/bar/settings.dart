@@ -105,9 +105,9 @@ class BarChartSettings {
   /// **Note**: to prevent from displaying only Y axis - set
   /// [xAxisDivisions] to `0`, so Y axis will not be painted, but X axis will.
   ///
-  /// **Note**: to prevent from displaying entire grid set both [xAxisDivisions]
-  /// and [yAxisDivisions] to `0` or consider using [BarChartSettings.gridless]
-  /// constructor.
+  /// **Also Note**: to prevent from displaying entire grid set both
+  /// [xAxisDivisions] and [yAxisDivisions] to `0` or consider using
+  /// [BarChartSettings.gridless] constructor.
   final int yAxisDivisions;
 
   /// Quantity of the X axis labels to draw.
@@ -121,7 +121,7 @@ class BarChartSettings {
   /// based on width that they occupy and available drawing space.
   ///
   /// **Also Note**: that this setting is working only in a conjunction with
-  /// [InteractionType.overview].
+  /// [BarFit.contain].
   final int? xAxisLabelQuantity;
 
   /// Axis division edges to be painted.
@@ -172,6 +172,10 @@ class BarChartSettings {
   final double itemSpacing;
 
   /// How to interact with the [BarChart].
+  ///
+  /// **Please note**, that [InteractionType.overview] would work only in a
+  /// conjunction with [BarFit.contain] as of gesture distinction conflict
+  /// between Scrollable and GestureDetector.
   ///
   /// Defaults to [InteractionType.selection].
   final InteractionType interaction;

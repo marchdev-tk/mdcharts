@@ -219,6 +219,58 @@ class _BarChartState extends State<BarChart>
           maxWidthAdjusted = maxWidth - displaceInset;
         }
 
+        final chart = AnimatedBuilder(
+          animation: _valueAnimation,
+          builder: (context, _) {
+            return CustomPaint(
+              key: ValueKey(_valueAnimation.value),
+              painter: BarChartPainter(
+                _data,
+                _style,
+                _settings,
+                _selectedPeriod,
+                _valueAnimation.value,
+                _dragInProgress,
+              ),
+              child: SizedBox(
+                width: math.max(0, maxWidthAdjusted),
+                height: double.infinity,
+              ),
+            );
+          },
+        );
+
+        final xAxisLabels = CustomPaint(
+          painter: BarChartXAxisLabelPainter(
+            _data,
+            _style,
+            _settings,
+            _selectedPeriod,
+          ),
+          size: Size(
+            math.max(0, maxWidthAdjusted),
+            widget.style.axisStyle.labelHeight,
+          ),
+        );
+
+        Widget content;
+        if (_settings.showAxisXLabels) {
+          content = Column(
+            crossAxisAlignment: _convertAlignment(_settings.alignment),
+            children: [
+              Expanded(child: chart),
+              // _buildXAxisLabels(maxWidth, maxVisibleContentWidth),
+              Container(
+                height: widget.style.axisStyle.xAxisLabelTopMargin,
+                color: Colors.transparent,
+              ),
+              xAxisLabels,
+            ],
+          );
+        } else {
+          content = chart;
+        }
+
         return GestureDetector(
           onTapUp: (details) => _handleTapUp(details, maxWidthAdjusted),
           onHorizontalDragCancel: _handleDragEnd,
@@ -227,147 +279,115 @@ class _BarChartState extends State<BarChart>
               _handleDragUpdate(details, maxWidthAdjusted),
           onHorizontalDragUpdate: (details) =>
               _handleDragUpdate(details, maxWidthAdjusted),
-          child: AnimatedBuilder(
-            animation: _valueAnimation,
-            builder: (context, _) {
-              return CustomPaint(
-                key: ValueKey(_valueAnimation.value),
-                painter: BarChartPainter(
-                  _data,
-                  _style,
-                  _settings,
-                  _selectedPeriod,
-                  _valueAnimation.value,
-                  _dragInProgress,
-                ),
-                child: SizedBox(
-                  width: math.max(0, maxWidthAdjusted),
-                  height: double.infinity,
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildXAxisLabels(double maxWidth, double maxVisibleContentWidth) {
-    final length = _data.data.length;
-    final labelStep = _settings.xAxisLabelQuantity != null
-        ? length / _settings.xAxisLabelQuantity!
-        : .0;
-    final labelQty = (_settings.xAxisLabelQuantity ?? 0) ~/ 2;
-    final labelQtyIsOdd = (_settings.xAxisLabelQuantity ?? 0) % 2 == 1;
-    final steps = [
-      for (var i = 0; i < labelQty; i++) ...[
-        (i * labelStep).round(),
-        (length - 1 - (i * labelStep).round()),
-      ],
-      if (labelQtyIsOdd) length ~/ 2,
-    ]..sort();
-    var itemSpacing = _settings.itemSpacing;
-    var maxItemWidth = _getItemWidth();
-
-    void recalculateSizes() {
-      if (_settings.fit == BarFit.contain) {
-        double getChartWidth(double itemWidth, double itemSpacing) =>
-            length * (itemSpacing + itemWidth) - itemSpacing;
-
-        maxWidth = getChartWidth(maxItemWidth, itemSpacing);
-        var barWidth = _style.barStyle.width;
-        final decreaseCoef = itemSpacing / barWidth;
-
-        final displaceInset = _settings.yAxisLayout == YAxisLayout.displace
-            ? _yAxisLabelWidth.value + _settings.yAxisLabelSpacing
-            : .0;
-
-        while (maxWidth > maxVisibleContentWidth - displaceInset) {
-          barWidth -= 1;
-          itemSpacing -= decreaseCoef;
-          maxItemWidth = _getItemWidth(barWidth);
-          maxWidth = getChartWidth(maxItemWidth, itemSpacing);
-        }
-      }
-    }
-
-    recalculateSizes();
-
-    return StreamBuilder<double>(
-      stream: _yAxisLabelWidth.distinct(),
-      initialData: _yAxisLabelWidth.value,
-      builder: (context, snapshot) {
-        recalculateSizes();
-
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (_data.data.isEmpty)
-              SizedBox(
-                height: _XAxisLabel.getEstimatedHeight(
-                  _style.axisStyle,
-                  _style.axisStyle.xAxisLabelStyle,
-                ),
-              ),
-            for (var i = 0; i < length; i++) ...[
-              _XAxisLabel(
-                settings: _settings,
-                style: _style.axisStyle,
-                data: _data,
-                index: i,
-                maxWidth: maxItemWidth,
-                selectedPeriod: _selectedPeriod,
-                visible:
-                    _settings.xAxisLabelQuantity == null || steps.contains(i),
-              ),
-              if (i != length - 1) SizedBox(width: itemSpacing),
-            ],
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildContent(BoxConstraints constraints) {
-    final maxVisibleContentWidth =
-        constraints.maxWidth - (widget.padding?.horizontal ?? 0);
-    var maxWidth = _getChartWidth(maxVisibleContentWidth);
-
-    Widget content;
-    if (_settings.showAxisXLabels) {
-      content = Column(
-        crossAxisAlignment: _convertAlignment(_settings.alignment),
-        children: [
-          Expanded(child: _buildChart(maxWidth)),
-          _buildXAxisLabels(maxWidth, maxVisibleContentWidth),
-        ],
-      );
-    } else {
-      content = _buildChart(maxWidth);
-    }
-
-    switch (_settings.fit) {
-      case BarFit.contain:
-        content = Padding(
-          padding: widget.padding ?? EdgeInsets.zero,
           child: content,
         );
-        break;
+      },
+    );
+  }
+
+  // Widget _buildXAxisLabels(double maxWidth, double maxVisibleContentWidth) {
+  //   final length = _data.data.length;
+  //   final labelStep = _settings.xAxisLabelQuantity != null
+  //       ? length / _settings.xAxisLabelQuantity!
+  //       : .0;
+  //   final labelQty = (_settings.xAxisLabelQuantity ?? 0) ~/ 2;
+  //   final labelQtyIsOdd = (_settings.xAxisLabelQuantity ?? 0) % 2 == 1;
+  //   final steps = [
+  //     for (var i = 0; i < labelQty; i++) ...[
+  //       (i * labelStep).round(),
+  //       (length - 1 - (i * labelStep).round()),
+  //     ],
+  //     if (labelQtyIsOdd) length ~/ 2,
+  //   ]..sort();
+  //   var itemSpacing = _settings.itemSpacing;
+  //   var maxItemWidth = _getItemWidth();
+  //
+  //   void recalculateSizes() {
+  //     if (_settings.fit == BarFit.contain) {
+  //       double getChartWidth(double itemWidth, double itemSpacing) =>
+  //           length * (itemSpacing + itemWidth) - itemSpacing;
+  //
+  //       maxWidth = getChartWidth(maxItemWidth, itemSpacing);
+  //       var barWidth = _style.barStyle.width;
+  //       final decreaseCoef = itemSpacing / barWidth;
+  //
+  //       final displaceInset = _settings.yAxisLayout == YAxisLayout.displace
+  //           ? _yAxisLabelWidth.value + _settings.yAxisLabelSpacing
+  //           : .0;
+  //
+  //       while (maxWidth > maxVisibleContentWidth - displaceInset) {
+  //         barWidth -= 1;
+  //         itemSpacing -= decreaseCoef;
+  //         maxItemWidth = _getItemWidth(barWidth);
+  //         maxWidth = getChartWidth(maxItemWidth, itemSpacing);
+  //       }
+  //     }
+  //   }
+  //
+  //   recalculateSizes();
+  //
+  //   return StreamBuilder<double>(
+  //     stream: _yAxisLabelWidth.distinct(),
+  //     initialData: _yAxisLabelWidth.value,
+  //     builder: (context, snapshot) {
+  //       recalculateSizes();
+  //
+  //       return Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           if (_data.data.isEmpty)
+  //             SizedBox(
+  //               height: _XAxisLabel.getEstimatedHeight(
+  //                 _style.axisStyle,
+  //                 _style.axisStyle.xAxisLabelStyle,
+  //               ),
+  //             ),
+  //           for (var i = 0; i < length; i++) ...[
+  //             _XAxisLabel(
+  //               settings: _settings,
+  //               style: _style.axisStyle,
+  //               data: _data,
+  //               index: i,
+  //               maxWidth: maxItemWidth,
+  //               selectedPeriod: _selectedPeriod,
+  //               visible:
+  //                   _settings.xAxisLabelQuantity == null || steps.contains(i),
+  //             ),
+  //             if (i != length - 1) SizedBox(width: itemSpacing),
+  //           ],
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  Widget _buildContentBarFitAdjuster({required Widget child}) {
+    switch (_settings.fit) {
+      case BarFit.contain:
+        return Padding(
+          padding: widget.padding ?? EdgeInsets.zero,
+          child: child,
+        );
 
       case BarFit.none:
       default:
-        content = ScrollConfiguration(
+        return ScrollConfiguration(
           behavior: AdaptiveScrollBehavior(),
           child: SingleChildScrollView(
             reverse: _settings.reverse,
             scrollDirection: Axis.horizontal,
             padding: widget.padding,
-            child: content,
+            child: child,
           ),
         );
-        break;
     }
+  }
 
+  Widget _buildContentBarAlignmentAdjuster({
+    required double maxWidth,
+    required double maxVisibleContentWidth,
+    required Widget child,
+  }) {
     return StreamBuilder<double>(
       stream: _yAxisLabelWidth.distinct(),
       initialData: _yAxisLabelWidth.value,
@@ -399,9 +419,23 @@ class _BarChartState extends State<BarChart>
 
         return Padding(
           padding: padding,
-          child: content,
+          child: child,
         );
       },
+    );
+  }
+
+  Widget _buildContent(BoxConstraints constraints) {
+    final maxVisibleContentWidth =
+        constraints.maxWidth - (widget.padding?.horizontal ?? 0);
+    var maxWidth = _getChartWidth(maxVisibleContentWidth);
+
+    return _buildContentBarFitAdjuster(
+      child: _buildContentBarAlignmentAdjuster(
+        maxWidth: maxWidth,
+        maxVisibleContentWidth: maxVisibleContentWidth,
+        child: _buildChart(maxWidth),
+      ),
     );
   }
 
@@ -422,7 +456,9 @@ class _BarChartState extends State<BarChart>
                   yAxisLabelWidth: _yAxisLabelWidth,
                 ),
               ),
-              _buildContent(constraints),
+              Positioned.fill(
+                child: _buildContent(constraints),
+              ),
             ],
           );
         },
@@ -472,12 +508,13 @@ class _Grid extends StatelessWidget {
         children: [
           Expanded(child: grid),
           SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
-          SizedBox(
-            height: _XAxisLabel.getEstimatedHeight(
-              style.axisStyle,
-              style.axisStyle.xAxisLabelStyle,
-            ),
-          ),
+          SizedBox(height: style.axisStyle.labelHeight),
+          // SizedBox(
+          //   height: _XAxisLabel.getEstimatedHeight(
+          //     style.axisStyle,
+          //     style.axisStyle.xAxisLabelStyle,
+          //   ),
+          // ),
         ],
       );
     }
@@ -493,102 +530,105 @@ class _Grid extends StatelessWidget {
   }
 }
 
-class _XAxisLabel extends StatelessWidget {
-  const _XAxisLabel({
-    required this.settings,
-    required this.style,
-    required this.data,
-    required this.index,
-    required this.maxWidth,
-    required this.selectedPeriod,
-    this.visible = true,
-  });
+// class _XAxisLabel extends StatelessWidget {
+//   const _XAxisLabel({
+//     required this.settings,
+//     required this.style,
+//     required this.data,
+//     required this.index,
+//     required this.maxWidth,
+//     required this.selectedPeriod,
+//     this.visible = true,
+//   });
+//
+//   final BarChartSettings settings;
+//   final BarChartAxisStyle style;
+//   final BarChartData data;
+//   final int index;
+//   final double maxWidth;
+//   final StreamController<DateTime> selectedPeriod;
+//   final bool visible;
+//
+//   static double getEstimatedHeight(
+//     BarChartAxisStyle style,
+//     TextStyle textStyle,
+//   ) {
+//     // TODO: it is needed to calculate the max size more precisely.
+//     // this implementation is not correct in some cases, but still
+//     // relatively fine.
+//     final maxHeight = style.xAxisLabelPadding.vertical +
+//         (textStyle.height ?? 1) * (textStyle.fontSize ?? 14);
+//
+//     return maxHeight;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final currentDate = data.data.entries.elementAt(index).key;
+//
+//     if (settings.interaction != InteractionType.selection) {
+//       final maxHeight = getEstimatedHeight(style, style.xAxisLabelStyle);
+//       final textStyle = visible
+//           ? style.xAxisLabelStyle
+//           : style.xAxisLabelStyle.copyWith(color: Colors.transparent);
+//
+//       return Container(
+//         color: Colors.transparent,
+//         padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
+//         child: SizedOverflowBox(
+//           size: Size(maxWidth, maxHeight),
+//           child: Container(
+//             key: ValueKey(currentDate.toIso8601String()),
+//             padding: style.xAxisLabelPadding,
+//             child: Text.rich(
+//               data.xAxisLabelBuilder(currentDate, textStyle),
+//               style: textStyle,
+//               textAlign: TextAlign.center,
+//             ),
+//           ),
+//         ),
+//       );
+//     }
+//
+//     return GestureDetector(
+//       onTap: () => selectedPeriod.add(currentDate),
+//       child: StreamBuilder<DateTime>(
+//         stream: selectedPeriod.stream,
+//         initialData: data.selectedPeriod,
+//         builder: (context, selectedPeriod) {
+//           final isSelected = currentDate == selectedPeriod.requireData;
+//           final currentStyle = isSelected
+//               ? style.xAxisSelectedLabelStyle
+//               : style.xAxisLabelStyle;
+//           final currentDecoration = isSelected
+//               ? BoxDecoration(
+//                   borderRadius: style.xAxisSelectedLabelBorderRadius,
+//                   color: style.xAxisSelectedLabelBackgroundColor,
+//                 )
+//               : null;
+//           final maxHeight = getEstimatedHeight(style, currentStyle);
+//
+//           return Container(
+//             color: Colors.transparent,
+//             padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
+//             child: SizedOverflowBox(
+//               size: Size(maxWidth, maxHeight),
+//               child: Container(
+//                 padding: style.xAxisLabelPadding,
+//                 decoration: currentDecoration,
+//                 child: Text.rich(
+//                   data.xAxisLabelBuilder(currentDate, currentStyle),
+//                   style: currentStyle,
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
-  final BarChartSettings settings;
-  final BarChartAxisStyle style;
-  final BarChartData data;
-  final int index;
-  final double maxWidth;
-  final StreamController<DateTime> selectedPeriod;
-  final bool visible;
 
-  static double getEstimatedHeight(
-    BarChartAxisStyle style,
-    TextStyle textStyle,
-  ) {
-    // TODO: it is needed to calculate the max size more precisely.
-    // this implementation is not correct in some cases, but still
-    // relatively fine.
-    final maxHeight = style.xAxisLabelPadding.vertical +
-        (textStyle.height ?? 1) * (textStyle.fontSize ?? 14);
-
-    return maxHeight;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentDate = data.data.entries.elementAt(index).key;
-
-    if (settings.interaction != InteractionType.selection) {
-      final maxHeight = getEstimatedHeight(style, style.xAxisLabelStyle);
-      final textStyle = visible
-          ? style.xAxisLabelStyle
-          : style.xAxisLabelStyle.copyWith(color: Colors.transparent);
-
-      return Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
-        child: SizedOverflowBox(
-          size: Size(maxWidth, maxHeight),
-          child: Container(
-            key: ValueKey(currentDate.toIso8601String()),
-            padding: style.xAxisLabelPadding,
-            child: Text.rich(
-              data.xAxisLabelBuilder(currentDate, textStyle),
-              style: textStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () => selectedPeriod.add(currentDate),
-      child: StreamBuilder<DateTime>(
-        stream: selectedPeriod.stream,
-        initialData: data.selectedPeriod,
-        builder: (context, selectedPeriod) {
-          final isSelected = currentDate == selectedPeriod.requireData;
-          final currentStyle = isSelected
-              ? style.xAxisSelectedLabelStyle
-              : style.xAxisLabelStyle;
-          final currentDecoration = isSelected
-              ? BoxDecoration(
-                  borderRadius: style.xAxisSelectedLabelBorderRadius,
-                  color: style.xAxisSelectedLabelBackgroundColor,
-                )
-              : null;
-          final maxHeight = getEstimatedHeight(style, currentStyle);
-
-          return Container(
-            color: Colors.transparent,
-            padding: EdgeInsets.only(top: style.xAxisLabelTopMargin),
-            child: SizedOverflowBox(
-              size: Size(maxWidth, maxHeight),
-              child: Container(
-                padding: style.xAxisLabelPadding,
-                decoration: currentDecoration,
-                child: Text.rich(
-                  data.xAxisLabelBuilder(currentDate, currentStyle),
-                  style: currentStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+// TODO fix BarFit.none issue with state updating
