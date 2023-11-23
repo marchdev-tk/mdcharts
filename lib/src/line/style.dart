@@ -141,7 +141,7 @@ class LineChartAxisStyle {
     this.yAxisLabelStyle = defaultYAxisLabelStyle,
     this.xAxisLabelStyle = defaultXAxisLabelStyle,
     this.xAxisLabelSpacing = 16,
-    this.xAxisLabelTopPadding = 8,
+    this.xAxisLabelTopMargin = 8,
   });
 
   static const defaultYAxisLabelStyle = TextStyle(
@@ -182,10 +182,10 @@ class LineChartAxisStyle {
   /// Defaults to `16`.
   final double xAxisLabelSpacing;
 
-  /// Top padding of the X axis label.
+  /// Top margin of the X axis label.
   ///
   /// Defaults to `8`.
-  final double xAxisLabelTopPadding;
+  final double xAxisLabelTopMargin;
 
   /// Gets height of the label.
   double get labelHeight {
@@ -212,7 +212,7 @@ class LineChartAxisStyle {
       yAxisLabelStyle.hashCode ^
       xAxisLabelStyle.hashCode ^
       xAxisLabelSpacing.hashCode ^
-      xAxisLabelTopPadding.hashCode;
+      xAxisLabelTopMargin.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -222,7 +222,7 @@ class LineChartAxisStyle {
       yAxisLabelStyle == other.yAxisLabelStyle &&
       xAxisLabelStyle == other.xAxisLabelStyle &&
       xAxisLabelSpacing == other.xAxisLabelSpacing &&
-      xAxisLabelTopPadding == other.xAxisLabelTopPadding;
+      xAxisLabelTopMargin == other.xAxisLabelTopMargin;
 }
 
 /// Contains various customization options for the line of the chart itself.

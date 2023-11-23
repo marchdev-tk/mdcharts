@@ -163,7 +163,7 @@ class _LineChartState extends State<LineChart>
       child = Column(
         children: [
           Expanded(child: chart),
-          SizedBox(height: widget.style.axisStyle.xAxisLabelTopPadding),
+          SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
           xAxisLabels,
         ],
       );

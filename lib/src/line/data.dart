@@ -299,9 +299,8 @@ class LineChartData {
 
   /// Gets divisions of the X axis.
   int get xAxisDivisions {
-    int divisions;
-
     if (data.isEmpty) {
+      // returning 1 to ensure no "division by 0" would occur.
       return 1;
     }
 
@@ -309,6 +308,7 @@ class LineChartData {
       return 1;
     }
 
+    int divisions;
     switch (gridType) {
       case LineChartGridType.undefined:
         divisions = data.length;
