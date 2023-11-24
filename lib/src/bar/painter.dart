@@ -1024,205 +1024,88 @@ class BarChartXAxisLabelPainter extends CustomPainter {
     return point;
   }
 
-  /// Unlimited X axis labels painter.
-  void paintUnlimited(Canvas canvas, Size size) {
-    final dates = data.xAxisDates;
-    final painters = <MDTextPainter, bool>{};
+  List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
+    final length = data.data.length;
+    final labelStep = labelQuantity != null ? length / labelQuantity : .0;
+    final halfLabelQty = (labelQuantity ?? 0) ~/ 2;
+    final labelQtyIsOdd = (labelQuantity ?? 0) % 2 == 1;
+    final steps = [
+      for (var i = 0; i < halfLabelQty; i++) ...[
+        (i * labelStep).round(),
+        (length - 1 - (i * labelStep).round()),
+      ],
+      if (labelQtyIsOdd) length ~/ 2,
+    ]..sort();
 
-    for (var i = 0; i < dates.length; i++) {
-      final item = dates[i];
-      final textStyle = item == selectedPeriod.value
-          ? style.axisStyle.xAxisSelectedLabelStyle
-          : style.axisStyle.xAxisLabelStyle;
-      final text = data.xAxisLabelBuilder(item, textStyle);
-      final painter = MDTextPainter(text);
-      painters[painter] = true;
-    }
-
-    /// Auto adjusted visibility of labels is only applicable in a conjunction
-    /// with [BarFit.contain].
-    if (settings.fit == BarFit.contain) {
-      double totalWidth = 0;
-      while (true) {
-        final visiblePainters =
-            painters.entries.where((painter) => painter.value);
-        final gapCount = visiblePainters.length - 1;
-        totalWidth = visiblePainters
-                .map((painter) => painter.key.size.width)
-                .sum
-                .toDouble() +
-            gapCount * style.axisStyle.xAxisLabelPadding.horizontal;
-
-        if (totalWidth > size.width && visiblePainters.length > 3) {
-          for (var i = 1; i < visiblePainters.length / 2; i++) {
-            final left = visiblePainters.elementAt(i).key;
-            final right =
-                visiblePainters.elementAt(visiblePainters.length - 1 - i).key;
-
-            painters[left] = false;
-            painters[right] = false;
-          }
-
-          if (painters.length % 2 == 0) {
-            final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
-            final right = painters.entries.elementAt(painters.length ~/ 2);
-
-            if (visiblePainters.length > 4) {
-              if (left.value && right.value) {
-                painters[right.key] = false;
-              } else if (!left.value && !right.value) {
-                painters[right.key] = true;
-              }
-            }
-          } else {
-            final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
-            final center = painters.entries.elementAt(painters.length ~/ 2);
-            final right = painters.entries.elementAt(painters.length ~/ 2 + 1);
-
-            painters[center.key] = !left.value && !right.value;
-          }
-        } else {
-          break;
-        }
-      }
-    }
-
-    final chartMetrics =
-        BarChartUtils().getBarMetrics(size.width, data, settings, style);
-    for (var i = 0; i < painters.length; i++) {
-      final painter = painters.entries.elementAt(i);
-
-      if (painter.value) {
-        Offset point;
-
-        switch (settings.alignment) {
-          case BarAlignment.start:
-            point = _getStartPoint(
-              size,
-              i,
-              painters.length,
-              painter.key.size.width,
-              chartMetrics.itemSpacing,
-            );
-            break;
-          case BarAlignment.center:
-            point = _getCenterPoint(
-              size,
-              i,
-              painters.length,
-              painter.key.size.width,
-              chartMetrics.itemSpacing,
-            );
-            break;
-          case BarAlignment.end:
-            point = _getEndPoint(
-              size,
-              i,
-              painters.length,
-              painter.key.size.width,
-              chartMetrics.itemSpacing,
-            );
-            break;
-        }
-
-        if (dates[i] == selectedPeriod.value) {
-          canvas.drawRRect(
-            style.axisStyle.xAxisSelectedLabelBorderRadius.toRRect(
-              Rect.fromLTWH(
-                point.dx - style.axisStyle.xAxisLabelPadding.left,
-                point.dy,
-                painter.key.size.width +
-                    style.axisStyle.xAxisLabelPadding.horizontal,
-                painter.key.size.height +
-                    style.axisStyle.xAxisLabelPadding.vertical,
-              ),
-            ),
-            Paint()..color = const Color(0xFFFFFFFF), // TODO style
-          );
-        }
-        painter.key.paint(
-          canvas,
-          point.translate(0, style.axisStyle.xAxisLabelPadding.top),
-        );
-      }
-    }
+    return steps;
   }
 
-  /// Limited X axis labels painter.
-  void paintLimited(Canvas canvas, Size size) {
-    // TODO adjust impl according to paintUnlimited
-
-    final dates = data.xAxisDates;
-    final count = math.min(settings.xAxisLabelQuantity!, dates.length);
-    var innerCount = math.max(count - 2, 0);
-
-    final datesToPaint = <DateTime>[
-      dates.first,
-      dates.last,
-    ];
-
-    while (innerCount > 0) {
-      final datesLength = dates.length - 2;
-      final step = (datesLength / (innerCount + 1)).round();
-      final innerDatesToPaint = <DateTime>[];
-
-      for (var i = 1; i <= innerCount / 2; i++) {
-        final stepDuration = Duration(days: step * i);
-        innerDatesToPaint.add(datesToPaint.first.add(stepDuration));
-        innerDatesToPaint.add(datesToPaint.last.subtract(stepDuration));
-      }
-      if (innerCount % 2 == 1) {
-        final centralDay = dates.length ~/ 2;
-        innerDatesToPaint.insert(
-          innerDatesToPaint.length ~/ 2,
-          datesToPaint.first.add(Duration(days: centralDay)),
-        );
-      }
-
-      final localDatesToPaint = List.of(datesToPaint);
-      localDatesToPaint.insertAll(1, innerDatesToPaint);
-
-      double totalWidth = .0;
-      for (var i = 0; i < localDatesToPaint.length; i++) {
-        final item = localDatesToPaint[i];
-        final text =
-            data.xAxisLabelBuilder(item, style.axisStyle.xAxisLabelStyle);
-        final painter = MDTextPainter(text);
-        totalWidth += painter.size.width;
-      }
-
-      if (totalWidth <= size.width) {
-        datesToPaint.insertAll(1, innerDatesToPaint);
-        break;
-      }
-
-      innerCount = innerCount - 1;
+  void _paintLabel(
+    Canvas canvas,
+    Size size,
+    int index,
+    MapEntry<MDTextPainter, bool> painter,
+    int length,
+    DateTime date,
+    BarChartBarMetrics chartMetrics,
+  ) {
+    if (!painter.value) {
+      return;
     }
 
-    _normalizeDates(datesToPaint);
+    Offset point;
+    switch (settings.alignment) {
+      case BarAlignment.start:
+        point = _getStartPoint(
+          size,
+          index,
+          length,
+          painter.key.size.width,
+          chartMetrics.itemSpacing,
+        );
+        break;
+      case BarAlignment.center:
+        point = _getCenterPoint(
+          size,
+          index,
+          length,
+          painter.key.size.width,
+          chartMetrics.itemSpacing,
+        );
+        break;
+      case BarAlignment.end:
+        point = _getEndPoint(
+          size,
+          index,
+          length,
+          painter.key.size.width,
+          chartMetrics.itemSpacing,
+        );
+        break;
+    }
 
-    for (var i = 0; i < datesToPaint.length; i++) {
-      final item = datesToPaint[i];
-      final text =
-          data.xAxisLabelBuilder(item, style.axisStyle.xAxisLabelStyle);
-      final painter = MDTextPainter(text);
-
-      double dx;
-      if (i == 0) {
-        dx = 0;
-      } else if (i == datesToPaint.length - 1) {
-        dx = size.width - painter.size.width;
-      } else {
-        final widthFactor = size.width / data.xAxisDivisions;
-        final index = dates.indexOf(datesToPaint[i]);
-        dx = widthFactor * index - painter.size.width / 2;
-      }
-
-      painter.paint(
-        canvas,
-        Offset(dx, 0),
+    if (date == selectedPeriod.value) {
+      canvas.drawRRect(
+        style.axisStyle.xAxisSelectedLabelBorderRadius.toRRect(
+          Rect.fromLTWH(
+            point.dx - style.axisStyle.xAxisLabelPadding.left,
+            point.dy,
+            painter.key.size.width +
+                style.axisStyle.xAxisLabelPadding.horizontal,
+            painter.key.size.height +
+                style.axisStyle.xAxisLabelPadding.vertical,
+          ),
+        ),
+        Paint()
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true
+          ..color = style.axisStyle.xAxisSelectedLabelBackgroundColor,
       );
     }
+    painter.key.paint(
+      canvas,
+      point.translate(0, style.axisStyle.xAxisLabelPadding.top),
+    );
   }
 
   @override
@@ -1231,11 +1114,108 @@ class BarChartXAxisLabelPainter extends CustomPainter {
       return;
     }
 
-    if (settings.xAxisLabelQuantity == null) {
-      paintUnlimited(canvas, size);
-    } else {
-      paintLimited(canvas, size);
+    final dates = data.xAxisDates;
+    final steps = _getXAxisLabelIndexesToPaint(settings.xAxisLabelQuantity);
+    final painters = <MDTextPainter, bool>{};
+
+    MDTextPainter? selectedPainter;
+    for (var i = 0; i < dates.length; i++) {
+      final item = dates[i];
+      final textStyle = item == selectedPeriod.value
+          ? style.axisStyle.xAxisSelectedLabelStyle
+          : style.axisStyle.xAxisLabelStyle;
+      final text = data.xAxisLabelBuilder(item, textStyle);
+      final painter = MDTextPainter(text);
+      painters[painter] =
+          settings.xAxisLabelQuantity == null ? true : steps.contains(i);
+      if (item == selectedPeriod.value) {
+        selectedPainter = painter;
+      }
     }
+
+    double totalWidth = 0;
+    while (true) {
+      final visiblePainters =
+          painters.entries.where((painter) => painter.value);
+      final gapCount = visiblePainters.length - 1;
+      totalWidth = visiblePainters
+              .map((painter) => painter.key.size.width)
+              .sum
+              .toDouble() +
+          gapCount * style.axisStyle.xAxisLabelPadding.horizontal;
+
+      if (totalWidth > size.width && visiblePainters.length > 3) {
+        for (var i = 1; i < visiblePainters.length / 2; i++) {
+          final left = visiblePainters.elementAt(i).key;
+          final right =
+              visiblePainters.elementAt(visiblePainters.length - 1 - i).key;
+
+          painters[left] = false;
+          painters[right] = false;
+        }
+
+        if (painters.length % 2 == 0) {
+          final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
+          final right = painters.entries.elementAt(painters.length ~/ 2);
+
+          if (visiblePainters.length > 4) {
+            if (left.value && right.value) {
+              painters[right.key] = false;
+            } else if (!left.value && !right.value) {
+              painters[right.key] = true;
+            }
+          }
+        } else {
+          final left = painters.entries.elementAt(painters.length ~/ 2 - 1);
+          final center = painters.entries.elementAt(painters.length ~/ 2);
+          final right = painters.entries.elementAt(painters.length ~/ 2 + 1);
+
+          painters[center.key] = !left.value && !right.value;
+        }
+      } else {
+        break;
+      }
+    }
+
+    final chartMetrics =
+        BarChartUtils().getBarMetrics(size.width, data, settings, style);
+    for (var i = 0; i < painters.length; i++) {
+      final painter = painters.entries.elementAt(i);
+
+      if (dates[i] == selectedPeriod.value) {
+        continue;
+      }
+
+      _paintLabel(
+        canvas,
+        size,
+        i,
+        painter,
+        dates.length,
+        dates[i],
+        chartMetrics,
+      );
+    }
+
+    if (selectedPainter != null) {
+      final index = painters.keys.toList().indexOf(selectedPainter);
+
+      _paintLabel(
+        canvas,
+        size,
+        index,
+        MapEntry(selectedPainter, true),
+        dates.length,
+        dates[index],
+        chartMetrics,
+      );
+    }
+
+    // if (settings.xAxisLabelQuantity == null) {
+    //   paintUnlimited(canvas, size);
+    // } else {
+    //   paintLimited(canvas, size);
+    // }
   }
 
   @override
@@ -1244,15 +1224,16 @@ class BarChartXAxisLabelPainter extends CustomPainter {
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
 
-  void _normalizeDates(List<DateTime> dates) {
-    for (var i = 0; i < dates.length; i++) {
-      if (dates[i].hour == 1) {
-        final wrongDate = dates[i];
-        dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
-      } else if (dates[i].hour == 23) {
-        final newDate = dates[i].add(const Duration(hours: 1));
-        dates[i] = newDate;
-      }
-    }
-  }
+  // TODO move to app
+  // void _normalizeDates(List<DateTime> dates) {
+  //   for (var i = 0; i < dates.length; i++) {
+  //     if (dates[i].hour == 1) {
+  //       final wrongDate = dates[i];
+  //       dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
+  //     } else if (dates[i].hour == 23) {
+  //       final newDate = dates[i].add(const Duration(hours: 1));
+  //       dates[i] = newDate;
+  //     }
+  //   }
+  // }
 }

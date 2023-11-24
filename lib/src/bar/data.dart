@@ -147,18 +147,6 @@ class BarChartData {
   /// Gets list of [DateTime] that is used to build X axis labels.
   List<DateTime> get xAxisDates => data.keys.toList();
 
-  // TODO delete
-  /// Gets divisions of the X axis.
-  int get xAxisDivisions {
-    if (data.isEmpty) {
-      // returning 1 to ensure no "division by 0" would occur
-      return 1;
-    }
-
-    // minus 1 due to the first point that lies on the Y axis.
-    return xAxisDates.length - 1;
-  }
-
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   BarChartData copyWith({
