@@ -16,7 +16,7 @@ import 'style.dart';
 import 'utils.dart';
 
 // TODO fix BarFit.none issue with state updating
-// TODO fix YAxisLayout.displace related issue for BarFit.contain (incorrect item hitTesting)
+// TODO fix YAxisLayout.displace related issue for BarFit.contain and no bar compression (incorrect item hitTesting)
 // TODO fix YAxisLayout.displace related issue for BarFit.none (extra scroll)
 
 /// Bar chart.
