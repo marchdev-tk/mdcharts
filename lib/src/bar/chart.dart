@@ -221,7 +221,7 @@ class _BarChartState extends State<BarChart>
           animation: _valueAnimation,
           builder: (context, _) {
             return CustomPaint(
-              key: ValueKey(_valueAnimation.value),
+              key: Key('${_valueAnimation.value}|${_selectedPeriod.value}'),
               painter: BarChartPainter(
                 _data,
                 _style,
@@ -293,8 +293,9 @@ class _BarChartState extends State<BarChart>
           behavior: AdaptiveScrollBehavior(),
           child: SingleChildScrollView(
             reverse: _settings.reverse,
+            clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
-            padding: widget.padding,
+            padding: EdgeInsets.zero,
             child: child,
           ),
         );
@@ -348,13 +349,22 @@ class _BarChartState extends State<BarChart>
         constraints.maxWidth - (widget.padding?.horizontal ?? 0);
     var maxWidth = _getChartWidth(maxVisibleContentWidth);
 
-    return _buildContentBarAlignmentAdjuster(
+    Widget chart = _buildContentBarAlignmentAdjuster(
       maxWidth: maxWidth,
       maxVisibleContentWidth: maxVisibleContentWidth,
       child: _buildContentBarFitAdjuster(
         child: _buildChart(math.max(maxWidth, maxVisibleContentWidth)),
       ),
     );
+
+    if (widget.padding != null) {
+      chart = Padding(
+        padding: widget.padding!,
+        child: chart,
+      );
+    }
+
+    return chart;
   }
 
   @override
@@ -362,22 +372,25 @@ class _BarChartState extends State<BarChart>
     return RepaintBoundary(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return Stack(
+          return ClipRect(
             clipBehavior: Clip.hardEdge,
-            children: [
-              Positioned.fill(
-                child: _Grid(
-                  data: _data,
-                  style: _style,
-                  settings: _settings,
-                  padding: widget.padding,
-                  yAxisLabelWidth: _yAxisLabelWidth,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: _Grid(
+                    data: _data,
+                    style: _style,
+                    settings: _settings,
+                    padding: widget.padding,
+                    yAxisLabelWidth: _yAxisLabelWidth,
+                  ),
                 ),
-              ),
-              Positioned.fill(
-                child: _buildContent(constraints),
-              ),
-            ],
+                Positioned.fill(
+                  child: _buildContent(constraints),
+                ),
+              ],
+            ),
           );
         },
       ),
