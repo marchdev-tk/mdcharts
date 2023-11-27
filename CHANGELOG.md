@@ -3,7 +3,7 @@
 ## 4.4.2 - 27.11.2023
 
 * Changes of the `BarChart`:
-  * Added new setting `showAxisXSelectedLabelIfConcealed`.
+  * Added new setting `BarChartSettings.showAxisXSelectedLabelIfConcealed`.
   * Fixed labels positioning for `BarAlignment.start` and `BarAlignment.center`.
 
 ## 4.4.1 - 27.11.2023

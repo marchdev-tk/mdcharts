@@ -113,6 +113,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
+* `showAxisXSelectedLabelIfConcealed` - whether to show selected label if it is concealed by `xAxisLabelQuantity`, defaults to `false`.
 * `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
