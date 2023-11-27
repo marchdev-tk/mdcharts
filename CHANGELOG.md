@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.4.1 - 27.11.2023
+
+* Changes of the `BarChart`:
+  * Limited label selection only for `InteractionType.selection`.
+
 ## 4.4.0 - 27.11.2023
 
 * Changes of the `BarChart`:
