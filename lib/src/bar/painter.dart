@@ -941,7 +941,7 @@ class BarChartXAxisLabelPainter extends CustomPainter {
       case BarAlignment.start:
         final itemOffset = (itemSpacing + itemWidth) * index;
         final barLeft = barWidth * barItemQuantity +
-            barSpacing * barItemQuantity +
+            barSpacing * (barItemQuantity - 1) +
             itemOffset;
         return Offset(barLeft - itemWidth / 2, 0);
       case BarAlignment.center:
@@ -950,7 +950,7 @@ class BarChartXAxisLabelPainter extends CustomPainter {
         final sideOffset = (size.width - totalWidth) / 2;
         final itemOffset = (itemSpacing + itemWidth) * index + sideOffset;
         final barLeft = barWidth * barItemQuantity +
-            barSpacing * barItemQuantity +
+            barSpacing * (barItemQuantity - 1) +
             itemOffset;
         return Offset(barLeft - itemWidth / 2, 0);
       case BarAlignment.end:
@@ -970,7 +970,9 @@ class BarChartXAxisLabelPainter extends CustomPainter {
   ) {
     var point = _getItemCenterPoint(size, index);
 
-    if (index == 0 && point.dx - painterWidth / 2 < 0) {
+    if (index == 0 &&
+        settings.yAxisLayout == YAxisLayout.overlay &&
+        point.dx - painterWidth / 2 < 0) {
       point = Offset.zero;
     } else if (index == paintersLength - 1 &&
         point.dx + painterWidth / 2 > size.width) {
@@ -991,7 +993,9 @@ class BarChartXAxisLabelPainter extends CustomPainter {
   ) {
     var point = _getItemCenterPoint(size, index);
 
-    if (index == 0 && point.dx - painterWidth / 2 < 0) {
+    if (index == 0 &&
+        settings.yAxisLayout == YAxisLayout.overlay &&
+        point.dx - painterWidth / 2 < 0) {
       point = Offset.zero;
     } else if (index == paintersLength - 1 &&
         point.dx + painterWidth / 2 > size.width) {
@@ -1012,7 +1016,9 @@ class BarChartXAxisLabelPainter extends CustomPainter {
   ) {
     var point = _getItemCenterPoint(size, index);
 
-    if (index == 0 && point.dx - painterWidth / 2 < itemSpacing) {
+    if (index == 0 &&
+        settings.yAxisLayout == YAxisLayout.overlay &&
+        point.dx - painterWidth / 2 < itemSpacing) {
       point = Offset(0 + itemSpacing, 0);
     } else if (index == paintersLength - 1 &&
         point.dx + painterWidth / 2 > size.width) {
@@ -1184,7 +1190,8 @@ class BarChartXAxisLabelPainter extends CustomPainter {
     for (var i = 0; i < painters.length; i++) {
       final painter = painters.entries.elementAt(i);
 
-      if (dates[i] == selectedPeriod.value) {
+      if (dates[i] == selectedPeriod.value &&
+          settings.showAxisXSelectedLabelIfConcealed) {
         continue;
       }
 
@@ -1199,7 +1206,7 @@ class BarChartXAxisLabelPainter extends CustomPainter {
       );
     }
 
-    if (selectedPainter != null) {
+    if (selectedPainter != null && settings.showAxisXSelectedLabelIfConcealed) {
       final index = painters.keys.toList().indexOf(selectedPainter);
 
       _paintLabel(

@@ -68,6 +68,7 @@ class BarChartSettings {
     this.axisDivisionEdges = AxisDivisionEdges.none,
     this.showAxisX = true,
     this.showAxisXLabels = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
     this.showAxisYLabels = true,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
@@ -85,6 +86,7 @@ class BarChartSettings {
     this.xAxisLabelQuantity,
     this.showAxisX = true,
     this.showAxisXLabels = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
     this.showAxisYLabels = true,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
@@ -138,6 +140,12 @@ class BarChartSettings {
   ///
   /// Defaults to `true`.
   final bool showAxisXLabels;
+
+  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
+  /// label is concealed in normal circumstances.
+  ///
+  /// Defaults to `false`.
+  final bool showAxisXSelectedLabelIfConcealed;
 
   /// Whether to show Y axis labels or not.
   ///
@@ -216,6 +224,7 @@ class BarChartSettings {
     AxisDivisionEdges? axisDivisionEdges,
     bool? showAxisX,
     bool? showAxisXLabels,
+    bool? showAxisXSelectedLabelIfConcealed,
     bool? showAxisYLabels,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
@@ -235,6 +244,8 @@ class BarChartSettings {
         axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
         showAxisX: showAxisX ?? this.showAxisX,
         showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
+        showAxisXSelectedLabelIfConcealed: showAxisXSelectedLabelIfConcealed ??
+            this.showAxisXSelectedLabelIfConcealed,
         showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
@@ -254,6 +265,7 @@ class BarChartSettings {
       axisDivisionEdges.hashCode ^
       showAxisX.hashCode ^
       showAxisXLabels.hashCode ^
+      showAxisXSelectedLabelIfConcealed.hashCode ^
       showAxisYLabels.hashCode ^
       yAxisLayout.hashCode ^
       yAxisLabelSpacing.hashCode ^
@@ -273,6 +285,8 @@ class BarChartSettings {
       axisDivisionEdges == other.axisDivisionEdges &&
       showAxisX == other.showAxisX &&
       showAxisXLabels == other.showAxisXLabels &&
+      showAxisXSelectedLabelIfConcealed ==
+          other.showAxisXSelectedLabelIfConcealed &&
       showAxisYLabels == other.showAxisYLabels &&
       yAxisLayout == other.yAxisLayout &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&

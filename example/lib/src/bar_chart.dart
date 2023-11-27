@@ -288,6 +288,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.leading,
+              value: data.showAxisXSelectedLabelIfConcealed,
+              onChanged: (value) => _settings.add(data.copyWith(
+                  showAxisXSelectedLabelIfConcealed: value == true)),
+              title: const Text('showAxisXSelectedLabelIfConcealed'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
               value: data.showAxisYLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisYLabels: value == true)),
