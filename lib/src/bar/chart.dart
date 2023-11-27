@@ -16,7 +16,6 @@ import 'style.dart';
 import 'utils.dart';
 
 // TODO fix BarFit.none issue with state updating
-// TODO fix YAxisLayout.displace related issue for BarFit.contain and no bar compression (incorrect item hitTesting)
 // TODO fix YAxisLayout.displace related issue for BarFit.none (extra scroll)
 
 /// Bar chart.
@@ -286,10 +285,7 @@ class _BarChartState extends State<BarChart>
   Widget _buildContentBarFitAdjuster({required Widget child}) {
     switch (_settings.fit) {
       case BarFit.contain:
-        return Padding(
-          padding: widget.padding ?? EdgeInsets.zero,
-          child: child,
-        );
+        return child;
 
       case BarFit.none:
       default:
@@ -352,11 +348,11 @@ class _BarChartState extends State<BarChart>
         constraints.maxWidth - (widget.padding?.horizontal ?? 0);
     var maxWidth = _getChartWidth(maxVisibleContentWidth);
 
-    return _buildContentBarFitAdjuster(
-      child: _buildContentBarAlignmentAdjuster(
-        maxWidth: maxWidth,
-        maxVisibleContentWidth: maxVisibleContentWidth,
-        child: _buildChart(maxWidth),
+    return _buildContentBarAlignmentAdjuster(
+      maxWidth: maxWidth,
+      maxVisibleContentWidth: maxVisibleContentWidth,
+      child: _buildContentBarFitAdjuster(
+        child: _buildChart(math.max(maxWidth, maxVisibleContentWidth)),
       ),
     );
   }
