@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.0 - 27.11.2023
+
+* Changes of the `BarChart`:
+  * Reimplementation of `BarChart` X axis labels, from Widgets to CustomPainter. 
+  * Fixed `YAxisLayout.displace` related issue for `BarFit.contain` and no bar compression (incorrect item hit testing).
+
 ## 4.3.0 - 21.11.2023
 
 * Changes of the `BarChart`:
