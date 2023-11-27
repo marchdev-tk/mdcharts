@@ -371,25 +371,28 @@ class _BarChartState extends State<BarChart>
     return RepaintBoundary(
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final chart = Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: _Grid(
+                  data: _data,
+                  style: _style,
+                  settings: _settings,
+                  padding: widget.padding,
+                  yAxisLabelWidth: _yAxisLabelWidth,
+                ),
+              ),
+              Positioned.fill(
+                child: _buildContent(constraints),
+              ),
+            ],
+          );
+
           return ClipRect(
-            clipBehavior: Clip.hardEdge,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: _Grid(
-                    data: _data,
-                    style: _style,
-                    settings: _settings,
-                    padding: widget.padding,
-                    yAxisLabelWidth: _yAxisLabelWidth,
-                  ),
-                ),
-                Positioned.fill(
-                  child: _buildContent(constraints),
-                ),
-              ],
-            ),
+            clipBehavior:
+                _settings.fit == BarFit.none ? Clip.hardEdge : Clip.none,
+            child: chart,
           );
         },
       ),
