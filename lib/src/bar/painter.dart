@@ -1084,7 +1084,8 @@ class BarChartXAxisLabelPainter extends CustomPainter {
         break;
     }
 
-    if (date == selectedPeriod.value) {
+    if (date == selectedPeriod.value &&
+        settings.interaction == InteractionType.selection) {
       canvas.drawRRect(
         style.axisStyle.xAxisSelectedLabelBorderRadius.toRRect(
           Rect.fromLTWH(
@@ -1121,7 +1122,8 @@ class BarChartXAxisLabelPainter extends CustomPainter {
     MDTextPainter? selectedPainter;
     for (var i = 0; i < dates.length; i++) {
       final item = dates[i];
-      final textStyle = item == selectedPeriod.value
+      final textStyle = item == selectedPeriod.value &&
+              settings.interaction == InteractionType.selection
           ? style.axisStyle.xAxisSelectedLabelStyle
           : style.axisStyle.xAxisLabelStyle;
       final text = data.xAxisLabelBuilder(item, textStyle);
@@ -1178,7 +1180,7 @@ class BarChartXAxisLabelPainter extends CustomPainter {
     }
 
     final chartMetrics =
-        BarChartUtils().getBarMetrics(size.width, data, settings, style);
+        BarChartUtils().getMetrics(size.width, data, settings, style);
     for (var i = 0; i < painters.length; i++) {
       final painter = painters.entries.elementAt(i);
 
@@ -1210,12 +1212,6 @@ class BarChartXAxisLabelPainter extends CustomPainter {
         chartMetrics,
       );
     }
-
-    // if (settings.xAxisLabelQuantity == null) {
-    //   paintUnlimited(canvas, size);
-    // } else {
-    //   paintLimited(canvas, size);
-    // }
   }
 
   @override
@@ -1223,17 +1219,4 @@ class BarChartXAxisLabelPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
-
-  // TODO move to app
-  // void _normalizeDates(List<DateTime> dates) {
-  //   for (var i = 0; i < dates.length; i++) {
-  //     if (dates[i].hour == 1) {
-  //       final wrongDate = dates[i];
-  //       dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
-  //     } else if (dates[i].hour == 23) {
-  //       final newDate = dates[i].add(const Duration(hours: 1));
-  //       dates[i] = newDate;
-  //     }
-  //   }
-  // }
 }

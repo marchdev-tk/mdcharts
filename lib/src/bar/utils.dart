@@ -63,7 +63,7 @@ class BarChartUtils {
     return math.max(maxWidth, totalWidth);
   }
 
-  BarChartBarMetrics getBarMetrics(
+  BarChartBarMetrics getMetrics(
     double maxWidth,
     BarChartData data,
     BarChartSettings settings,

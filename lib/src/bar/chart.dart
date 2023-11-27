@@ -84,7 +84,7 @@ class _BarChartState extends State<BarChart>
       return;
     }
 
-    final metrics = BarChartUtils().getBarMetrics(
+    final metrics = BarChartUtils().getMetrics(
       maxWidth,
       _data,
       _settings,
@@ -118,7 +118,7 @@ class _BarChartState extends State<BarChart>
       return;
     }
 
-    final metrics = BarChartUtils().getBarMetrics(
+    final metrics = BarChartUtils().getMetrics(
       maxWidth,
       _data,
       _settings,
