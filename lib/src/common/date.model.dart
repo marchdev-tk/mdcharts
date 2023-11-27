@@ -20,20 +20,20 @@ class MdDate implements Comparable<MdDate> {
   static const int december = 12;
   static const int monthsPerYear = 12;
 
-  static const _monthDayQuantity = <int, int>{
-    january: 31,
-    february: 28,
-    march: 31,
-    april: 30,
-    may: 31,
-    june: 30,
-    july: 31,
-    august: 31,
-    september: 30,
-    october: 31,
-    november: 30,
-    december: 31,
-  };
+  // static const _monthDayQuantity = <int, int>{
+  //   january: 31,
+  //   february: 28,
+  //   march: 31,
+  //   april: 30,
+  //   may: 31,
+  //   june: 30,
+  //   july: 31,
+  //   august: 31,
+  //   september: 30,
+  //   october: 31,
+  //   november: 30,
+  //   december: 31,
+  // };
 
   /// Gets start of the month.
   MdDate get startOfMonth => _convertDate(year, month, 1);
@@ -47,14 +47,14 @@ class MdDate implements Comparable<MdDate> {
   /// Whether this date is a start of the month or not.
   bool get isStartOfMonth => day == 1;
 
-  int _getDaysInMonth(int year, int month) {
-    int monthDayQty = _monthDayQuantity[month]!;
-    if (month == february && year % 4 == 0) {
-      monthDayQty = monthDayQty + 1;
-    }
+  // int _getDaysInMonth(int year, int month) {
+  //   int monthDayQty = _monthDayQuantity[month]!;
+  //   if (month == february && year % 4 == 0) {
+  //     monthDayQty = monthDayQty + 1;
+  //   }
 
-    return monthDayQty;
-  }
+  //   return monthDayQty;
+  // }
 
   MdDate _convertDate(int year, int month, int day) {
     // int localYear = year;
