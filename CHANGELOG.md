@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.4.3 - 01.12.2023
+
+* Changes of the `BarChart`:
+  * Fixed ValueStream issue
+
 ## 4.4.2 - 27.11.2023
 
 * Changes of the `BarChart`:
