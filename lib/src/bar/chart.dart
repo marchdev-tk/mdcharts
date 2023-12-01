@@ -220,7 +220,9 @@ class _BarChartState extends State<BarChart>
           animation: _valueAnimation,
           builder: (context, _) {
             return CustomPaint(
-              key: Key('${_valueAnimation.value}|${_selectedPeriod.value}'),
+              key: Key(
+                '${_valueAnimation.value}|${_selectedPeriod.valueOrNull}',
+              ),
               painter: BarChartPainter(
                 _data,
                 _style,
