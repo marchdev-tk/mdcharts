@@ -158,6 +158,23 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     return randomizedData;
   }
 
+  Map<DateTime, double> getTestData() {
+    return {
+      DateTime(2023): Random().nextInt(6700).toDouble(),
+      DateTime(2023, 1, 2): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 3, 3): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 1, 4): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 5, 5): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 1, 6): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 6, 7): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 1, 8): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 8, 9): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 1, 10): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 11, 11): Random().nextInt(12310).toDouble(),
+      DateTime(2023, 1, 12): Random().nextInt(12310).toDouble(),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<LineChartData>(
@@ -187,6 +204,78 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Mixed Data'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getTestData();
+
+                const materialColor = Colors.white;
+                final chartColor =
+                    randomizedData.values.first < randomizedData.values.last
+                        ? Colors.green
+                        : Colors.red;
+
+                const settings = LineChartSettings(
+                  xAxisDivisions: 0,
+                  yAxisDivisions: 3,
+                  xAxisLabelQuantity: 5,
+                  axisDivisionEdges: AxisDivisionEdges.vertical,
+                  showAxisY: false,
+                );
+                final style = LineChartStyle(
+                  gridStyle: LineChartGridStyle.same(
+                    color: materialColor.withOpacity(0.1),
+                    stroke: 0.5,
+                  ),
+                  axisStyle: LineChartAxisStyle(
+                    color: materialColor.withOpacity(0.1),
+                    stroke: 0.5,
+                    xAxisLabelTopMargin: 6,
+                    xAxisLabelStyle: const TextStyle(
+                      height: 16 / 11,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: materialColor,
+                    ),
+                    yAxisLabelStyle: TextStyle(
+                      height: 16 / 11,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: materialColor.withOpacity(0.2),
+                    ),
+                  ),
+                  lineStyle: LineChartLineStyle(
+                    color: chartColor,
+                    colorInactive: chartColor.withOpacity(0.2),
+                    altitudeLineColor: materialColor.withOpacity(0.1),
+                    fillGradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        chartColor.withOpacity(0.5),
+                        chartColor.withOpacity(0.12),
+                        chartColor.withOpacity(0.08),
+                        chartColor.withOpacity(0.01),
+                      ],
+                      stops: const [0.0604, 0.3353, 0.6102, 1],
+                    ),
+                  ),
+                  pointStyle: LineChartPointStyle(
+                    innerColor: materialColor,
+                    outerColor: chartColor,
+                    dropLineColor: materialColor.withOpacity(0.5),
+                    tooltipColor: materialColor,
+                  ),
+                );
+
+                _data.add(_data.value.copyWith(
+                  data: randomizedData,
+                  gridType: LineChartGridType.undefined,
+                ));
+                _settings.add(settings);
+                _style.add(style);
+              },
+              title: const Text('Randomize with Test Data'),
             ),
             DialogListTile(
               keyboardType:
@@ -310,55 +399,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
         return SetupGroup(
           title: 'General Settings',
           children: [
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.altitudeLine,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(altitudeLine: value == true)),
-              title: const Text('altitudeLine'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.lineFilling,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(lineFilling: value == true)),
-              title: const Text('lineFilling'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.lineShadow,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(lineShadow: value == true)),
-              title: const Text('lineShadow'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showAxisX,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showAxisX: value == true)),
-              title: const Text('showAxisX'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showAxisXLabels,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showAxisXLabels: value == true)),
-              title: const Text('showAxisXLabels'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showAxisY,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showAxisY: value == true)),
-              title: const Text('showAxisY'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showAxisYLabels,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showAxisYLabels: value == true)),
-              title: const Text('showAxisYLabels'),
-            ),
             IntListTile(
               value: data.xAxisDivisions,
               onChanged: (value) =>
@@ -379,6 +419,69 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               )),
               keyboardType: TextInputType.number,
               title: const Text('xAxisLabelQuantity'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisX,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showAxisX: value == true)),
+              title: const Text('showAxisX'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisXSelectedLabelIfConcealed,
+              onChanged: (value) => _settings.add(data.copyWith(
+                  showAxisXSelectedLabelIfConcealed: value == true)),
+              title: const Text('showAxisXSelectedLabelIfConcealed'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisY,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showAxisY: value == true)),
+              title: const Text('showAxisY'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.lineFilling,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(lineFilling: value == true)),
+              title: const Text('lineFilling'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.lineShadow,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(lineShadow: value == true)),
+              title: const Text('lineShadow'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.altitudeLine,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(altitudeLine: value == true)),
+              title: const Text('altitudeLine'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisXLabels,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showAxisXLabels: value == true)),
+              title: const Text('showAxisXLabels'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisYLabels,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showAxisYLabels: value == true)),
+              title: const Text('showAxisYLabels'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisXLabelSelection,
+              onChanged: (value) => _settings
+                  .add(data.copyWith(showAxisXLabelSelection: value == true)),
+              title: const Text('showAxisXLabelSelection'),
             ),
           ],
         );

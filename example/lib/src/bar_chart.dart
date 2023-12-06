@@ -127,7 +127,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 }
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize Data'),
+              title: const Text('Randomize with Fixed Length Data'),
             ),
             Button(
               onPressed: () {
@@ -143,7 +143,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 }
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize Mixed Data'),
+              title: const Text('Randomize with Mixed Length Data'),
             ),
             Button(
               onPressed: () {
@@ -230,7 +230,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
 
                 _counter++;
               },
-              title: const Text('Randomize Test Data'),
+              title: const Text('Randomize with Test Data'),
             ),
             DialogListTile(
               keyboardType:
@@ -273,35 +273,35 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
           title: 'General Settings',
           children: [
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisX,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisX: value == true)),
               title: const Text('showAxisX'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisXLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisXLabels: value == true)),
               title: const Text('showAxisXLabels'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisXSelectedLabelIfConcealed,
               onChanged: (value) => _settings.add(data.copyWith(
                   showAxisXSelectedLabelIfConcealed: value == true)),
               title: const Text('showAxisXSelectedLabelIfConcealed'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisYLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisYLabels: value == true)),
               title: const Text('showAxisYLabels'),
             ),
             CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.reverse,
               onChanged: (value) =>
                   _settings.add(data.copyWith(reverse: value == true)),
@@ -369,7 +369,7 @@ class _IteractionTypeSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < InteractionType.values.length; i++)
               RadioListTile<InteractionType>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.interaction,
                 value: InteractionType.values[i],
                 onChanged: (value) =>
@@ -399,7 +399,7 @@ class _BarAlignmentSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < BarAlignment.values.length; i++)
               RadioListTile<BarAlignment>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.alignment,
                 value: BarAlignment.values[i],
                 onChanged: (value) =>
@@ -429,7 +429,7 @@ class _BarFitSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < BarFit.values.length; i++)
               RadioListTile<BarFit>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.fit,
                 value: BarFit.values[i],
                 onChanged: (value) => _settings.add(data.copyWith(fit: value)),
@@ -458,7 +458,7 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < YAxisLayout.values.length; i++)
               RadioListTile<YAxisLayout>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.yAxisLayout,
                 value: YAxisLayout.values[i],
                 onChanged: (value) =>
@@ -488,7 +488,7 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < AxisDivisionEdges.values.length; i++)
               RadioListTile<AxisDivisionEdges>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.axisDivisionEdges,
                 value: AxisDivisionEdges.values[i],
                 onChanged: (value) =>
@@ -869,7 +869,7 @@ class _BardBorderSetupGroup extends StatelessWidget {
           children: [
             for (var i = 0; i < BarBorder.values.length; i++)
               RadioListTile<BarBorder>(
-                controlAffinity: ListTileControlAffinity.leading,
+                controlAffinity: ListTileControlAffinity.trailing,
                 groupValue: data.barStyle.border,
                 value: BarBorder.values[i],
                 onChanged: (value) {
