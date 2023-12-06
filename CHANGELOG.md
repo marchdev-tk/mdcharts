@@ -1,9 +1,16 @@
 # Changelog
 
+## 4.4.4 - 06.12.2023
+
+* Changes of the `BarChart`:
+  * Replaced axis painting from main painter to grid painter.
+* Changes of the `LineChart`:
+  * TBD
+
 ## 4.4.3 - 01.12.2023
 
 * Changes of the `BarChart`:
-  * Fixed ValueStream issue
+  * Fixed ValueStream issue.
 
 ## 4.4.2 - 27.11.2023
 
