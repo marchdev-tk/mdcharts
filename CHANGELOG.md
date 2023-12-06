@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.4.4 - 06.12.2023
+## 4.5.0 - 06.12.2023
 
 * Changes of the `BarChart`:
   * Replaced axis painting from main painter to grid painter.
