@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../common.dart';
 import '../utils.dart';
@@ -93,8 +94,8 @@ class LineChartData {
       '${key.year}-${key.month}-${key.day}';
   static String defaultSubtitleBuilder(DateTime key, double value) =>
       value.toString();
-  static String defaultXAxisLabelBuilder(DateTime key) =>
-      '${key.month}-${key.day}';
+  static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
+      TextSpan(text: '${key.month}-${key.day}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
   static const Map<num, num> defaultMaxValueRoundingMap = {
     100: 5,
@@ -170,7 +171,7 @@ class LineChartData {
   /// Text builder for the X axis label.
   ///
   /// If not set explicitly, [defaultXAxisLabelBuilder] will be used.
-  final LabelBuilder<DateTime> xAxisLabelBuilder;
+  final RichLabelBuilder<DateTime> xAxisLabelBuilder;
 
   /// Text builder for the Y axis label.
   ///
@@ -438,7 +439,7 @@ class LineChartData {
     String? limitText,
     TooltipBuilder? titleBuilder,
     TooltipBuilder? subtitleBuilder,
-    LabelBuilder<DateTime>? xAxisLabelBuilder,
+    RichLabelBuilder<DateTime>? xAxisLabelBuilder,
     LabelBuilder<double>? yAxisLabelBuilder,
     LineChartGridType? gridType,
     LineChartDataType? dataType,
@@ -461,12 +462,8 @@ class LineChartData {
 
   @override
   int get hashCode =>
-      // [hasMap] causes unexpected behaviour, using default hashCode for now
-      // hashMap(data) ^
       data.hashCode ^
       predefinedMaxValue.hashCode ^
-      // [hasMap] causes unexpected behaviour, using default hashCode for now
-      // hashMap(maxValueRoundingMap) ^
       maxValueRoundingMap.hashCode ^
       limit.hashCode ^
       limitText.hashCode ^

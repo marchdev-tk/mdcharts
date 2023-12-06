@@ -152,8 +152,9 @@ class _LineChartState extends State<LineChart>
     final xAxisLabels = CustomPaint(
       painter: LineChartXAxisLabelPainter(
         widget.data,
-        widget.style.axisStyle,
+        widget.style,
         widget.settings,
+        xPosition,
       ),
       size: Size.fromHeight(widget.style.axisStyle.labelHeight),
     );

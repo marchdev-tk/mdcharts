@@ -671,30 +671,131 @@ class LineChartXAxisLabelPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.selectedXPosition,
   );
 
   /// Set of required (and optional) data to construct the line chart.
   final LineChartData data;
 
   /// Provides various customizations for the chart axis.
-  final LineChartAxisStyle style;
+  final LineChartStyle style;
 
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
 
-  /// Unlimited X axis labels painter.
-  void paintUnlimited(Canvas canvas, Size size) {
-    final dates = data.xAxisDates;
-    final painters = <MDTextPainter, bool>{};
+  /// Selected position on the X axis.
+  ///
+  /// If provided, point with drop line and tooltip will be painted for the nearest point
+  /// of the selected position on the X axis. Otherwise, last point will be
+  /// painted, but without drop line and tooltip.
+  final double? selectedXPosition;
 
+  /// Smart getter of the [data.typedData].
+  ///
+  /// If there's cache - it will be used instead of basic [data.typedData].
+  Map<DateTime, double> get _typedData {
+    final cachedTypedData = cache.getTypedData(data.hashCode);
+    if (cachedTypedData != null) {
+      return cachedTypedData;
+    }
+
+    final typedData = data.typedData;
+    cache.saveTypedData(data.hashCode, typedData);
+
+    return typedData;
+  }
+
+  int? _getSelectedIndex(Size size) {
+    if (selectedXPosition == null) {
+      return null;
+    }
+
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
+    index = math.min(index, _typedData.length - 1);
+
+    return index;
+  }
+
+  List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
+    final length = data.data.length;
+    final labelStep = labelQuantity != null ? length / labelQuantity : .0;
+    final halfLabelQty = (labelQuantity ?? 0) ~/ 2;
+    final labelQtyIsOdd = (labelQuantity ?? 0) % 2 == 1;
+    final steps = [
+      for (var i = 0; i < halfLabelQty; i++) ...[
+        (i * labelStep).round(),
+        (length - 1 - (i * labelStep).round()),
+      ],
+      if (labelQtyIsOdd) length ~/ 2,
+    ]..sort();
+
+    return steps;
+  }
+
+  void _paintLabel(
+    Canvas canvas,
+    Size size,
+    int index,
+    MapEntry<MDTextPainter, bool> painter,
+  ) {
+    if (!painter.value) {
+      return;
+    }
+
+    final selectedIndex = _getSelectedIndex(size);
+    final widthFraction = size.width / data.xAxisDivisions;
+    final point = Offset(widthFraction * index - painter.key.size.width / 2, 0);
+
+    if (index == selectedIndex && settings.showAxisXLabelSelection) {
+      canvas.drawRRect(
+        style.axisStyle.xAxisSelectedLabelBorderRadius.toRRect(
+          Rect.fromLTWH(
+            point.dx - style.axisStyle.xAxisLabelPadding.left,
+            point.dy,
+            painter.key.size.width +
+                style.axisStyle.xAxisLabelPadding.horizontal,
+            painter.key.size.height +
+                style.axisStyle.xAxisLabelPadding.vertical,
+          ),
+        ),
+        Paint()
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true
+          ..color = style.axisStyle.xAxisSelectedLabelBackgroundColor,
+      );
+    }
+    painter.key.paint(
+      canvas,
+      point.translate(0, style.axisStyle.xAxisLabelPadding.top),
+    );
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.gridType == LineChartGridType.undefined && !data.canDraw) {
+      return;
+    }
+
+    final dates = data.xAxisDates;
+    final steps = _getXAxisLabelIndexesToPaint(settings.xAxisLabelQuantity);
+    final painters = <MDTextPainter, bool>{};
+    final selectedIndex = _getSelectedIndex(size);
+
+    MDTextPainter? selectedPainter;
     for (var i = 0; i < dates.length; i++) {
       final item = dates[i];
-      final text = data.xAxisLabelBuilder(item);
-      final painter = MDTextPainter(TextSpan(
-        text: text,
-        style: style.xAxisLabelStyle,
-      ));
-      painters[painter] = true;
+      final textStyle = i == selectedIndex && settings.showAxisXLabelSelection
+          ? style.axisStyle.xAxisSelectedLabelStyle
+          : style.axisStyle.xAxisLabelStyle;
+      final text = data.xAxisLabelBuilder(item, textStyle);
+      final painter = MDTextPainter(text);
+      painters[painter] =
+          settings.xAxisLabelQuantity == null ? true : steps.contains(i);
+      if (i == selectedIndex) {
+        selectedPainter = painter;
+      }
     }
 
     double totalWidth = 0;
@@ -706,7 +807,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
               .map((painter) => painter.key.size.width)
               .sum
               .toDouble() +
-          gapCount * style.xAxisLabelSpacing;
+          gapCount * style.axisStyle.xAxisLabelPadding.horizontal;
 
       if (totalWidth > size.width && visiblePainters.length > 3) {
         for (var i = 1; i < visiblePainters.length / 2; i++) {
@@ -741,116 +842,20 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       }
     }
 
-    final widthFactor = size.width / data.xAxisDivisions;
-
     for (var i = 0; i < painters.length; i++) {
       final painter = painters.entries.elementAt(i);
 
-      if (painter.value) {
-        final dxBias = i == 0
-            ? 0
-            : i == painters.length - 1
-                ? -painter.key.size.width
-                : -painter.key.size.width / 2;
-        final dx = widthFactor * i + dxBias;
-
-        painter.key.paint(
-          canvas,
-          Offset(dx, 0),
-        );
-      }
-    }
-  }
-
-  /// Limited X axis labels painter.
-  void paintLimited(Canvas canvas, Size size) {
-    final dates = data.xAxisDates;
-    final count = math.min(settings.xAxisLabelQuantity!, dates.length);
-    var innerCount = math.max(count - 2, 0);
-
-    final datesToPaint = <DateTime>[
-      dates.first,
-      dates.last,
-    ];
-
-    while (innerCount > 0) {
-      final datesLength = dates.length - 2;
-      final step = (datesLength / (innerCount + 1)).round();
-      final innerDatesToPaint = <DateTime>[];
-
-      for (var i = 1; i <= innerCount / 2; i++) {
-        final stepDuration = Duration(days: step * i);
-        innerDatesToPaint.add(datesToPaint.first.add(stepDuration));
-        innerDatesToPaint.add(datesToPaint.last.subtract(stepDuration));
-      }
-      if (innerCount % 2 == 1) {
-        final centralDay = dates.length ~/ 2;
-        innerDatesToPaint.insert(
-          innerDatesToPaint.length ~/ 2,
-          datesToPaint.first.add(Duration(days: centralDay)),
-        );
+      if (i == selectedIndex && settings.showAxisXSelectedLabelIfConcealed) {
+        continue;
       }
 
-      final localDatesToPaint = List.of(datesToPaint);
-      localDatesToPaint.insertAll(1, innerDatesToPaint);
-
-      double totalWidth = .0;
-      for (var i = 0; i < localDatesToPaint.length; i++) {
-        final item = localDatesToPaint[i];
-        final text = data.xAxisLabelBuilder(item);
-        final painter = MDTextPainter(TextSpan(
-          text: text,
-          style: style.xAxisLabelStyle,
-        ));
-        totalWidth += painter.size.width;
-      }
-
-      if (totalWidth <= size.width) {
-        datesToPaint.insertAll(1, innerDatesToPaint);
-        break;
-      }
-
-      innerCount = innerCount - 1;
+      _paintLabel(canvas, size, i, painter);
     }
 
-    _normalizeDates(datesToPaint);
+    if (selectedPainter != null && settings.showAxisXSelectedLabelIfConcealed) {
+      final index = painters.keys.toList().indexOf(selectedPainter);
 
-    for (var i = 0; i < datesToPaint.length; i++) {
-      final item = datesToPaint[i];
-      final text = data.xAxisLabelBuilder(item);
-      final painter = MDTextPainter(TextSpan(
-        text: text,
-        style: style.xAxisLabelStyle,
-      ));
-
-      double dx;
-      if (i == 0) {
-        dx = 0;
-      } else if (i == datesToPaint.length - 1) {
-        dx = size.width - painter.size.width;
-      } else {
-        final widthFactor = size.width / data.xAxisDivisions;
-        final index = dates.indexOf(datesToPaint[i]);
-        dx = widthFactor * index - painter.size.width / 2;
-      }
-
-      painter.paint(
-        canvas,
-        Offset(dx, 0),
-      );
-    }
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (data.gridType == LineChartGridType.undefined && !data.canDraw) {
-      return;
-    }
-
-    if (settings.xAxisLabelQuantity == null) {
-      paintUnlimited(canvas, size);
-    } else {
-      paintLimited(canvas, size);
+      _paintLabel(canvas, size, index, MapEntry(selectedPainter, true));
     }
   }
 
@@ -858,17 +863,6 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   bool shouldRepaint(covariant LineChartXAxisLabelPainter oldDelegate) =>
       data != oldDelegate.data ||
       style != oldDelegate.style ||
-      settings != oldDelegate.settings;
-
-  void _normalizeDates(List<DateTime> dates) {
-    for (var i = 0; i < dates.length; i++) {
-      if (dates[i].hour == 1) {
-        final wrongDate = dates[i];
-        dates[i] = DateTime(wrongDate.year, wrongDate.month, wrongDate.day);
-      } else if (dates[i].hour == 23) {
-        final newDate = dates[i].add(const Duration(hours: 1));
-        dates[i] = newDate;
-      }
-    }
-  }
+      settings != oldDelegate.settings ||
+      selectedXPosition != oldDelegate.selectedXPosition;
 }

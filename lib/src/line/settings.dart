@@ -24,6 +24,7 @@ class LineChartSettings {
     this.xAxisLabelQuantity,
     this.axisDivisionEdges = AxisDivisionEdges.none,
     this.showAxisX = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
     this.showAxisY = true,
     this.lineFilling = true,
     this.lineShadow = true,
@@ -31,12 +32,14 @@ class LineChartSettings {
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
+    this.showAxisXLabelSelection = false,
   });
 
   /// Constructs an instance of [LineChartSettings] without grids.
   const LineChartSettings.gridless({
     this.xAxisLabelQuantity,
     this.showAxisX = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
     this.showAxisY = true,
     this.lineFilling = true,
     this.lineShadow = true,
@@ -44,6 +47,7 @@ class LineChartSettings {
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
+    this.showAxisXLabelSelection = false,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
@@ -93,6 +97,12 @@ class LineChartSettings {
   /// Defaults to `true`.
   final bool showAxisX;
 
+  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
+  /// label is concealed in normal circumstances.
+  ///
+  /// Defaults to `false`.
+  final bool showAxisXSelectedLabelIfConcealed;
+
   /// Whether to show Y axis or not.
   ///
   /// Defaults to `true`.
@@ -129,6 +139,12 @@ class LineChartSettings {
   /// Defaults to `true`.
   final bool showAxisYLabels;
 
+  /// Whether to paint with selected style currently selected X axis label or
+  /// not.
+  ///
+  /// Defaults to `false`.
+  final bool showAxisXLabelSelection;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   LineChartSettings copyWith({
@@ -138,6 +154,7 @@ class LineChartSettings {
     int? xAxisLabelQuantity,
     AxisDivisionEdges? axisDivisionEdges,
     bool? showAxisX,
+    bool? showAxisXSelectedLabelIfConcealed,
     bool? showAxisY,
     bool? lineFilling,
     bool? lineShadow,
@@ -145,6 +162,7 @@ class LineChartSettings {
     LimitLabelSnapPosition? limitLabelSnapPosition,
     bool? showAxisXLabels,
     bool? showAxisYLabels,
+    bool? showAxisXLabelSelection,
   }) =>
       LineChartSettings(
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
@@ -154,6 +172,8 @@ class LineChartSettings {
             : xAxisLabelQuantity ?? this.xAxisLabelQuantity,
         axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
         showAxisX: showAxisX ?? this.showAxisX,
+        showAxisXSelectedLabelIfConcealed: showAxisXSelectedLabelIfConcealed ??
+            this.showAxisXSelectedLabelIfConcealed,
         showAxisY: showAxisY ?? this.showAxisY,
         lineFilling: lineFilling ?? this.lineFilling,
         lineShadow: lineShadow ?? this.lineShadow,
@@ -162,6 +182,8 @@ class LineChartSettings {
             limitLabelSnapPosition ?? this.limitLabelSnapPosition,
         showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
         showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
+        showAxisXLabelSelection:
+            showAxisXLabelSelection ?? this.showAxisXLabelSelection,
       );
 
   @override
@@ -171,13 +193,15 @@ class LineChartSettings {
       xAxisLabelQuantity.hashCode ^
       axisDivisionEdges.hashCode ^
       showAxisX.hashCode ^
+      showAxisXSelectedLabelIfConcealed.hashCode ^
       showAxisY.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
       showAxisXLabels.hashCode ^
-      showAxisYLabels.hashCode;
+      showAxisYLabels.hashCode ^
+      showAxisXLabelSelection.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -187,11 +211,14 @@ class LineChartSettings {
       xAxisLabelQuantity == other.xAxisLabelQuantity &&
       axisDivisionEdges == other.axisDivisionEdges &&
       showAxisX == other.showAxisX &&
+      showAxisXSelectedLabelIfConcealed ==
+          other.showAxisXSelectedLabelIfConcealed &&
       showAxisY == other.showAxisY &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
       showAxisXLabels == other.showAxisXLabels &&
-      showAxisYLabels == other.showAxisYLabels;
+      showAxisYLabels == other.showAxisYLabels &&
+      showAxisXLabelSelection == other.showAxisXLabelSelection;
 }

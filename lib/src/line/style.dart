@@ -140,8 +140,11 @@ class LineChartAxisStyle {
     this.color = const Color(0x33FFFFFF),
     this.yAxisLabelStyle = defaultYAxisLabelStyle,
     this.xAxisLabelStyle = defaultXAxisLabelStyle,
-    this.xAxisLabelSpacing = 16,
-    this.xAxisLabelTopMargin = 8,
+    this.xAxisSelectedLabelStyle = defaultXAxisSelectedLabelStyle,
+    this.xAxisLabelTopMargin = 6,
+    this.xAxisLabelPadding = defaultXAxisLabelPadding,
+    this.xAxisSelectedLabelBackgroundColor = const Color(0xFFFFFFFF),
+    this.xAxisSelectedLabelBorderRadius = defaultXAxisSelectedLabelBorderRadius,
   });
 
   static const defaultYAxisLabelStyle = TextStyle(
@@ -156,6 +159,15 @@ class LineChartAxisStyle {
     fontWeight: FontWeight.w700,
     color: Color(0xFFFFFFFF),
   );
+  static const defaultXAxisSelectedLabelStyle = TextStyle(
+    height: 16 / 11,
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    color: Color(0xFF000000),
+  );
+  static const defaultXAxisLabelPadding = EdgeInsets.fromLTRB(8, 2, 8, 2);
+  static const defaultXAxisSelectedLabelBorderRadius =
+      BorderRadius.all(Radius.circular(12));
 
   /// Stroke of the axis lines.
   ///
@@ -177,15 +189,30 @@ class LineChartAxisStyle {
   /// Defaults to [defaultXAxisLabelStyle].
   final TextStyle xAxisLabelStyle;
 
-  /// Spacing between X axis labels.
+  /// X axis selected label style.
   ///
-  /// Defaults to `16`.
-  final double xAxisLabelSpacing;
+  /// Defaults to [defaultXAxisSelectedLabelStyle].
+  final TextStyle xAxisSelectedLabelStyle;
 
   /// Top margin of the X axis label.
   ///
-  /// Defaults to `8`.
+  /// Defaults to `6`.
   final double xAxisLabelTopMargin;
+
+  /// Padding of the X axis label.
+  ///
+  /// Defaults to [defaultXAxisLabelPadding].
+  final EdgeInsets xAxisLabelPadding;
+
+  /// Background color of the selected X axis label.
+  ///
+  /// Defaults to `0xFFFFFFFF`.
+  final Color xAxisSelectedLabelBackgroundColor;
+
+  /// Border radius of the selected X axis label.
+  ///
+  /// Defaults to [defaultXAxisSelectedLabelBorderRadius].
+  final BorderRadius xAxisSelectedLabelBorderRadius;
 
   /// Gets height of the label.
   double get labelHeight {
@@ -211,8 +238,11 @@ class LineChartAxisStyle {
       color.hashCode ^
       yAxisLabelStyle.hashCode ^
       xAxisLabelStyle.hashCode ^
-      xAxisLabelSpacing.hashCode ^
-      xAxisLabelTopMargin.hashCode;
+      xAxisSelectedLabelStyle.hashCode ^
+      xAxisLabelTopMargin.hashCode ^
+      xAxisLabelPadding.hashCode ^
+      xAxisSelectedLabelBackgroundColor.hashCode ^
+      xAxisSelectedLabelBorderRadius.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -221,8 +251,11 @@ class LineChartAxisStyle {
       color == other.color &&
       yAxisLabelStyle == other.yAxisLabelStyle &&
       xAxisLabelStyle == other.xAxisLabelStyle &&
-      xAxisLabelSpacing == other.xAxisLabelSpacing &&
-      xAxisLabelTopMargin == other.xAxisLabelTopMargin;
+      xAxisLabelTopMargin == other.xAxisLabelTopMargin &&
+      xAxisLabelPadding == other.xAxisLabelPadding &&
+      xAxisSelectedLabelBackgroundColor ==
+          other.xAxisSelectedLabelBackgroundColor &&
+      xAxisSelectedLabelBorderRadius == other.xAxisSelectedLabelBorderRadius;
 }
 
 /// Contains various customization options for the line of the chart itself.
