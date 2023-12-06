@@ -5,7 +5,7 @@
 * Changes of the `BarChart`:
   * Replaced axis painting from main painter to grid painter.
 * Changes of the `LineChart`:
-  * TBD
+  * Reimplemented label painter and improved it's functionality.
 
 ## 4.4.3 - 01.12.2023
 
