@@ -223,7 +223,7 @@ class _BarChartState extends State<BarChart>
               key: Key(
                 '${_valueAnimation.value}|${_selectedPeriod.valueOrNull}',
               ),
-              painter: BarChartPainter(
+              painter: BarChartBarPainter(
                 _data,
                 _style,
                 _settings,

@@ -15,10 +15,10 @@ import 'settings.dart';
 import 'style.dart';
 import 'utils.dart';
 
-/// Main painter of the [BarChart].
-class BarChartPainter extends CustomPainter {
-  /// Constructs an instance of [BarChartPainter].
-  const BarChartPainter(
+/// Main painter of the [BarChart] that paints bars and tooltips.
+class BarChartBarPainter extends CustomPainter {
+  /// Constructs an instance of [BarChartBarPainter].
+  const BarChartBarPainter(
     this.data,
     this.style,
     this.settings,
@@ -86,19 +86,6 @@ class BarChartPainter extends CustomPainter {
 
   bool get _showTooltip =>
       settings.interaction == InteractionType.overview && dragInProgress;
-
-  /// Axis painter.
-  void paintAxis(Canvas canvas, Size size) {
-    if (!settings.showAxisX) {
-      return;
-    }
-
-    final axisPaint = style.axisStyle.paint;
-    final bottomLeft = Offset(0, size.height);
-    final bottomRight = Offset(size.width, size.height);
-
-    canvas.drawLine(bottomLeft, bottomRight, axisPaint);
-  }
 
   /// Bar painter.
   void paintBar(Canvas canvas, Size size) {
@@ -776,19 +763,18 @@ class BarChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    paintAxis(canvas, size);
     paintBar(canvas, size);
     paintTooltip(canvas, size);
   }
 
   @override
-  bool shouldRepaint(covariant BarChartPainter oldDelegate) =>
+  bool shouldRepaint(covariant BarChartBarPainter oldDelegate) =>
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
 }
 
-/// Grid painter of the [BarChart].
+/// Grid and Axis painter of the [BarChart].
 class BarChartGridPainter extends CustomPainter {
   /// Constructs an instance of [BarChartGridPainter].
   const BarChartGridPainter(
@@ -877,9 +863,23 @@ class BarChartGridPainter extends CustomPainter {
     onYAxisLabelSizeCalculated(maxLabelWidth);
   }
 
+  /// Axis painter.
+  void paintAxis(Canvas canvas, Size size) {
+    if (!settings.showAxisX) {
+      return;
+    }
+
+    final axisPaint = style.axisStyle.paint;
+    final bottomLeft = Offset(0, size.height);
+    final bottomRight = Offset(size.width, size.height);
+
+    canvas.drawLine(bottomLeft, bottomRight, axisPaint);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     paintGrid(canvas, size);
+    paintAxis(canvas, size);
   }
 
   @override
@@ -891,7 +891,7 @@ class BarChartGridPainter extends CustomPainter {
 
 /// X axis label painter of the [BarChart].
 class BarChartXAxisLabelPainter extends CustomPainter {
-  /// Constructs an instance of [BarChartPainter].
+  /// Constructs an instance of [BarChartBarPainter].
   const BarChartXAxisLabelPainter(
     this.data,
     this.style,
