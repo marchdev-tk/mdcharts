@@ -739,6 +739,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
     Size size,
     int index,
     MapEntry<MDTextPainter, bool> painter,
+    int length,
   ) {
     if (!painter.value) {
       return;
@@ -746,7 +747,15 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
     final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
-    final point = Offset(widthFraction * index - painter.key.size.width / 2, 0);
+
+    Offset point;
+    if (index == 0) {
+      point = Offset(widthFraction * index, 0);
+    } else if (index == length - 1) {
+      point = Offset(widthFraction * index - painter.key.size.width, 0);
+    } else {
+      point = Offset(widthFraction * index - painter.key.size.width / 2, 0);
+    }
 
     if (index == selectedIndex && settings.showAxisXLabelSelection) {
       canvas.drawRRect(
@@ -849,13 +858,19 @@ class LineChartXAxisLabelPainter extends CustomPainter {
         continue;
       }
 
-      _paintLabel(canvas, size, i, painter);
+      _paintLabel(canvas, size, i, painter, dates.length);
     }
 
     if (selectedPainter != null && settings.showAxisXSelectedLabelIfConcealed) {
       final index = painters.keys.toList().indexOf(selectedPainter);
 
-      _paintLabel(canvas, size, index, MapEntry(selectedPainter, true));
+      _paintLabel(
+        canvas,
+        size,
+        index,
+        MapEntry(selectedPainter, true),
+        dates.length,
+      );
     }
   }
 
