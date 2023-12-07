@@ -62,6 +62,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `xAxisLabelQuantity` - quantity of the X axis labels to draw, defaults to `null`.
 * `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
 * `showAxisX` - whether to show X axis or not, defaults to `true`.
+* `showAxisXSelectedLabelIfConcealed` - whether to show selected label if it is concealed by `xAxisLabelQuantity`, defaults to `false`.
 * `showAxisY` - whether to show Y axis or not, defaults to `true`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
 * `lineShadow` - whether to draw shadow beneath the line or not, defaults to `true`.
@@ -69,6 +70,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
 * `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
 * `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
+* `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
 
 #### Styles
 
