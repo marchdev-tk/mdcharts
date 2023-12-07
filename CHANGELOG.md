@@ -4,6 +4,7 @@
 
 * Changes of the `LineChart`:
   * Fixed first and last label positions
+  * Fixed `LineChartGridType` related issue with labels
 
 ## 4.5.0 - 06.12.2023
 
