@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.5.1 - 07.12.2023
+
+* Changes of the `LineChart`:
+  * Fixed first and last label positions
+
 ## 4.5.0 - 06.12.2023
 
 * Changes of the `BarChart`:
