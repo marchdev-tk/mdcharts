@@ -719,7 +719,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   }
 
   List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
-    final length = data.data.length;
+    final length = data.xAxisDates.length;
     final labelStep = labelQuantity != null ? length / labelQuantity : .0;
     final halfLabelQty = (labelQuantity ?? 0) ~/ 2;
     final labelQtyIsOdd = (labelQuantity ?? 0) % 2 == 1;
