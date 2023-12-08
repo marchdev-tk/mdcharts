@@ -1,10 +1,15 @@
 # Changelog
 
+## 4.5.2 - 08.12.2023
+
+* Changes of the `LineChart`:
+  * Adjusted x axis labels painting positions.
+
 ## 4.5.1 - 07.12.2023
 
 * Changes of the `LineChart`:
-  * Fixed first and last label positions
-  * Fixed `LineChartGridType` related issue with labels
+  * Fixed first and last label positions.
+  * Fixed `LineChartGridType` related issue with labels.
 
 ## 4.5.0 - 06.12.2023
 
