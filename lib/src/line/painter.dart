@@ -725,8 +725,10 @@ class LineChartXAxisLabelPainter extends CustomPainter {
     final labelQtyIsOdd = (labelQuantity ?? 0) % 2 == 1;
     final steps = [
       for (var i = 0; i < halfLabelQty; i++) ...[
-        (i * labelStep).round(),
-        (length - 1 - (i * labelStep).round()),
+        // (i * labelStep).round(),
+        // (length - 1 - (i * labelStep).round()),
+        (i * labelStep).ceil(),
+        (length - 1 - (i * labelStep).ceil()),
       ],
       if (labelQtyIsOdd) length ~/ 2,
     ]..sort();
