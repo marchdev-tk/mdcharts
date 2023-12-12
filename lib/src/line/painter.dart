@@ -720,15 +720,13 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
   List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
     final length = data.xAxisDates.length;
-    final labelStep = labelQuantity != null ? length / labelQuantity : .0;
+    final labelStep = labelQuantity != null ? length / (labelQuantity - 1) : .0;
     final halfLabelQty = (labelQuantity ?? 0) ~/ 2;
     final labelQtyIsOdd = (labelQuantity ?? 0) % 2 == 1;
     final steps = [
       for (var i = 0; i < halfLabelQty; i++) ...[
-        // (i * labelStep).round(),
-        // (length - 1 - (i * labelStep).round()),
-        (i * labelStep).ceil(),
-        (length - 1 - (i * labelStep).ceil()),
+        (i * labelStep).truncate(),
+        (length - 1 - (i * labelStep).truncate()),
       ],
       if (labelQtyIsOdd) length ~/ 2,
     ]..sort();
