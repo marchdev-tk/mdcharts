@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.5.3 - 12.12.2023
+
+* Changes of the `LineChart`:
+  * Adjusted x axis labels painting positions.
+
 ## 4.5.2 - 08.12.2023
 
 * Changes of the `LineChart`:
