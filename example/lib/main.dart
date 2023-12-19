@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'src/bar_chart.dart';
+import 'src/donut_chart.dart';
 import 'src/gauge_chart.dart';
 import 'src/line_chart.dart';
 import 'src/scaffolds/example_scaffold.dart';
@@ -39,6 +40,7 @@ class HomePage extends StatelessWidget {
         'Line Chart': LineChartExample(),
         'Bar Chart': BarChartExample(),
         'Gauge Chart': GaugeChartExample(),
+        'Donut Chart': DonutChartExample(),
       },
     );
   }

@@ -32,4 +32,11 @@ class MDTextPainter {
     }
     _textPainter.paint(canvas, offset);
   }
+
+  /// Releases the resources associated with this painter.
+  ///
+  /// After disposal this painter is unusable.
+  void dispose() {
+    _textPainter.dispose();
+  }
 }

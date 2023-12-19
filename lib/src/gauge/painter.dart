@@ -7,9 +7,9 @@ import 'dart:ui';
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/gauge/cache.dart';
 
 import '../utils.dart';
+import 'cache.dart';
 import 'data.dart';
 import 'settings.dart';
 import 'style.dart';
@@ -143,7 +143,7 @@ class GaugeChartPainter extends CustomPainter {
     var path = buildArc(
       center: _centerPoint!,
       innerRadius: innerRadius,
-      radius: radius,
+      outerRadius: radius,
       startAngle: _startAngle,
       endAngle: _endAngle,
     );
@@ -168,7 +168,7 @@ class GaugeChartPainter extends CustomPainter {
     path = buildArc(
       center: _centerPoint!,
       innerRadius: innerRadius,
-      radius: radius,
+      outerRadius: radius,
       startAngle: _startAngle,
       endAngle: _endAngle,
     );
@@ -176,7 +176,7 @@ class GaugeChartPainter extends CustomPainter {
       _borderPath = buildArc(
         center: _centerPoint!,
         innerRadius: innerRadius + style.backgroundStyle.borderStroke / 2,
-        radius: radius - style.backgroundStyle.borderStroke / 2,
+        outerRadius: radius - style.backgroundStyle.borderStroke / 2,
         startAngle: _startAngle,
         endAngle: _endAngle,
       );
@@ -244,7 +244,7 @@ class GaugeChartPainter extends CustomPainter {
 
       final path = buildArc(
         center: _centerPoint!,
-        radius: radius,
+        outerRadius: radius,
         innerRadius: innerRadius,
         startAngle: startAngle,
         endAngle: endAngle,
@@ -259,7 +259,7 @@ class GaugeChartPainter extends CustomPainter {
     }
   }
 
-  // Background border painter.
+  /// Background border painter.
   void paintBackgroundBorder(Canvas canvas, Size size) {
     if (_borderPath == null || !style.backgroundStyle.borderFilled) {
       return;
@@ -300,7 +300,7 @@ class GaugeChartPainter extends CustomPainter {
 
     final path = buildArc(
       center: _centerPoint!,
-      radius: radius,
+      outerRadius: radius,
       innerRadius: innerRadius,
       startAngle: startAngle,
       endAngle: endAngle,
@@ -313,7 +313,7 @@ class GaugeChartPainter extends CustomPainter {
     if (style.sectionStyle.selectedBorderStroke > 0) {
       final borderPath = buildArc(
         center: _centerPoint!,
-        radius: innerRadius + style.sectionStyle.selectedBorderStroke,
+        outerRadius: innerRadius + style.sectionStyle.selectedBorderStroke,
         innerRadius: innerRadius,
         startAngle: startAngle,
         endAngle: endAngle,
