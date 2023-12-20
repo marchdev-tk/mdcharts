@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.1 - 20.12.2023
+
+* Changes of the `DonutChart`:
+  * Adjusted arc caching mechanism.
+* Changes of the `GaugeChart`:
+  * Adjusted arc caching mechanism.
+
 ## 5.0.0 - 20.12.2023
 
 * Added `DonutChart`.
