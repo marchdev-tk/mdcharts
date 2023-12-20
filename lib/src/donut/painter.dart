@@ -2,7 +2,6 @@ import 'dart:math' show Point, max, pi, sqrt;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../utils.dart';
 import 'cache.dart';
@@ -17,8 +16,6 @@ class DonutPainter extends CustomPainter {
     this.style,
     this.oldData,
     this.dataHashCode,
-    this.selectedIndex,
-    this.oldSelectedIndex,
     this.valueCoef,
   );
 
@@ -37,12 +34,6 @@ class DonutPainter extends CustomPainter {
 
   /// Hash code of the `data` to use for cache storing.
   final int dataHashCode;
-
-  /// Selected index stream.
-  final ValueStream<int> selectedIndex;
-
-  /// Old selected index stream.
-  final ValueStream<int> oldSelectedIndex;
 
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
@@ -203,7 +194,10 @@ class DonutPainter extends CustomPainter {
     }
 
     final normalizedData = normalizeList(data);
-    final normalizedOldData = normalizeList(oldData); // TODO handle old data
+    final normalizedOldData = normalizeList(oldData);
+    while (normalizedData.length < normalizedOldData.length) {
+      normalizedData.add(0);
+    }
     var startAngle = -0.5 * pi;
 
     for (var i = 0; i < normalizedData.length; i++) {
@@ -287,26 +281,36 @@ class DonutPainter extends CustomPainter {
 
   /// Selected section painter
   void paintSelectedSection(Canvas canvas, Size size) {
-    const baseAngle = -0.5 * pi;
+    if (data.selectedIndex == null && oldData?.selectedIndex == null) {
+      return;
+    }
 
-    final i = selectedIndex.value;
-    final oldI = oldSelectedIndex.value;
+    final i = data.selectedIndex ?? 0;
+    final adjustedI = i >= data.data.length ? data.data.length - 1 : i;
+    final oldI = oldData?.selectedIndex ?? 0;
+    final adjustedOldI =
+        oldI >= oldData!.data.length ? oldData!.data.length - 1 : oldI;
     final normalizedData = normalizeList(data);
-    // final normalizedOldData = normalizeList(oldData); // TODO handle old data
+    final normalizedOldData = normalizeList(oldData);
 
     double getCumulativeValue(int index) =>
         normalizedData.sublist(0, index + 1).fold<double>(0, (a, b) => a + b);
+    double getCumulativeOldValue(int index) => normalizedOldData
+        .sublist(0, index + 1)
+        .fold<double>(0, (a, b) => a + b);
 
     final center = _centerPoint(size);
     final outerRadius = _radius(size);
     final innerRadius = _innerRadius(size);
 
-    final oldStartAngle =
-        baseAngle + (oldI >= 1 ? getCumulativeValue(oldI - 1) : 0) * 2 * pi;
-    final oldEndAngle = baseAngle + getCumulativeValue(oldI) * 2 * pi;
-    final newStartAngle =
-        baseAngle + (i >= 1 ? getCumulativeValue(i - 1) : 0) * 2 * pi;
-    final newEndAngle = baseAngle + getCumulativeValue(i) * 2 * pi;
+    const baseAngle = -0.5 * pi;
+    final oldStartAngle = baseAngle +
+        (oldI >= 1 ? getCumulativeOldValue(adjustedOldI - 1) : 0) * 2 * pi;
+    final oldEndAngle =
+        baseAngle + getCumulativeOldValue(adjustedOldI) * 2 * pi;
+    final newStartAngle = baseAngle +
+        (adjustedI >= 1 ? getCumulativeValue(adjustedI - 1) : 0) * 2 * pi;
+    final newEndAngle = baseAngle + getCumulativeValue(adjustedI) * 2 * pi;
 
     final startAngle =
         oldStartAngle + (newStartAngle - oldStartAngle) * valueCoef;

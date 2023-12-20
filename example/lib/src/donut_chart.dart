@@ -25,7 +25,7 @@ final _style = BehaviorSubject<DonutChartStyle>.seeded(
   ),
 );
 final _data = BehaviorSubject<DonutChartData>.seeded(
-  const DonutChartData(data: [524, 306], initialSelectedIndex: 0),
+  const DonutChartData(data: [524, 306]),
 );
 
 class DonutChartExample extends StatelessWidget {
@@ -68,7 +68,16 @@ class _Chart extends StatelessWidget {
                 return DonutChart(
                   settings: settings.requireData,
                   style: style.requireData,
-                  data: data.requireData,
+                  data: data.requireData.copyWith(
+                    onSelectionChanged: (i) {
+                      _data.add(
+                        data.requireData.copyWith(
+                          allowNullSelectedIndex: true,
+                          selectedIndex: i,
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );

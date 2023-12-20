@@ -9,7 +9,7 @@ class DonutChartData {
   /// Constructs an instance of [DonutChartData].
   const DonutChartData({
     required this.data,
-    this.initialSelectedIndex,
+    this.selectedIndex,
     this.onSelectionChanged,
     this.onInscribedInCircleSizeChanged,
   });
@@ -21,8 +21,10 @@ class DonutChartData {
 
   /// Index of the selected section.
   ///
+  /// In order to change currently selected section this value must be changed.
+  ///
   /// Defaults to `null`.
-  final int? initialSelectedIndex;
+  final int? selectedIndex;
 
   /// Callbacks that reports that selected section index has changed.
   final ValueChanged<int>? onSelectionChanged;
@@ -40,21 +42,32 @@ class DonutChartData {
   DonutChartData copyWith({
     bool allowNullSelectedIndex = false,
     List<double>? data,
-    int? initialSelectedIndex,
+    int? selectedIndex,
+    ValueChanged<int>? onSelectionChanged,
+    ValueChanged<double>? onInscribedInCircleSizeChanged,
   }) =>
       DonutChartData(
         data: data ?? this.data,
-        initialSelectedIndex: allowNullSelectedIndex
-            ? initialSelectedIndex
-            : initialSelectedIndex ?? this.initialSelectedIndex,
+        selectedIndex: allowNullSelectedIndex
+            ? selectedIndex
+            : selectedIndex ?? this.selectedIndex,
+        onSelectionChanged: onSelectionChanged ?? this.onSelectionChanged,
+        onInscribedInCircleSizeChanged: onInscribedInCircleSizeChanged ??
+            this.onInscribedInCircleSizeChanged,
       );
 
   @override
-  int get hashCode => Object.hashAll(data) ^ initialSelectedIndex.hashCode;
+  int get hashCode =>
+      Object.hashAll(data) ^
+      selectedIndex.hashCode ^
+      onSelectionChanged.hashCode ^
+      onInscribedInCircleSizeChanged.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is DonutChartData &&
       listEquals(data, other.data) &&
-      initialSelectedIndex == other.initialSelectedIndex;
+      selectedIndex == other.selectedIndex &&
+      onSelectionChanged == other.onSelectionChanged &&
+      onInscribedInCircleSizeChanged == other.onInscribedInCircleSizeChanged;
 }

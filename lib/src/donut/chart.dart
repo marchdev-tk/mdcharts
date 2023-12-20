@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'cache.dart';
 import 'data.dart';
 import 'painter.dart';
 import 'settings.dart';
 import 'style.dart';
+
+const _animationDuaration = Duration(milliseconds: 600);
 
 @immutable
 class DonutChart extends StatefulWidget {
@@ -29,40 +30,49 @@ class DonutChart extends StatefulWidget {
 
 class _DonutChartState extends State<DonutChart>
     with SingleTickerProviderStateMixin {
-  final _selectedIndex = BehaviorSubject<int>();
-  final _oldSelectedIndex = BehaviorSubject<int>.seeded(0);
-
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
 
   late DonutChartData data;
   DonutChartData? oldData;
-  int? dataHashCode;
+  late int dataHashCode;
+  int? _selectedIndex;
 
-  void startAnimation() {
+  bool _tapHandlingInProgress = false;
+
+  Future<void> startAnimation() async {
     if (widget.data == oldData) {
       return;
     }
 
     _valueController.forward(from: 0);
+    await Future.delayed(_animationDuaration);
   }
 
-  void _handleTapUp(Offset position) {
-    final pathHolders = cache.getPathHolders(widget.data.hashCode) ?? [];
-
-    if (pathHolders.isEmpty) {
+  Future<void> _handleTapUp(Offset position) async {
+    if (!widget.settings.selectionEnabled || _tapHandlingInProgress) {
       return;
     }
 
-    for (var i = 0; i < widget.data.data.length; i++) {
-      final contains = pathHolders[i].contains(position);
+    try {
+      _tapHandlingInProgress = true;
+      final pathHolders = cache.getPathHolders(widget.data.hashCode) ?? [];
 
-      if (contains && _selectedIndex.value != i) {
-        _oldSelectedIndex.add(_selectedIndex.value);
-        _selectedIndex.add(i);
-        widget.data.onSelectionChanged?.call(i);
-        startAnimation();
+      if (pathHolders.isEmpty) {
+        return;
       }
+
+      for (var i = 0; i < widget.data.data.length; i++) {
+        final contains = pathHolders[i].contains(position);
+
+        if (contains && _selectedIndex != i) {
+          _selectedIndex = i;
+          widget.data.onSelectionChanged?.call(i);
+          await startAnimation();
+        }
+      }
+    } finally {
+      _tapHandlingInProgress = false;
     }
   }
 
@@ -70,14 +80,14 @@ class _DonutChartState extends State<DonutChart>
   void initState() {
     data = widget.data;
     dataHashCode = data.hashCode;
-    cache.add(dataHashCode!, oldData.hashCode);
+    cache.add(dataHashCode, oldData.hashCode);
 
-    _selectedIndex.add(data.initialSelectedIndex ?? 0);
+    _selectedIndex = data.selectedIndex;
 
     _valueController = AnimationController(
       value: widget.showInitialAnimation ? 0 : 1,
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: _animationDuaration,
     );
     _valueAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _valueController,
@@ -101,9 +111,9 @@ class _DonutChartState extends State<DonutChart>
 
     if (oldData.hashCode != oldDataHashCode) {
       cache.add(oldData.hashCode, oldDataHashCode);
-      cache.add(dataHashCode!, oldData.hashCode);
+      cache.add(dataHashCode, oldData.hashCode);
     } else {
-      cache.add(dataHashCode!, oldData.hashCode);
+      cache.add(dataHashCode, oldData.hashCode);
     }
 
     if (data != oldWidget.data) {
@@ -129,9 +139,7 @@ class _DonutChartState extends State<DonutChart>
                 widget.settings,
                 widget.style,
                 oldData,
-                dataHashCode!,
-                _selectedIndex,
-                _oldSelectedIndex,
+                dataHashCode,
                 _valueAnimation.value,
               ),
               size: Size.infinite,
