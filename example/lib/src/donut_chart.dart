@@ -123,14 +123,56 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 final randomizedData = getRandomizedData(fixedQty: true);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize with Fixed Qty'),
+              title: const Text('Randomize with Fixed Length Data'),
             ),
             Button(
               onPressed: () {
                 final randomizedData = getRandomizedData(fixedQty: false);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize with Random Qty'),
+              title: const Text('Randomize with Mixed Length Data'),
+            ),
+            Button(
+              onPressed: () {
+                _data
+                    .add(_data.value.copyWith(data: [16000, 11515.88, 201.25]));
+                _settings.add(const DonutChartSettings(
+                  colorPattern: [0, 1, 2, 1],
+                ));
+                _style.add(const DonutChartStyle(
+                  backgroundStyle: DonutChartBackgroundStyle(
+                    shadowElevation: 16,
+                    shadowColor: Color(0x80000000),
+                    innerBorderGradient: LinearGradient(
+                      tileMode: TileMode.repeated,
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.0384),
+                        Color.fromRGBO(255, 255, 255, 0.2376),
+                      ],
+                    ),
+                    outerBorderGradient: LinearGradient(
+                      tileMode: TileMode.repeated,
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.0384),
+                        Color.fromRGBO(255, 255, 255, 0.2376),
+                      ],
+                    ),
+                    innerBorderStroke: 1.5,
+                    outerBorderStroke: 1.5,
+                  ),
+                  sectionStyle: DonutChartSectionStyle(
+                    colors: [
+                      Color(0xFF65C27F),
+                      Color(0xFF91D4A3),
+                      Color(0xFFAFECBF),
+                    ],
+                    selectedColor: Color(0xFF23A848),
+                    selectedInnerBorderColor: Color(0x33000000),
+                    selectedInnerBorderStroke: 3.5,
+                  ),
+                ));
+              },
+              title: const Text('Randomize with Test Data'),
             ),
           ],
         );
@@ -256,6 +298,56 @@ class _BackgroundStyleSetupGroup extends StatelessWidget {
               ),
               title: const Text('shadowElevation'),
             ),
+            ColorListTile(
+              value:
+                  data.backgroundStyle.innerBorderColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      innerBorderColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('innerBorderColor'),
+            ),
+            IntListTile(
+              value: data.backgroundStyle.innerBorderStroke.toInt(),
+              onChanged: (value) => _style.add(
+                data.copyWith(
+                  backgroundStyle: data.backgroundStyle.copyWith(
+                    innerBorderStroke: value.toDouble(),
+                  ),
+                ),
+              ),
+              title: const Text('innerBorderStroke'),
+            ),
+            ColorListTile(
+              value:
+                  data.backgroundStyle.outerBorderColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    backgroundStyle: data.backgroundStyle.copyWith(
+                      outerBorderColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('outerBorderColor'),
+            ),
+            IntListTile(
+              value: data.backgroundStyle.outerBorderStroke.toInt(),
+              onChanged: (value) => _style.add(
+                data.copyWith(
+                  backgroundStyle: data.backgroundStyle.copyWith(
+                    outerBorderStroke: value.toDouble(),
+                  ),
+                ),
+              ),
+              title: const Text('outerBorderStroke'),
+            ),
           ],
         );
       },
@@ -289,6 +381,56 @@ class _SectionStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('selectedColor'),
+            ),
+            ColorListTile(
+              value: data.sectionStyle.selectedInnerBorderColor ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    sectionStyle: data.sectionStyle.copyWith(
+                      selectedInnerBorderColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('selectedInnerBorderColor'),
+            ),
+            IntListTile(
+              value: data.sectionStyle.selectedInnerBorderStroke.toInt(),
+              onChanged: (value) => _style.add(
+                data.copyWith(
+                  sectionStyle: data.sectionStyle.copyWith(
+                    selectedInnerBorderStroke: value.toDouble(),
+                  ),
+                ),
+              ),
+              title: const Text('selectedInnerBorderStroke'),
+            ),
+            ColorListTile(
+              value: data.sectionStyle.selectedOuterBorderColor ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    sectionStyle: data.sectionStyle.copyWith(
+                      selectedOuterBorderColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('selectedOuterBorderColor'),
+            ),
+            IntListTile(
+              value: data.sectionStyle.selectedOuterBorderStroke.toInt(),
+              onChanged: (value) => _style.add(
+                data.copyWith(
+                  sectionStyle: data.sectionStyle.copyWith(
+                    selectedOuterBorderStroke: value.toDouble(),
+                  ),
+                ),
+              ),
+              title: const Text('selectedOuterBorderStroke'),
             ),
             for (var i = 0; i < data.sectionStyle.colors.length; i++)
               ColorListTile(

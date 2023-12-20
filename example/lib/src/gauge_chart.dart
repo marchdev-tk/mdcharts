@@ -124,14 +124,14 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 final randomizedData = getRandomizedData(fixedQty: true);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize with Fixed Qty'),
+              title: const Text('Randomize with Fixed Length Data'),
             ),
             Button(
               onPressed: () {
                 final randomizedData = getRandomizedData(fixedQty: false);
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize with Random Qty'),
+              title: const Text('Randomize with Mixed Length Data'),
             ),
           ],
         );
