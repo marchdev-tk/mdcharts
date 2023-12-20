@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0 - 20.12.2023
+
+* Added `DonutChart`.
+
 ## 4.5.3 - 12.12.2023
 
 * Changes of the `LineChart`:
