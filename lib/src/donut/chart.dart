@@ -126,9 +126,7 @@ class _DonutChartState extends State<DonutChart>
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: GestureDetector(
-        onTapUp: widget.settings.selectionEnabled
-            ? (details) => _handleTapUp(details.localPosition)
-            : null,
+        onTapUp: (details) => _handleTapUp(details.localPosition),
         child: AnimatedBuilder(
           animation: _valueAnimation,
           builder: (context, _) {

@@ -40,28 +40,9 @@ class _GaugeChartState extends State<GaugeChart>
 
   late GaugeChartData data;
   GaugeChartData? oldData;
-  int? dataHashCode;
+  late int dataHashCode;
 
-  void adjustDatas() {
-    var old = oldData ?? data.copyWith(data: List.filled(data.data.length, 0));
-
-    if (old.data.length >= data.data.length) {
-      data = data.copyWith(
-        data: [
-          ...data.data,
-          ...List.filled(old.data.length - data.data.length, 0),
-        ],
-      );
-    }
-    if (old.data.length <= data.data.length) {
-      final oldDataLength = old.data.length;
-      for (var i = 0; i < data.data.length - oldDataLength; i++) {
-        old = old.copyWith(data: [...old.data, 0]);
-      }
-    }
-
-    oldData = old;
-  }
+  bool _tapHandlingInProgress = false;
 
   void startAnimation() {
     if (data == oldData) {
@@ -72,22 +53,32 @@ class _GaugeChartState extends State<GaugeChart>
   }
 
   void _handleTapUp(Offset position) {
-    final pathHolders = cache.getPathHolders(data.hashCode) ?? [];
-
-    if (pathHolders.isEmpty) {
+    if (!widget.settings.selectionEnabled || _tapHandlingInProgress) {
       return;
     }
 
-    for (var i = 0; i < data.data.length; i++) {
-      final contains = pathHolders[i].path.contains(position);
+    try {
+      _tapHandlingInProgress = true;
+      final pathHolders = cache.getPathHolders(data.hashCode) ?? [];
 
-      if (contains) {
-        final needAnimation = widget.data.onSelectionChanged?.call(i) ?? false;
+      if (pathHolders.isEmpty) {
+        return;
+      }
 
-        if (needAnimation) {
-          startAnimation();
+      for (var i = 0; i < data.data.length; i++) {
+        final contains = pathHolders[i].path.contains(position);
+
+        if (contains) {
+          final needAnimation =
+              widget.data.onSelectionChanged?.call(i) ?? false;
+
+          if (needAnimation) {
+            startAnimation();
+          }
         }
       }
+    } finally {
+      _tapHandlingInProgress = false;
     }
   }
 
@@ -95,8 +86,7 @@ class _GaugeChartState extends State<GaugeChart>
   void initState() {
     data = widget.data;
     dataHashCode = data.hashCode;
-    adjustDatas();
-    cache.add(dataHashCode!, oldData.hashCode);
+    cache.add(dataHashCode, oldData.hashCode);
 
     _valueController = AnimationController(
       vsync: this,
@@ -119,13 +109,12 @@ class _GaugeChartState extends State<GaugeChart>
       oldData = oldWidget.data;
     }
     final oldDataHashCode = oldData?.hashCode;
-    adjustDatas();
 
     if (oldData.hashCode != oldDataHashCode) {
       cache.add(oldData.hashCode, oldDataHashCode);
-      cache.add(dataHashCode!, oldData.hashCode);
+      cache.add(dataHashCode, oldData.hashCode);
     } else {
-      cache.add(dataHashCode!, oldData.hashCode);
+      cache.add(dataHashCode, oldData.hashCode);
     }
 
     if (data != oldWidget.data) {
@@ -138,9 +127,7 @@ class _GaugeChartState extends State<GaugeChart>
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: GestureDetector(
-        onTapUp: widget.settings.selectionEnabled
-            ? (details) => _handleTapUp(details.localPosition)
-            : null,
+        onTapUp: (details) => _handleTapUp(details.localPosition),
         child: AnimatedBuilder(
           animation: _valueAnimation,
           builder: (context, _) {
@@ -150,8 +137,8 @@ class _GaugeChartState extends State<GaugeChart>
                 data,
                 widget.style,
                 widget.settings,
-                oldData!,
-                dataHashCode!,
+                oldData,
+                dataHashCode,
                 _valueAnimation.value,
               ),
               size: Size.infinite,

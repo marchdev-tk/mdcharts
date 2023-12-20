@@ -72,12 +72,13 @@ class _Chart extends StatelessWidget {
                   style: style.requireData,
                   data: data.requireData.copyWith(
                     onSelectionChanged: (i) {
+                      final prevIndex = data.requireData.selectedIndex;
                       _data.add(data.requireData.copyWith(
                         allowNullSelectedIndex: true,
                         selectedIndex: i,
                       ));
 
-                      return data.requireData.selectedIndex != i;
+                      return prevIndex != i;
                     },
                   ),
                 );

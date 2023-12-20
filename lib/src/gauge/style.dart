@@ -83,7 +83,7 @@ class GaugeChartBackgroundStyle {
 
   /// Gets whether border can be drawn or not.
   bool get borderFilled =>
-      borderGradient != null || borderColor != null || borderStroke > 0;
+      (borderGradient != null || borderColor != null) && borderStroke > 0;
 
   /// Gets a [Paint] for the gauge background.
   Paint get backgroundPaint => Paint()

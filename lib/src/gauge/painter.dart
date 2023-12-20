@@ -37,7 +37,7 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Set of required (and optional) `BUT OLD` data to construct the gauge
   /// chart.
-  final GaugeChartData oldData;
+  final GaugeChartData? oldData;
 
   /// Hash code of the `data` to use for cache storing.
   final int dataHashCode;
@@ -68,7 +68,11 @@ class GaugeChartPainter extends CustomPainter {
   /// Converts [data.data] values based on [data.total] into a percentage
   /// proportion with valid values in inclusive range [0..1], so sum of the list
   /// values will be always `1`.
-  List<double> normalizeList(GaugeChartData data) {
+  List<double> normalizeList(GaugeChartData? data) {
+    if (data == null) {
+      return [0];
+    }
+
     final values =
         data.data.map((value) => normalize(value, data.total)).toList();
     final rest = 1 - values.sum;
@@ -234,12 +238,17 @@ class GaugeChartPainter extends CustomPainter {
     final innerRadius = radius - settings.sectionStroke;
     final normalizedData = normalizeList(data);
     final normalizedOldData = normalizeList(oldData);
+    while (normalizedData.length < normalizedOldData.length) {
+      normalizedData.add(0);
+    }
     final angleDiff = _endAngle - _startAngle;
     double startAngle = _startAngle;
 
     for (var i = 0; i < normalizedData.length; i++) {
-      final value = normalizedOldData[i] +
-          (normalizedData[i] - normalizedOldData[i]) * valueCoef;
+      final oldValue =
+          i > normalizedOldData.length - 1 ? 0 : normalizedOldData[i];
+      final newValue = normalizedData[i];
+      final value = oldValue + (newValue - oldValue) * valueCoef;
       final endAngle = startAngle + angleDiff * value;
 
       final path = buildArc(
@@ -275,24 +284,30 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Selected section painter.
   void paintSelectedSection(Canvas canvas, Size size) {
-    if (data.selectedIndex == null && oldData.selectedIndex == null) {
+    if (data.selectedIndex == null && oldData?.selectedIndex == null) {
       return;
     }
 
     final i = data.selectedIndex ?? 0;
-    final oldI = oldData.selectedIndex ?? 0;
+    final adjustedI = i >= data.data.length ? data.data.length - 1 : i;
+    final oldI = oldData?.selectedIndex ?? 0;
+    final adjustedOldI =
+        oldI >= oldData!.data.length ? oldData!.data.length - 1 : oldI;
     final hasI = data.selectedIndex != null;
-    final hasOldI = oldData.selectedIndex != null;
+    final hasOldI = oldData?.selectedIndex != null;
 
     final radius = _radius(size);
     final innerRadius = radius -
         settings.sectionStroke -
         max(settings.selectedSectionStroke - settings.sectionStroke, 0);
 
-    final oldStartAngle = hasOldI ? pathHolders[oldI].startAngle : _startAngle;
-    final oldEndAngle = hasOldI ? pathHolders[oldI].endAngle : _startAngle;
-    final newStartAngle = hasI ? pathHolders[i].startAngle : _startAngle;
-    final newEndAngle = hasI ? pathHolders[i].endAngle : _startAngle;
+    final oldStartAngle =
+        hasOldI ? pathHolders[adjustedOldI].startAngle : _startAngle;
+    final oldEndAngle =
+        hasOldI ? pathHolders[adjustedOldI].endAngle : _startAngle;
+    final newStartAngle =
+        hasI ? pathHolders[adjustedI].startAngle : _startAngle;
+    final newEndAngle = hasI ? pathHolders[adjustedI].endAngle : _startAngle;
 
     final startAngle =
         oldStartAngle + (newStartAngle - oldStartAngle) * valueCoef;
