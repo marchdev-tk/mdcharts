@@ -6,6 +6,7 @@
   * Adjusted arc caching mechanism.
 * Changes of the `GaugeChart`:
   * Adjusted arc caching mechanism.
+  * Adjusted animation mechanism.
 
 ## 5.0.0 - 20.12.2023
 
