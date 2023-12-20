@@ -124,7 +124,7 @@ class DonutChartBackgroundStyle {
     final paint = Paint()
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.medium
-      ..style = PaintingStyle.stroke
+      ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.square
       ..strokeWidth = innerBorderStroke;
 
@@ -152,7 +152,7 @@ class DonutChartBackgroundStyle {
     final paint = Paint()
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.medium
-      ..style = PaintingStyle.stroke
+      ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.square
       ..strokeWidth = outerBorderStroke;
 
@@ -310,7 +310,7 @@ class DonutChartSectionStyle {
     final paint = Paint()
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.medium
-      ..style = PaintingStyle.stroke
+      ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.square
       ..strokeWidth = selectedInnerBorderStroke;
 
@@ -340,7 +340,7 @@ class DonutChartSectionStyle {
     final paint = Paint()
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.medium
-      ..style = PaintingStyle.stroke
+      ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.square
       ..strokeWidth = selectedOuterBorderStroke;
 
