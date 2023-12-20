@@ -131,7 +131,7 @@ class _DonutChartState extends State<DonutChart>
             : null,
         child: AnimatedBuilder(
           animation: _valueAnimation,
-          builder: (context, child) {
+          builder: (context, _) {
             return CustomPaint(
               isComplex: true,
               painter: DonutPainter(

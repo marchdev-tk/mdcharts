@@ -4,7 +4,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../common.dart';
 import 'cache.dart';
 import 'data.dart';
 import 'painter.dart';
@@ -19,7 +18,6 @@ class GaugeChart extends StatefulWidget {
     required this.data,
     this.style = const GaugeChartStyle(),
     this.settings = const GaugeChartSettings(),
-    this.onSelectionChanged,
   });
 
   /// Set of required (and optional) data to construct the line chart.
@@ -30,12 +28,6 @@ class GaugeChart extends StatefulWidget {
 
   /// Provides various settings for the line chart.
   final GaugeChartSettings settings;
-
-  /// Callbacks that reports that selected section index has changed.
-  ///
-  /// If this predicate return `true` - animation will be triggered,
-  /// otherwise - animation won't be triggered.
-  final IndexedPredicate? onSelectionChanged;
 
   @override
   State<GaugeChart> createState() => _GaugeChartState();
@@ -79,15 +71,7 @@ class _GaugeChartState extends State<GaugeChart>
     _valueController.forward(from: 0);
   }
 
-  void onSelectionChanged(index) {
-    final needAnimation = widget.onSelectionChanged?.call(index) ?? false;
-
-    if (needAnimation) {
-      startAnimation();
-    }
-  }
-
-  void hitTest(Offset position) {
+  void _handleTapUp(Offset position) {
     final pathHolders = cache.getPathHolders(data.hashCode) ?? [];
 
     if (pathHolders.isEmpty) {
@@ -98,7 +82,11 @@ class _GaugeChartState extends State<GaugeChart>
       final contains = pathHolders[i].path.contains(position);
 
       if (contains) {
-        onSelectionChanged(i);
+        final needAnimation = widget.data.onSelectionChanged?.call(i) ?? false;
+
+        if (needAnimation) {
+          startAnimation();
+        }
       }
     }
   }
@@ -151,7 +139,7 @@ class _GaugeChartState extends State<GaugeChart>
     return RepaintBoundary(
       child: GestureDetector(
         onTapUp: widget.settings.selectionEnabled
-            ? (details) => hitTest(details.localPosition)
+            ? (details) => _handleTapUp(details.localPosition)
             : null,
         child: AnimatedBuilder(
           animation: _valueAnimation,

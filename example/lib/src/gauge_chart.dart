@@ -68,17 +68,18 @@ class _Chart extends StatelessWidget {
               initialData: _data.value,
               builder: (context, data) {
                 return GaugeChart(
-                  onSelectionChanged: (i) {
-                    _data.add(data.requireData.copyWith(
-                      allowNullSelectedIndex: true,
-                      selectedIndex: i,
-                    ));
-
-                    return data.requireData.selectedIndex != i;
-                  },
                   settings: settings.requireData,
                   style: style.requireData,
-                  data: data.requireData,
+                  data: data.requireData.copyWith(
+                    onSelectionChanged: (i) {
+                      _data.add(data.requireData.copyWith(
+                        allowNullSelectedIndex: true,
+                        selectedIndex: i,
+                      ));
+
+                      return data.requireData.selectedIndex != i;
+                    },
+                  ),
                 );
               },
             );

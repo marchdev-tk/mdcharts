@@ -145,6 +145,48 @@ BarChart(
 
 For more info about how to use `BarChart` please refer to the example app.
 
+## `GaugeChart` Usage
+
+```dart
+GaugeChart(
+  settings: const GaugeChartSettings(),
+  style: const GaugeChartStyle(),
+  data: GaugeChartData(
+    data: [12345, 23456, 1000, 500],
+    selectedIndex: 1,
+    onSelectionChanged: (i) {
+      // do something with newly selected section index
+      //
+      // if it will not be set as selectedIndex, then selection will not be changed
+
+      return true; // if true is returned then animation will be triggered, otherwise - animation will not be triggered
+    },
+  ),
+)
+```
+
+For more info about how to use `GaugeChart` please refer to the example app.
+
+## `DonutChart` Usage
+
+```dart
+DonutChart(
+  settings: const DonutChartSettings(),
+  style: const DonutChartStyle(),
+  data: DonutChartData(
+    data: [12345, 23456, 1000, 500],
+    selectedIndex: 1,
+    onSelectionChanged: (i) {
+      // do something with newly selected section index
+      //
+      // if it will not be set as selectedIndex, then selection will not be changed
+    },
+  ),
+)
+```
+
+For more info about how to use `DonutChart` please refer to the example app.
+
 ## Getting Started
 
 For help getting started with Flutter, view

@@ -134,6 +134,62 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `barStyle` - styling options for the chart line, for more details please refer to the source code of the `BarChartBarStyle`.
 * `tooltipStyle` - styling options for the tooltip, for more details please refer to the source code of the `BarChartTooltipStyle`.
 
+### GaugeChart
+
+#### Data
+
+* ##### REQUIRED data
+
+  * `data` - list of `double` values based on which chart will be drawned.
+
+* ##### OPTIONAL data
+
+  * `selectedIndex` - index of the selected section, defaults to `null`.
+  * `onSelectionChanged` - callbacks that reports that selected section index has changed, defaults to `null`.
+
+#### Settings
+
+* `colorPattern` - pattern which colors will respect while getting from [GaugeChartSectionStyle.colors] field, defaults to `null`.
+* `sectionStroke` - stroke (width/size) of the gauge section, defaults to `30`.
+* `selectedSectionStroke` - stroke (width/size) of the selected gauge section, defaults to `38`.
+* `gaugeAngle` - angle of gauge, defaults to `180`°.
+* `debugMode` - whether debug mode is enabled or not, defaults to `false`.
+* `selectionEnabled` - whether interactive section selection is enabled or not, defaults to `true`.
+* `behavior` - how this chart should behave during hit testing, defaults to `HitTestBehavior.deferToChild`.
+
+#### Style
+
+* `backgroundStyle` - styling options for the background, for more details please refer to the source code of the `GaugeChartBackgroundStyle`.
+* `sectionStyle` - styling options for the section, for more details please refer to the source code of the `GaugeChartSectionStyle`.
+
+### DonutChart
+
+#### Data
+
+* ##### REQUIRED data
+
+  * `data` - list of `double` values based on which chart will be drawned.
+
+* ##### OPTIONAL data
+
+  * `selectedIndex` - index of the selected section, defaults to `null`.
+  * `onSelectionChanged` - callbacks that reports that selected section index has changed, defaults to `null`.
+  * `onInscribedInCircleSizeChanged` - callbacks that reports that size of the square inscribed in circle has changed, defaults to `null`.
+
+#### Settings
+
+* `colorPattern` - pattern which colors will respect while getting from [GaugeChartSectionStyle.colors] field, defaults to `null`.
+* `sectionStroke` - stroke (width/size) of the gauge section, defaults to `30`.
+* `selectedSectionStroke` - stroke (width/size) of the selected gauge section, defaults to `38`.
+* `debugMode` - whether debug mode is enabled or not, defaults to `false`.
+* `selectionEnabled` - whether interactive section selection is enabled or not, defaults to `true`.
+* `behavior` - how this chart should behave during hit testing, defaults to `HitTestBehavior.deferToChild`.
+
+#### Style
+
+* `backgroundStyle` - styling options for the background, for more details please refer to the source code of the `GaugeChartBackgroundStyle`.
+* `sectionStyle` - styling options for the section, for more details please refer to the source code of the `GaugeChartSectionStyle`.
+
 ## Examples
 
 To see usage example navigate to the [Example](example/README.md) section.
@@ -145,4 +201,4 @@ Feel free to post a feature requests or report a bug [here](https://github.com/m
 ## TODO
 
 * Add MdDate to all charts (with unit-tests)
-* Add ability to accept custom painters (requires ENORMOUS amount of time)
+* Add ability to accept custom painters (paint funcs) (requires ENORMOUS amount of time)
