@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:ui';
-
 import 'package:meta/meta.dart';
+
+import '../common.dart';
 
 @internal
 GaugeChartCacheHolder cache = GaugeChartCacheHolder();
@@ -16,7 +16,7 @@ class GaugeChartCacheHolder {
   static final _instance = GaugeChartCacheHolder._();
 
   /// Cached value of `Path Holders`.
-  final _cachedPathHolders = <int, List<GaugeChartPathDataHolder>>{};
+  final _cachedPathHolders = <int, List<ArcDataHolder>>{};
 
   final _dataHashes = <int, int>{};
 
@@ -36,13 +36,13 @@ class GaugeChartCacheHolder {
   /// Saves the list of `Path Holders`.
   void savePathHolders(
     int dataHashCode,
-    List<GaugeChartPathDataHolder> pathHolders,
+    List<ArcDataHolder> pathHolders,
   ) {
     _cachedPathHolders[dataHashCode] = pathHolders;
   }
 
   /// Gets list of `Path Holders` from cache.
-  List<GaugeChartPathDataHolder>? getPathHolders(int dataHashCode) {
+  List<ArcDataHolder>? getPathHolders(int dataHashCode) {
     return _cachedPathHolders[dataHashCode];
   }
 
@@ -50,26 +50,4 @@ class GaugeChartCacheHolder {
   void clear() {
     _cachedPathHolders.clear();
   }
-}
-
-/// Holder object of the start/end angles of the path alongside with path data
-/// itself that is mostly required for hit testing.
-class GaugeChartPathDataHolder {
-  /// Constructs an instance of [GaugeChartPathDataHolder].
-  const GaugeChartPathDataHolder(
-    this.startAngle,
-    this.endAngle,
-    this.path,
-  );
-
-  /// Start andgle of the path.
-  @Deprecated('Redo impl as per DonutPainter')
-  final double startAngle;
-
-  /// End andgle of the path.
-  @Deprecated('Redo impl as per DonutPainter')
-  final double endAngle;
-
-  /// Path.
-  final Path path;
 }

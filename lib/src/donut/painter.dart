@@ -1,8 +1,13 @@
+// Copyright (c) 2022, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 import 'dart:math' show Point, max, pi, sqrt;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/widgets.dart';
 
+import '../common.dart';
 import '../utils.dart';
 import 'cache.dart';
 import 'data.dart';
@@ -40,7 +45,7 @@ class DonutPainter extends CustomPainter {
   final double valueCoef;
 
   /// List of path holders for hit tests and selection.
-  final pathHolders = <Path>[];
+  final pathHolders = <ArcDataHolder>[];
 
   double _innerWidth = 0;
 
@@ -214,7 +219,7 @@ class DonutPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
-      pathHolders.add(path);
+      pathHolders.add(ArcDataHolder(startAngle, endAngle, path));
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),
@@ -292,33 +297,18 @@ class DonutPainter extends CustomPainter {
         oldI >= oldData!.data.length ? oldData!.data.length - 1 : oldI;
     final hasI = data.selectedIndex != null;
     final hasOldI = oldData?.selectedIndex != null;
-    final normalizedData = normalizeList(data);
-    final normalizedOldData = normalizeList(oldData);
-
-    double getCumulativeValue(int index) =>
-        normalizedData.sublist(0, index + 1).fold<double>(0, (a, b) => a + b);
-    double getCumulativeOldValue(int index) => normalizedOldData
-        .sublist(0, index + 1)
-        .fold<double>(0, (a, b) => a + b);
 
     final center = _centerPoint(size);
     final outerRadius = _radius(size);
     final innerRadius = _innerRadius(size);
 
     const baseAngle = -0.5 * pi;
-    final oldStartAngle = hasOldI
-        ? baseAngle +
-            (oldI >= 1 ? getCumulativeOldValue(adjustedOldI - 1) : 0) * 2 * pi
-        : baseAngle;
-    final oldEndAngle = hasOldI
-        ? baseAngle + getCumulativeOldValue(adjustedOldI) * 2 * pi
-        : baseAngle;
-    final newStartAngle = hasI
-        ? baseAngle +
-            (adjustedI >= 1 ? getCumulativeValue(adjustedI - 1) : 0) * 2 * pi
-        : baseAngle;
-    final newEndAngle =
-        hasI ? baseAngle + getCumulativeValue(adjustedI) * 2 * pi : baseAngle;
+    final oldStartAngle =
+        hasOldI ? pathHolders[adjustedOldI].startAngle : baseAngle;
+    final oldEndAngle =
+        hasOldI ? pathHolders[adjustedOldI].endAngle : baseAngle;
+    final newStartAngle = hasI ? pathHolders[adjustedI].startAngle : baseAngle;
+    final newEndAngle = hasI ? pathHolders[adjustedI].endAngle : baseAngle;
 
     final startAngle =
         oldStartAngle + (newStartAngle - oldStartAngle) * valueCoef;

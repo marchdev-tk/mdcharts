@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 
+import '../common.dart';
 import '../utils.dart';
 import 'cache.dart';
 import 'data.dart';
@@ -47,7 +48,7 @@ class GaugeChartPainter extends CustomPainter {
   final double valueCoef;
 
   /// List of path holders for hit tests and selection.
-  final pathHolders = <GaugeChartPathDataHolder>[];
+  final pathHolders = <ArcDataHolder>[];
 
   /// Path of the background border to paint.
   Path? _borderPath;
@@ -258,7 +259,7 @@ class GaugeChartPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
-      pathHolders.add(GaugeChartPathDataHolder(startAngle, endAngle, path));
+      pathHolders.add(ArcDataHolder(startAngle, endAngle, path));
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),

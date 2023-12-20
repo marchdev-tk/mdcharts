@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:ui';
-
 import 'package:meta/meta.dart';
+
+import '../common.dart';
 
 @internal
 DonutChartCacheHolder cache = DonutChartCacheHolder();
@@ -16,7 +16,7 @@ class DonutChartCacheHolder {
   static final _instance = DonutChartCacheHolder._();
 
   /// Cached value of `Path Holders`.
-  final _cachedPathHolders = <int, List<Path>>{};
+  final _cachedPathHolders = <int, List<ArcDataHolder>>{};
 
   final _dataHashes = <int, int>{};
 
@@ -36,13 +36,13 @@ class DonutChartCacheHolder {
   /// Saves the list of `Path Holders`.
   void savePathHolders(
     int dataHashCode,
-    List<Path> pathHolders,
+    List<ArcDataHolder> pathHolders,
   ) {
     _cachedPathHolders[dataHashCode] = pathHolders;
   }
 
   /// Gets list of `Path Holders` from cache.
-  List<Path>? getPathHolders(int dataHashCode) {
+  List<ArcDataHolder>? getPathHolders(int dataHashCode) {
     return _cachedPathHolders[dataHashCode];
   }
 
