@@ -290,6 +290,8 @@ class DonutPainter extends CustomPainter {
     final oldI = oldData?.selectedIndex ?? 0;
     final adjustedOldI =
         oldI >= oldData!.data.length ? oldData!.data.length - 1 : oldI;
+    final hasI = data.selectedIndex != null;
+    final hasOldI = oldData?.selectedIndex != null;
     final normalizedData = normalizeList(data);
     final normalizedOldData = normalizeList(oldData);
 
@@ -304,13 +306,19 @@ class DonutPainter extends CustomPainter {
     final innerRadius = _innerRadius(size);
 
     const baseAngle = -0.5 * pi;
-    final oldStartAngle = baseAngle +
-        (oldI >= 1 ? getCumulativeOldValue(adjustedOldI - 1) : 0) * 2 * pi;
-    final oldEndAngle =
-        baseAngle + getCumulativeOldValue(adjustedOldI) * 2 * pi;
-    final newStartAngle = baseAngle +
-        (adjustedI >= 1 ? getCumulativeValue(adjustedI - 1) : 0) * 2 * pi;
-    final newEndAngle = baseAngle + getCumulativeValue(adjustedI) * 2 * pi;
+    final oldStartAngle = hasOldI
+        ? baseAngle +
+            (oldI >= 1 ? getCumulativeOldValue(adjustedOldI - 1) : 0) * 2 * pi
+        : baseAngle;
+    final oldEndAngle = hasOldI
+        ? baseAngle + getCumulativeOldValue(adjustedOldI) * 2 * pi
+        : baseAngle;
+    final newStartAngle = hasI
+        ? baseAngle +
+            (adjustedI >= 1 ? getCumulativeValue(adjustedI - 1) : 0) * 2 * pi
+        : baseAngle;
+    final newEndAngle =
+        hasI ? baseAngle + getCumulativeValue(adjustedI) * 2 * pi : baseAngle;
 
     final startAngle =
         oldStartAngle + (newStartAngle - oldStartAngle) * valueCoef;
