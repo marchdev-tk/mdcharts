@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.3 - 21.12.2023
+
+* Changes of the `DonutChart`:
+  * Fixed selected section painting issue.
+* Changes of the `GaugeChart`:
+  * Fixed selected section painting issue.
+
 ## 5.0.2 - 21.12.2023
 
 * Changes of the `DonutChart`:
