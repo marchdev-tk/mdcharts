@@ -289,11 +289,12 @@ class GaugeChartPainter extends CustomPainter {
       return;
     }
 
+    final dataLength = data.data.length;
+    final oldDataLength = oldData?.data.length ?? -1;
     final i = data.selectedIndex ?? 0;
-    final adjustedI = i >= data.data.length ? data.data.length - 1 : i;
+    final adjustedI = i >= dataLength ? dataLength - 1 : i;
     final oldI = oldData?.selectedIndex ?? 0;
-    final adjustedOldI =
-        oldI >= (oldData?.data.length ?? -1) ? oldData!.data.length - 1 : oldI;
+    final adjustedOldI = oldI >= oldDataLength ? oldDataLength - 1 : oldI;
     final hasI = data.selectedIndex != null;
     final hasOldI = oldData?.selectedIndex != null;
 
