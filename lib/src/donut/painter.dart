@@ -294,7 +294,7 @@ class DonutPainter extends CustomPainter {
     final adjustedI = i >= data.data.length ? data.data.length - 1 : i;
     final oldI = oldData?.selectedIndex ?? 0;
     final adjustedOldI =
-        oldI >= oldData!.data.length ? oldData!.data.length - 1 : oldI;
+        oldI >= (oldData?.data.length ?? -1) ? oldData!.data.length - 1 : oldI;
     final hasI = data.selectedIndex != null;
     final hasOldI = oldData?.selectedIndex != null;
 

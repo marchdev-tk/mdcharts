@@ -156,6 +156,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `debugMode` - whether debug mode is enabled or not, defaults to `false`.
 * `selectionEnabled` - whether interactive section selection is enabled or not, defaults to `true`.
 * `behavior` - how this chart should behave during hit testing, defaults to `HitTestBehavior.deferToChild`.
+* `runInitialAnimation` - whether to show initial selection animation or not, defaults to `false`.
 
 #### Style
 
@@ -184,6 +185,7 @@ march.dev charts library. Provides highly customizable and configurable charts.
 * `debugMode` - whether debug mode is enabled or not, defaults to `false`.
 * `selectionEnabled` - whether interactive section selection is enabled or not, defaults to `true`.
 * `behavior` - how this chart should behave during hit testing, defaults to `HitTestBehavior.deferToChild`.
+* `runInitialAnimation` - whether to show initial selection animation or not, defaults to `false`.
 
 #### Style
 

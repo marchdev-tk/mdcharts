@@ -14,6 +14,7 @@ class DonutChartSettings {
     this.debugMode = false,
     this.selectionEnabled = true,
     this.behavior = HitTestBehavior.deferToChild,
+    this.runInitialAnimation = false,
   });
 
   /// Pattern which colors will respect while getting from [colors] field.
@@ -46,6 +47,11 @@ class DonutChartSettings {
   /// This defaults to [HitTestBehavior.deferToChild].
   final HitTestBehavior behavior;
 
+  /// Whether to show initial selection animation or not.
+  ///
+  /// Defaults to `false`.
+  final bool runInitialAnimation;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   DonutChartSettings copyWith({
@@ -57,6 +63,7 @@ class DonutChartSettings {
     bool? debugMode,
     bool? selectionEnabled,
     HitTestBehavior? behavior,
+    bool? runInitialAnimation,
   }) =>
       DonutChartSettings(
         colorPattern: allowNullColorPattern
@@ -68,6 +75,7 @@ class DonutChartSettings {
         debugMode: debugMode ?? this.debugMode,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
         behavior: behavior ?? this.behavior,
+        runInitialAnimation: runInitialAnimation ?? this.runInitialAnimation,
       );
 
   @override
@@ -77,7 +85,8 @@ class DonutChartSettings {
       selectedSectionStroke.hashCode ^
       debugMode.hashCode ^
       selectionEnabled.hashCode ^
-      behavior.hashCode;
+      behavior.hashCode ^
+      runInitialAnimation.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -87,5 +96,6 @@ class DonutChartSettings {
       selectedSectionStroke == other.selectedSectionStroke &&
       debugMode == other.debugMode &&
       selectionEnabled == other.selectionEnabled &&
-      behavior == other.behavior;
+      behavior == other.behavior &&
+      runInitialAnimation == other.runInitialAnimation;
 }

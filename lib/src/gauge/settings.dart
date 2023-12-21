@@ -15,6 +15,7 @@ class GaugeChartSettings {
     this.debugMode = false,
     this.selectionEnabled = true,
     this.behavior = HitTestBehavior.deferToChild,
+    this.runInitialAnimation = false,
   }) : assert(gaugeAngle >= 0 && gaugeAngle <= 360);
 
   /// Pattern which colors will respect while getting from [colors] field.
@@ -55,6 +56,11 @@ class GaugeChartSettings {
   /// This defaults to [HitTestBehavior.deferToChild].
   final HitTestBehavior behavior;
 
+  /// Whether to show initial selection animation or not.
+  ///
+  /// Defaults to `false`.
+  final bool runInitialAnimation;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GaugeChartSettings copyWith({
@@ -66,6 +72,7 @@ class GaugeChartSettings {
     bool? debugMode,
     bool? selectionEnabled,
     HitTestBehavior? behavior,
+    bool? runInitialAnimation,
   }) =>
       GaugeChartSettings(
         colorPattern: allowNullColorPattern
@@ -78,6 +85,7 @@ class GaugeChartSettings {
         debugMode: debugMode ?? this.debugMode,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
         behavior: behavior ?? this.behavior,
+        runInitialAnimation: runInitialAnimation ?? this.runInitialAnimation,
       );
 
   @override
@@ -88,7 +96,8 @@ class GaugeChartSettings {
       gaugeAngle.hashCode ^
       debugMode.hashCode ^
       selectionEnabled.hashCode ^
-      behavior.hashCode;
+      behavior.hashCode ^
+      runInitialAnimation.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -99,5 +108,6 @@ class GaugeChartSettings {
       gaugeAngle == other.gaugeAngle &&
       debugMode == other.debugMode &&
       selectionEnabled == other.selectionEnabled &&
-      behavior == other.behavior;
+      behavior == other.behavior &&
+      runInitialAnimation == other.runInitialAnimation;
 }

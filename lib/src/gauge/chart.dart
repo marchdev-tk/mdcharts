@@ -41,6 +41,7 @@ class _GaugeChartState extends State<GaugeChart>
   late GaugeChartData data;
   GaugeChartData? oldData;
   late int dataHashCode;
+  int? _selectedIndex;
 
   bool _tapHandlingInProgress = false;
 
@@ -68,10 +69,10 @@ class _GaugeChartState extends State<GaugeChart>
       for (var i = 0; i < data.data.length; i++) {
         final contains = pathHolders[i].path.contains(position);
 
-        if (contains) {
+        if (contains && _selectedIndex != i) {
+          _selectedIndex = i;
           final needAnimation =
               widget.data.onSelectionChanged?.call(i) ?? false;
-
           if (needAnimation) {
             startAnimation();
           }
@@ -88,7 +89,10 @@ class _GaugeChartState extends State<GaugeChart>
     dataHashCode = data.hashCode;
     cache.add(dataHashCode, oldData.hashCode);
 
+    _selectedIndex = data.selectedIndex;
+
     _valueController = AnimationController(
+      value: widget.settings.runInitialAnimation ? 0 : 1,
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
@@ -96,7 +100,9 @@ class _GaugeChartState extends State<GaugeChart>
       parent: _valueController,
       curve: Curves.easeInOut,
     ));
-    startAnimation();
+    if (widget.settings.runInitialAnimation) {
+      startAnimation();
+    }
 
     super.initState();
   }

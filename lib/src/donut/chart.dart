@@ -19,14 +19,11 @@ class DonutChart extends StatefulWidget {
     required this.data,
     this.settings = const DonutChartSettings(),
     this.style = const DonutChartStyle(),
-    this.showInitialAnimation = false,
   });
 
   final DonutChartData data;
   final DonutChartSettings settings;
   final DonutChartStyle style;
-
-  final bool showInitialAnimation;
 
   @override
   State<DonutChart> createState() => _DonutChartState();
@@ -89,7 +86,7 @@ class _DonutChartState extends State<DonutChart>
     _selectedIndex = data.selectedIndex;
 
     _valueController = AnimationController(
-      value: widget.showInitialAnimation ? 0 : 1,
+      value: widget.settings.runInitialAnimation ? 0 : 1,
       vsync: this,
       duration: _animationDuaration,
     );
@@ -97,7 +94,7 @@ class _DonutChartState extends State<DonutChart>
       parent: _valueController,
       curve: Curves.easeInOut,
     ));
-    if (widget.showInitialAnimation) {
+    if (widget.settings.runInitialAnimation) {
       startAnimation();
     }
 
