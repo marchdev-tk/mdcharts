@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.0.2 - 21.12.2023
+
+* Changes of the `DonutChart`:
+  * Fixed selected section painting issue.
+  * Renamed `showInitialAnimation` to `runInitialAnimation` and moved it to `DonutChartSettings`.
+* Changes of the `GaugeChart`:
+  * Fixed selected section painting issue.
+  * Added `runInitialAnimation` to `GaugeChartSettings`.
+
 ## 5.0.1 - 20.12.2023
 
 * Changes of the `DonutChart`:
