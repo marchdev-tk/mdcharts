@@ -123,9 +123,12 @@ class _GaugeChartState extends State<GaugeChart>
       cache.add(dataHashCode, oldData.hashCode);
     }
 
+    _selectedIndex = data.selectedIndex;
+
     if (data != oldWidget.data) {
       startAnimation();
     }
+
     super.didUpdateWidget(oldWidget);
   }
 

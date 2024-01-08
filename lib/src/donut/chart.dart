@@ -117,9 +117,12 @@ class _DonutChartState extends State<DonutChart>
       cache.add(dataHashCode, oldData.hashCode);
     }
 
+    _selectedIndex = data.selectedIndex;
+
     if (data != oldWidget.data) {
       startAnimation();
     }
+
     super.didUpdateWidget(oldWidget);
   }
 
