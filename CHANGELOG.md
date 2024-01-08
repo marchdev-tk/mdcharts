@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.4 - 08.01.2023
+
+* Changes of the `DonutChart`:
+  * Fixed selected index reassignment on widget updates.
+* Changes of the `GaugeChart`:
+  * Fixed selected index reassignment on widget updates.
+
 ## 5.0.3 - 21.12.2023
 
 * Changes of the `DonutChart`:
