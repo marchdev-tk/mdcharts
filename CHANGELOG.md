@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.5 - 17.01.2024
+
+* Changes of the `LineChart`:
+  * Added `showPoint`, `showTooltip` and `selectionEnabled` customisation options to `LineChartSettings`.
+  * Fixed typo in `LineChartPointStyle` (`tooltopBottomMargin` -> `tooltipBottomMargin`).
+
 ## 5.0.4 - 08.01.2023
 
 * Changes of the `DonutChart`:
