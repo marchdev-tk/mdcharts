@@ -483,6 +483,27 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   .add(data.copyWith(showAxisXLabelSelection: value == true)),
               title: const Text('showAxisXLabelSelection'),
             ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showPoint,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showPoint: value == true)),
+              title: const Text('showPoint'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showTooltip,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showTooltip: value == true)),
+              title: const Text('showTooltip'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.selectionEnabled,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(selectionEnabled: value == true)),
+              title: const Text('selectionEnabled'),
+            ),
           ],
         );
       },
