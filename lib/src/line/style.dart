@@ -580,7 +580,7 @@ class LineChartPointStyle {
     this.tooltipTriangleHeight = 5,
     this.tooltipShadowColor = const Color(0xFF000000),
     this.tooltipShadowElevation = 4,
-    this.tooltopBottomMargin = 6,
+    this.tooltipBottomMargin = 6,
   });
 
   static const defaultTooltipTitleStyle = TextStyle(
@@ -703,10 +703,10 @@ class LineChartPointStyle {
   /// Bottom margin of the tooltip.
   ///
   /// Defaults to `6`.
-  final double tooltopBottomMargin;
+  final double tooltipBottomMargin;
 
   /// Gets size of the tooltip based on following:
-  /// - [tooltopBottomMargin];
+  /// - [tooltipBottomMargin];
   /// - [tooltipPadding.vertical];
   /// - [tooltipSpacing];
   /// - [tooltipTitleStyle];
@@ -721,7 +721,7 @@ class LineChartPointStyle {
       style: tooltipSubtitleStyle,
     )).size.height;
 
-    return tooltopBottomMargin +
+    return tooltipBottomMargin +
         tooltipPadding.vertical +
         tooltipSpacing +
         titleHeight +
@@ -799,7 +799,7 @@ class LineChartPointStyle {
       tooltipTriangleHeight.hashCode ^
       tooltipShadowColor.hashCode ^
       tooltipShadowElevation.hashCode ^
-      tooltopBottomMargin.hashCode;
+      tooltipBottomMargin.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -824,5 +824,5 @@ class LineChartPointStyle {
       tooltipTriangleHeight == other.tooltipTriangleHeight &&
       tooltipShadowColor == other.tooltipShadowColor &&
       tooltipShadowElevation == other.tooltipShadowElevation &&
-      tooltopBottomMargin == other.tooltopBottomMargin;
+      tooltipBottomMargin == other.tooltipBottomMargin;
 }

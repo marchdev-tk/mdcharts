@@ -249,7 +249,7 @@ class LineChartPainter extends CustomPainter {
     return point;
   }
 
-  bool get _showDetails => selectedXPosition != null;
+  bool get _showDetails => selectedXPosition != null && settings.showTooltip;
 
   /// Grid painter.
   void paintGrid(Canvas canvas, Size size) {
@@ -526,7 +526,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Point painter.
   void paintPoint(Canvas canvas, Size size) {
-    if (!data.canDraw) {
+    if (!data.canDraw || !settings.showPoint) {
       return;
     }
 
@@ -579,7 +579,7 @@ class LineChartPainter extends CustomPainter {
     final triangleWidth = style.pointStyle.tooltipTriangleWidth;
     final triangleHeight = style.pointStyle.tooltipTriangleHeight;
     final bottomMargin =
-        style.pointStyle.tooltopBottomMargin + outerRadius + triangleHeight;
+        style.pointStyle.tooltipBottomMargin + outerRadius + triangleHeight;
     final titleSize = titlePainter.size;
     final subtitleSize = subtitlePainter.size;
     final spacing = style.pointStyle.tooltipSpacing;

@@ -133,20 +133,22 @@ class _LineChartState extends State<LineChart>
       },
     );
 
-    if (Platform.isMobile) {
-      chart = GestureDetector(
-        onHorizontalDragCancel: _clearXPosition,
-        onHorizontalDragEnd: _clearXPosition,
-        onHorizontalDragStart: _setXPosition,
-        onHorizontalDragUpdate: _setXPosition,
-        child: chart,
-      );
-    } else {
-      chart = MouseRegion(
-        onExit: _clearXPosition,
-        onHover: _setXPosition,
-        child: chart,
-      );
+    if (widget.settings.selectionEnabled) {
+      if (Platform.isMobile) {
+        chart = GestureDetector(
+          onHorizontalDragCancel: _clearXPosition,
+          onHorizontalDragEnd: _clearXPosition,
+          onHorizontalDragStart: _setXPosition,
+          onHorizontalDragUpdate: _setXPosition,
+          child: chart,
+        );
+      } else {
+        chart = MouseRegion(
+          onExit: _clearXPosition,
+          onHover: _setXPosition,
+          child: chart,
+        );
+      }
     }
 
     final xAxisLabels = CustomPaint(

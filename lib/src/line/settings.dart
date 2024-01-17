@@ -33,6 +33,9 @@ class LineChartSettings {
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
     this.showAxisXLabelSelection = false,
+    this.showPoint = true,
+    this.showTooltip = true,
+    this.selectionEnabled = true,
   });
 
   /// Constructs an instance of [LineChartSettings] without grids.
@@ -48,6 +51,9 @@ class LineChartSettings {
     this.showAxisXLabels = true,
     this.showAxisYLabels = true,
     this.showAxisXLabelSelection = false,
+    this.showPoint = true,
+    this.showTooltip = true,
+    this.selectionEnabled = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
@@ -145,6 +151,21 @@ class LineChartSettings {
   /// Defaults to `false`.
   final bool showAxisXLabelSelection;
 
+  /// Whether to show current or selected point or not.
+  ///
+  /// Defaults to `true`.
+  final bool showPoint;
+
+  /// Whether to show tooltip over the selected point or not.
+  ///
+  /// Defaults to `true`.
+  final bool showTooltip;
+
+  /// Whether interactive selection is enabled or not.
+  ///
+  /// Defaults to `true`.
+  final bool selectionEnabled;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   LineChartSettings copyWith({
@@ -163,6 +184,9 @@ class LineChartSettings {
     bool? showAxisXLabels,
     bool? showAxisYLabels,
     bool? showAxisXLabelSelection,
+    bool? showPoint,
+    bool? showTooltip,
+    bool? selectionEnabled,
   }) =>
       LineChartSettings(
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
@@ -184,6 +208,9 @@ class LineChartSettings {
         showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
         showAxisXLabelSelection:
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
+        showPoint: showPoint ?? this.showPoint,
+        showTooltip: showTooltip ?? this.showTooltip,
+        selectionEnabled: selectionEnabled ?? this.selectionEnabled,
       );
 
   @override
@@ -201,7 +228,10 @@ class LineChartSettings {
       limitLabelSnapPosition.hashCode ^
       showAxisXLabels.hashCode ^
       showAxisYLabels.hashCode ^
-      showAxisXLabelSelection.hashCode;
+      showAxisXLabelSelection.hashCode ^
+      showPoint.hashCode ^
+      showTooltip.hashCode ^
+      selectionEnabled.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -220,5 +250,8 @@ class LineChartSettings {
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
       showAxisXLabels == other.showAxisXLabels &&
       showAxisYLabels == other.showAxisYLabels &&
-      showAxisXLabelSelection == other.showAxisXLabelSelection;
+      showAxisXLabelSelection == other.showAxisXLabelSelection &&
+      showPoint == other.showPoint &&
+      showTooltip == other.showTooltip &&
+      selectionEnabled == other.selectionEnabled;
 }
