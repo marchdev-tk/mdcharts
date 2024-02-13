@@ -365,7 +365,9 @@ class LineChartPainter extends CustomPainter {
     double y = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
-      final oldValue = oldMap.entries.elementAt(i).value;
+      final oldValue = i >= oldMap.entries.length
+          ? oldMap.entries.elementAt(i).value
+          : 0; // TODO: figure out why it is needed (case: from 7 dots to 30 dots)
 
       final normalizedOldY = normalize(
         oldValue + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
