@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.6 - 13.02.2024
+
+* Changes of the `LineChart`:
+  * Temp fix of out of range exception.
+
 ## 5.0.5 - 17.01.2024
 
 * Changes of the `LineChart`:
