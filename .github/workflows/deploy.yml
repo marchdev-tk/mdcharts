@@ -39,8 +39,8 @@ jobs:
         run: flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web --profile --base-href "/mdcharts/" --web-renderer canvaskit
-        
+        run: flutter build web --profile --base-href "/mdcharts/"
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
