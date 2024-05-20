@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 /// Grid and Axis painter of the [GridAxis].
 class GridAxisPainter extends CustomPainter {

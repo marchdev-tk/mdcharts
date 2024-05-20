@@ -4,7 +4,7 @@
 
 import 'dart:math' as math;
 
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 class BarChartBarMetrics {
   const BarChartBarMetrics({

@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'painter.dart';
