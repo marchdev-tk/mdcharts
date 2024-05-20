@@ -202,5 +202,7 @@ Feel free to post a feature requests or report a bug [here](https://github.com/m
 
 ## TODO
 
+* Move to common Grid and Axis styles/settings/painters
+* Move to common Tooltip styles/settings/painters
 * Add MdDate to all charts (with unit-tests)
 * Add ability to accept custom painters (paint funcs) (requires ENORMOUS amount of time)
