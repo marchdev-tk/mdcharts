@@ -231,9 +231,9 @@ class _BarChartState extends State<BarChart>
                 _valueAnimation.value,
                 _dragInProgress,
               ),
-              child: SizedBox(
-                width: math.max(0, maxWidthAdjusted),
-                height: double.infinity,
+              size: Size(
+                math.max(0, maxWidthAdjusted),
+                double.infinity,
               ),
             );
           },
@@ -444,12 +444,6 @@ class _Grid extends StatelessWidget {
           Expanded(child: grid),
           SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
           SizedBox(height: style.axisStyle.labelHeight),
-          // SizedBox(
-          //   height: _XAxisLabel.getEstimatedHeight(
-          //     style.axisStyle,
-          //     style.axisStyle.xAxisLabelStyle,
-          //   ),
-          // ),
         ],
       );
     }

@@ -367,7 +367,7 @@ class _DataTypeSetupGroup extends StatelessWidget {
       initialData: _data.value,
       builder: (context, data) {
         return SetupGroup(
-          title: '└─ Grid Type',
+          title: '└─ Data Type',
           children: [
             for (var i = 0; i < LineChartDataType.values.length; i++)
               RadioListTile<LineChartDataType>(

@@ -5,6 +5,7 @@
 library mdcharts;
 
 export 'src/bar.dart';
+export 'src/candlestick.dart';
 export 'src/common.dart';
 export 'src/donut.dart';
 export 'src/gauge.dart';

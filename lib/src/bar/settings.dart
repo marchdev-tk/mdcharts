@@ -33,17 +33,6 @@ enum BarFit {
   contain,
 }
 
-/// How Y axis labels should be laid out.
-enum YAxisLayout {
-  /// Y axis label will be pained over the bars.
-  ///
-  /// This is default option.
-  overlay,
-
-  /// Y axis labels will displace bar drawing zone.
-  displace,
-}
-
 /// How one will be interacting with the [BarChart].
 enum InteractionType {
   /// Bar could be selected by tap.
