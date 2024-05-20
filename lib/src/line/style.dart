@@ -6,7 +6,7 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
 
-import '../utils.dart';
+import '../common.dart';
 
 /// Contains various customization options for the [LineChart].
 class LineChartStyle {
@@ -733,6 +733,21 @@ class LineChartPointStyle {
   /// - half size of [tooltipTriangleWidth].
   double get tooltipHorizontalOverflowWidth {
     return tooltipRadius + tooltipTriangleWidth / 2;
+  }
+
+  /// Default padding of the chart caused by tooltip.
+  ///
+  /// Description:
+  /// - left/right: [tooltipHorizontalOverflowWidth].
+  /// - bottom: `0`;
+  /// - top: [tooltipHeight].
+  EdgeInsets get defaultChartPadding {
+    return EdgeInsets.fromLTRB(
+      tooltipHorizontalOverflowWidth,
+      tooltipHeight,
+      tooltipHorizontalOverflowWidth,
+      0,
+    );
   }
 
   /// Gets a [Paint] for the drawing of the inner circle of the point.

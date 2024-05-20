@@ -6,7 +6,7 @@ import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
-import '../common.dart';
+import '../utils.dart';
 
 /// Data for the [BarChart].
 class BarChartData {

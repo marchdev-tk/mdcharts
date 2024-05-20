@@ -8,7 +8,7 @@ import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../common.dart';
+import '../utils.dart';
 
 class CandlestickData {
   const CandlestickData({

@@ -9,7 +9,7 @@ import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 
 import '../common.dart';
-import '../utils.dart';
+import '../models.dart';
 import 'cache.dart';
 import 'data.dart';
 import 'settings.dart';

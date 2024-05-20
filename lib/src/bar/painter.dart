@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../common.dart';
+import '../models.dart';
 import '../utils.dart';
 import 'data.dart';
 import 'settings.dart';

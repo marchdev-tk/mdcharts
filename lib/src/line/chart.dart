@@ -33,10 +33,7 @@ class LineChart extends StatefulWidget {
 
   /// Padding around the chart.
   ///
-  /// If not set, will be used default one:
-  /// - left/right/bottom: `0`;
-  /// - top: dynamic value that depends on the style of the tooltip, more info
-  /// at [LineChartPointStyle.tooltipHeight].
+  /// If not set, will be used [LineChartPointStyle.defaultChartPadding].
   final EdgeInsets? padding;
 
   @override
@@ -176,13 +173,7 @@ class _LineChartState extends State<LineChart>
 
     return RepaintBoundary(
       child: Padding(
-        padding: widget.padding ??
-            EdgeInsets.fromLTRB(
-              widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-              widget.style.pointStyle.tooltipHeight,
-              widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-              0,
-            ),
+        padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
         child: child,
       ),
     );

@@ -8,6 +8,7 @@ import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 
 import '../common.dart';
+import '../models.dart';
 import '../utils.dart';
 import 'cache.dart';
 import 'data.dart';

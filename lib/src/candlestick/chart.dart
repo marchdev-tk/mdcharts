@@ -8,7 +8,7 @@ import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../common.dart';
+import '../models.dart';
 import 'cache.dart';
 import 'data.dart';
 import 'painter.dart';

@@ -8,7 +8,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../common.dart';
+import '../models.dart';
+import '../utils.dart';
 import 'data.dart';
 import 'painter.dart';
 import 'settings.dart';

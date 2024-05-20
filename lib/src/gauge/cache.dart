@@ -4,7 +4,7 @@
 
 import 'package:meta/meta.dart';
 
-import '../common.dart';
+import '../models.dart';
 
 @internal
 GaugeChartCacheHolder cache = GaugeChartCacheHolder();

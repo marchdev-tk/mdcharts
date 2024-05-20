@@ -4,7 +4,7 @@
 
 import 'package:flutter/painting.dart';
 
-import '../utils.dart';
+import '../common.dart';
 
 /// Contains various customization options for the [CandleStickChart].
 class CandlestickChartStyle {

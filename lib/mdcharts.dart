@@ -10,3 +10,4 @@ export 'src/common.dart';
 export 'src/donut.dart';
 export 'src/gauge.dart';
 export 'src/line.dart';
+export 'src/models.dart';
