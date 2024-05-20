@@ -6,14 +6,10 @@ import 'dart:math' as math;
 
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mdcharts/mdcharts.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../models.dart';
-import 'cache.dart';
-import 'data.dart';
 import 'painter.dart';
-import 'settings.dart';
-import 'style.dart';
 
 /// Candlestick chart.
 class CandlestickChart extends StatefulWidget {
@@ -49,6 +45,7 @@ class CandlestickChart extends StatefulWidget {
 
 class _CandlestickChartState extends State<CandlestickChart>
     with SingleTickerProviderStateMixin {
+  final _cache = GridAxisCacheHolder();
   final _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
 
   late AnimationController _valueController;
@@ -94,7 +91,7 @@ class _CandlestickChartState extends State<CandlestickChart>
     data = widget.data;
     _adjustOldData();
     oldDataHashCode = oldData.hashCode;
-    cache.add(data.hashCode, oldDataHashCode);
+    _cache.add(data.hashCode, oldDataHashCode);
 
     _valueController = AnimationController(
       vsync: this,
@@ -118,7 +115,7 @@ class _CandlestickChartState extends State<CandlestickChart>
     oldDataHashCode = oldData.hashCode;
     _adjustOldData();
     if (data != oldData) {
-      cache.add(data.hashCode, oldDataHashCode);
+      _cache.add(data.hashCode, oldDataHashCode);
     }
     _startAnimation();
     super.didUpdateWidget(oldWidget);
@@ -143,6 +140,7 @@ class _CandlestickChartState extends State<CandlestickChart>
           builder: (context, _) {
             return CustomPaint(
               painter: CandlestickChartPainter(
+                _cache,
                 widget.data,
                 widget.style,
                 widget.settings,
@@ -243,7 +241,8 @@ class _CandlestickChartState extends State<CandlestickChart>
             clipBehavior: Clip.none,
             children: [
               Positioned.fill(
-                child: _Grid(
+                child: GridAxis(
+                  cache: _cache,
                   data: data,
                   style: widget.style,
                   settings: widget.settings,
@@ -267,53 +266,5 @@ class _CandlestickChartState extends State<CandlestickChart>
   void dispose() {
     _valueController.dispose();
     super.dispose();
-  }
-}
-
-class _Grid extends StatelessWidget {
-  const _Grid({
-    required this.data,
-    required this.style,
-    required this.settings,
-    required this.padding,
-    required this.yAxisLabelWidth,
-  });
-
-  final CandlestickChartData data;
-  final CandlestickChartStyle style;
-  final CandlestickChartSettings settings;
-  final EdgeInsetsGeometry? padding;
-  final BehaviorSubject<double> yAxisLabelWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget grid = CustomPaint(
-      painter: CandlestickChartGridPainter(
-        data,
-        style,
-        settings,
-        yAxisLabelWidth.add,
-      ),
-      size: Size.infinite,
-    );
-
-    if (settings.showAxisXLabels) {
-      grid = Column(
-        children: [
-          Expanded(child: grid),
-          SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
-          SizedBox(height: style.axisStyle.labelHeight),
-        ],
-      );
-    }
-
-    if (padding != null) {
-      grid = Padding(
-        padding: padding!,
-        child: grid,
-      );
-    }
-
-    return RepaintBoundary(child: grid);
   }
 }

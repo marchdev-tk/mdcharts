@@ -66,6 +66,7 @@ abstract class ChartData<T> {
   /// It checks for [data] length to be greater than or equal to 1.
   bool get canDraw => data.isNotEmpty;
 
+  /// Predicate that must be resolved with max value of the provided data type [T].
   double maxValuePredicate(T value);
 
   /// Determines max value for chart to draw.
@@ -92,6 +93,7 @@ abstract class ChartData<T> {
     return data.values.map(maxValuePredicate).max;
   }
 
+  /// Predicate that must be resolved with min value of the provided data type [T].
   double minValuePredicate(T value);
 
   /// Determines min value for chart to draw.

@@ -2,127 +2,40 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../models.dart';
+import 'package:mdcharts/mdcharts.dart';
 
 /// Set of settings of the [CandleStickChart].
-class CandlestickChartSettings {
+class CandlestickChartSettings extends GridAxisSettings {
   /// Constructs an instance of [CandlestickChartSettings].
   const CandlestickChartSettings({
-    this.xAxisDivisions = 3,
-    this.yAxisDivisions = 2,
-    this.xAxisLabelQuantity,
-    this.axisDivisionEdges = AxisDivisionEdges.none,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
-    this.yAxisLayout = YAxisLayout.overlay,
-    this.yAxisLabelSpacing = 0,
+    super.xAxisDivisions = 3,
+    super.yAxisDivisions = 2,
+    super.xAxisLabelQuantity,
+    super.axisDivisionEdges = AxisDivisionEdges.none,
+    super.showAxisX = true,
+    super.showAxisXSelectedLabelIfConcealed = false,
+    super.showAxisY = true,
+    super.showAxisXLabels = true,
+    super.showAxisYLabels = true,
+    super.showAxisXLabelSelection = false,
+    super.yAxisLayout = YAxisLayout.overlay,
+    super.yAxisLabelSpacing = 0,
     this.selectionEnabled = true,
   });
 
   /// Constructs an instance of [CandlestickChartSettings] without grids.
   const CandlestickChartSettings.gridless({
-    this.xAxisLabelQuantity,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
-    this.yAxisLayout = YAxisLayout.overlay,
-    this.yAxisLabelSpacing = 0,
+    super.xAxisLabelQuantity,
+    super.showAxisX = true,
+    super.showAxisXSelectedLabelIfConcealed = false,
+    super.showAxisY = true,
+    super.showAxisXLabels = true,
+    super.showAxisYLabels = true,
+    super.showAxisXLabelSelection = false,
+    super.yAxisLayout = YAxisLayout.overlay,
+    super.yAxisLabelSpacing = 0,
     this.selectionEnabled = true,
-  })  : xAxisDivisions = 0,
-        yAxisDivisions = 0,
-        axisDivisionEdges = AxisDivisionEdges.none;
-
-  /// Divisions of the X axis or the quantity of the grid lines on X axis.
-  ///
-  /// Defaults to `3` for basic constructor.
-  ///
-  /// **Note**: to prevent from displaying only X axis - set
-  /// [xAxisDivisions] to `0`, so X axis will not be painted, but Y axis will.
-  ///
-  /// **Note**: to prevent from displaying entire grid set both [xAxisDivisions]
-  /// and [yAxisDivisions] to `0` or consider using
-  /// [CandleStickChartSettings.gridless] constructor.
-  final int xAxisDivisions;
-
-  /// Divisions of the Y axis or the quantity of the grid lines on Y axis.
-  ///
-  /// Defaults to `2` for basic constructor.
-  ///
-  /// **Note**: to prevent from displaying only Y axis - set
-  /// [xAxisDivisions] to `0`, so Y axis will not be painted, but X axis will.
-  ///
-  /// **Note**: to prevent from displaying entire grid set both [xAxisDivisions]
-  /// and [yAxisDivisions] to `0` or consider using
-  /// [CandleStickChartSettings.gridless] constructor.
-  final int yAxisDivisions;
-
-  /// Quantity of the X axis labels to draw.
-  ///
-  /// Defaults to `null`.
-  ///
-  /// If X axis label quantity is set - it could be less than or equal to a
-  /// specified value, but no less than `2`.
-  ///
-  /// **Note**: that X axis labels are dynamically displaying beneath X axis
-  /// based on width that they occupy and available drawing space.
-  final int? xAxisLabelQuantity;
-
-  /// Axis division edges to be painted.
-  ///
-  /// Defaults to [AxisDivisionEdges.none].
-  final AxisDivisionEdges axisDivisionEdges;
-
-  /// Whether to show X axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisX;
-
-  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
-  /// label is concealed in normal circumstances.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXSelectedLabelIfConcealed;
-
-  /// Whether to show Y axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisY;
-
-  /// Whether to show X axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisXLabels;
-
-  /// Whether to show Y axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisYLabels;
-
-  /// Whether to paint with selected style currently selected X axis label or
-  /// not.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXLabelSelection;
-
-  /// Layout type of the Y axis labels.
-  ///
-  /// Defaults to [YAxisLayout.overlay].
-  final YAxisLayout yAxisLayout;
-
-  /// Spacing between the Y axis labels and chart itself.
-  ///
-  /// **Please note**, that this setting affects spacing only in case of
-  /// [yAxisLayout] is set to [YAxisLayout.displace], otherwise it does nothing.
-  ///
-  /// Defaults to `0`.
-  final double yAxisLabelSpacing;
+  });
 
   /// Whether interactive selection is enabled or not.
   ///
@@ -131,6 +44,7 @@ class CandlestickChartSettings {
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.
+  @override
   CandlestickChartSettings copyWith({
     bool allowNullXAxisLabelQuantity = false,
     int? xAxisDivisions,

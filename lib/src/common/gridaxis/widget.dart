@@ -11,16 +11,20 @@ import 'settings.dart';
 import 'style.dart';
 
 /// Charts Grid and Axis.
-class GridAxis extends StatefulWidget {
+class GridAxis extends StatelessWidget {
   /// Constructs an instance of [GridAxis].
   const GridAxis({
     super.key,
+    required this.cache,
     required this.data,
     this.style = const GridAxisStyle(),
     this.settings = const GridAxisSettings(),
     this.padding,
     required this.yAxisLabelWidth,
   });
+
+  /// Cache holder of the GridAxis data that requries heavy computing.
+  final GridAxisCacheHolder cache;
 
   /// Set of required (and optional) data to construct the candlestick chart.
   final GridAxisData data;
@@ -38,38 +42,31 @@ class GridAxis extends StatefulWidget {
   final Sink<double> yAxisLabelWidth;
 
   @override
-  State<GridAxis> createState() => _GridAxisState();
-}
-
-class _GridAxisState extends State<GridAxis> {
-  final cache = GridAxisCacheHolder();
-
-  @override
   Widget build(BuildContext context) {
     Widget grid = CustomPaint(
       painter: GridAxisPainter(
         cache,
-        widget.data,
-        widget.style,
-        widget.settings,
-        widget.yAxisLabelWidth.add,
+        data,
+        style,
+        settings,
+        yAxisLabelWidth.add,
       ),
       size: Size.infinite,
     );
 
-    if (widget.settings.showAxisXLabels) {
+    if (settings.showAxisXLabels) {
       grid = Column(
         children: [
           Expanded(child: grid),
-          SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
-          SizedBox(height: widget.style.axisStyle.labelHeight),
+          SizedBox(height: style.axisStyle.xAxisLabelTopMargin),
+          SizedBox(height: style.axisStyle.labelHeight),
         ],
       );
     }
 
-    if (widget.padding != null) {
+    if (padding != null) {
       grid = Padding(
-        padding: widget.padding!,
+        padding: padding!,
         child: grid,
       );
     }

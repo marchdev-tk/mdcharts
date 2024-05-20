@@ -6,19 +6,15 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mdcharts/mdcharts.dart';
 
-import '../common.dart';
-import '../models.dart';
 import '../utils.dart';
-import 'cache.dart';
-import 'data.dart';
-import 'settings.dart';
-import 'style.dart';
 
 /// Main painter of the [LineChart].
 class CandlestickChartPainter extends CustomPainter {
   /// Constructs an instance of [CandlestickChartPainter].
   CandlestickChartPainter(
+    this.cache,
     this.data,
     this.style,
     this.settings,
@@ -28,6 +24,9 @@ class CandlestickChartPainter extends CustomPainter {
     this.selectedXPosition,
     this.valueCoef,
   );
+
+  /// Cache holder of the GridAxis data that requries heavy computing.
+  final GridAxisCacheHolder cache;
 
   /// Set of required (and optional) data to construct the line chart.
   final CandlestickChartData data;
@@ -64,98 +63,17 @@ class CandlestickChartPainter extends CustomPainter {
   /// animation.
   final double valueCoef;
 
-  /// Rounding method that calculates and rounds Y axis division size.
-  ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
-  double get roundedDivisionSize {
-    final cachedRoundedSize = cache.getRoundedDivisionSize(data.hashCode);
-    if (cachedRoundedSize != null) {
-      return cachedRoundedSize;
-    }
+  /// {@macro GridAxisUtils.getRoundedDivisionSize}
+  double get roundedDivisionSize =>
+      GridAxisUtils().getRoundedDivisionSize(cache, data, settings);
 
-    final yDivisions = settings.yAxisDivisions + 1;
-    double divisionSize;
+  /// {@macro GridAxisUtils.getRoundedMinValue}
+  double get roundedMinValue =>
+      GridAxisUtils().getRoundedMinValue(cache, data, settings);
 
-    if (yDivisions == 1) {
-      divisionSize = data.totalValue;
-    } else if (yDivisions == 2 && data.maxValue == 0) {
-      divisionSize = data.minValue.abs() / 2;
-    } else if (yDivisions == 2) {
-      divisionSize = math.max(data.maxValue, data.minValue.abs());
-    } else if (data.minValue == 0 || data.maxValue == 0) {
-      divisionSize = data.totalValue / yDivisions;
-    } else {
-      var size = data.totalValue / yDivisions;
-      var maxDivisions = (data.maxValue / size).ceil();
-      var minDivisions = (data.minValue.abs() / size).ceil();
-
-      // TODO: find a better way to calculate size of the division.
-      while (maxDivisions + minDivisions > yDivisions) {
-        size = size + 1;
-        maxDivisions = (data.maxValue / size).ceil();
-        minDivisions = (data.minValue.abs() / size).ceil();
-      }
-
-      divisionSize = size;
-    }
-
-    final roundedSize =
-        getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
-    cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
-
-    return roundedSize;
-  }
-
-  /// Rounding method that rounds [data.minValue] to achieve beautified value
-  /// so, it could be multiplied by [settings.yAxisDivisions].
-  ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
-  double get roundedMinValue {
-    final cachedMinValue = cache.getRoundedMinValue(data.hashCode);
-    if (cachedMinValue != null) {
-      return cachedMinValue;
-    }
-
-    double minValue = 0;
-    if (data.hasNegativeMinValue) {
-      final size = roundedDivisionSize;
-      final divisions = (data.minValue.abs() / size).ceil();
-      minValue = size * divisions;
-    }
-    cache.saveRoundedMinValue(data.hashCode, minValue);
-
-    return minValue;
-  }
-
-  /// Rounding method that rounds [data.maxValue] so, it could be divided by
-  /// [settings.yAxisDivisions] with beautified integer chunks.
-  ///
-  /// Example:
-  /// - yAxisDivisions = 2 (so 2 division lines results with 3 chunks of chart);
-  /// - maxValue = 83 (from data).
-  ///
-  /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue {
-    final cachedMaxValue = cache.getRoundedMaxValue(data.hashCode);
-    if (cachedMaxValue != null) {
-      return cachedMaxValue;
-    }
-
-    double maxValue;
-    if (data.hasNegativeMinValue) {
-      final yDivisions = settings.yAxisDivisions + 1;
-      maxValue = roundedDivisionSize * yDivisions;
-    } else {
-      maxValue = getRoundedMaxValue(
-        data.maxValueRoundingMap,
-        data.maxValue,
-        settings.yAxisDivisions,
-      );
-    }
-    cache.saveRoundedMaxValue(data.hashCode, maxValue);
-
-    return maxValue;
-  }
+  /// {@macro GridAxisUtils.getRoundedMaxValue}
+  double get roundedMaxValue =>
+      GridAxisUtils().getRoundedMaxValue(cache, data, settings);
 
   // int? _getSelectedIndex(Size size) {
   //   if (selectedXPosition == null) {
@@ -270,235 +188,6 @@ class CandlestickChartPainter extends CustomPainter {
       oldDataHashCode != oldDelegate.oldDataHashCode ||
       selectedXPosition != oldDelegate.selectedXPosition ||
       valueCoef != oldDelegate.valueCoef;
-}
-
-/// Grid and Axis painter of the [CandlestickChart].
-class CandlestickChartGridPainter extends CustomPainter {
-  /// Constructs an instance of [CandlestickChartGridPainter].
-  const CandlestickChartGridPainter(
-    this.data,
-    this.style,
-    this.settings,
-    this.onYAxisLabelSizeCalculated,
-  );
-
-  /// Set of required (and optional) data to construct the bar chart.
-  final CandlestickChartData data;
-
-  /// Provides various customizations for the bar chart.
-  final CandlestickChartStyle style;
-
-  /// Provides various settings for the bar chart.
-  final CandlestickChartSettings settings;
-
-  /// Callback that notifies that Y axis label size successfuly calculated.
-  final ValueChanged<double> onYAxisLabelSizeCalculated;
-
-  /// Rounding method that calculates and rounds Y axis division size.
-  ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
-  double get roundedDivisionSize {
-    final cachedRoundedSize = cache.getRoundedDivisionSize(data.hashCode);
-    if (cachedRoundedSize != null) {
-      return cachedRoundedSize;
-    }
-
-    final yDivisions = settings.yAxisDivisions + 1;
-    double divisionSize;
-
-    if (yDivisions == 1) {
-      divisionSize = data.totalValue;
-    } else if (yDivisions == 2 && data.maxValue == 0) {
-      divisionSize = data.minValue.abs() / 2;
-    } else if (yDivisions == 2) {
-      divisionSize = math.max(data.maxValue, data.minValue.abs());
-    } else if (data.minValue == 0 || data.maxValue == 0) {
-      divisionSize = data.totalValue / yDivisions;
-    } else {
-      var size = data.totalValue / yDivisions;
-      var maxDivisions = (data.maxValue / size).ceil();
-      var minDivisions = (data.minValue.abs() / size).ceil();
-
-      // TODO: find a better way to calculate size of the division.
-      while (maxDivisions + minDivisions > yDivisions) {
-        size = size + 1;
-        maxDivisions = (data.maxValue / size).ceil();
-        minDivisions = (data.minValue.abs() / size).ceil();
-      }
-
-      divisionSize = size;
-    }
-
-    final roundedSize =
-        getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
-    cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
-
-    return roundedSize;
-  }
-
-  /// Rounding method that rounds [data.minValue] to achieve beautified value
-  /// so, it could be multiplied by [settings.yAxisDivisions].
-  ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
-  double get roundedMinValue {
-    final cachedMinValue = cache.getRoundedMinValue(data.hashCode);
-    if (cachedMinValue != null) {
-      return cachedMinValue;
-    }
-
-    double minValue = 0;
-    if (data.hasNegativeMinValue) {
-      final size = roundedDivisionSize;
-      final divisions = (data.minValue.abs() / size).ceil();
-      minValue = size * divisions;
-    }
-    cache.saveRoundedMinValue(data.hashCode, minValue);
-
-    return minValue;
-  }
-
-  /// Rounding method that rounds [data.maxValue] so, it could be divided by
-  /// [settings.yAxisDivisions] with beautified integer chunks.
-  ///
-  /// Example:
-  /// - yAxisDivisions = 2 (so 2 division lines results with 3 chunks of chart);
-  /// - maxValue = 83 (from data).
-  ///
-  /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue {
-    final cachedMaxValue = cache.getRoundedMaxValue(data.hashCode);
-    if (cachedMaxValue != null) {
-      return cachedMaxValue;
-    }
-
-    double maxValue;
-    if (data.hasNegativeMinValue) {
-      final yDivisions = settings.yAxisDivisions + 1;
-      maxValue = roundedDivisionSize * yDivisions;
-    } else {
-      maxValue = getRoundedMaxValue(
-        data.maxValueRoundingMap,
-        data.maxValue,
-        settings.yAxisDivisions,
-      );
-    }
-    cache.saveRoundedMaxValue(data.hashCode, maxValue);
-
-    return maxValue;
-  }
-
-  /// Grid painter.
-  void paintGrid(Canvas canvas, Size size) {
-    if (settings.xAxisDivisions == 0 && settings.yAxisDivisions == 0) {
-      return;
-    }
-
-    var maxLabelWidth = .0;
-
-    final xDivisions = settings.xAxisDivisions + 1;
-    final widthFraction = size.width / xDivisions;
-    final hasLeft = settings.axisDivisionEdges == AxisDivisionEdges.all ||
-        settings.axisDivisionEdges == AxisDivisionEdges.horizontal ||
-        settings.axisDivisionEdges == AxisDivisionEdges.left;
-    final hasRight = settings.axisDivisionEdges == AxisDivisionEdges.all ||
-        settings.axisDivisionEdges == AxisDivisionEdges.horizontal ||
-        settings.axisDivisionEdges == AxisDivisionEdges.right;
-    final xStart = hasLeft ? 0 : 1;
-    final xEnd = hasRight ? xDivisions + 1 : xDivisions;
-    for (var i = xStart; i < xEnd; i++) {
-      canvas.drawLine(
-        Offset(widthFraction * i, 0),
-        Offset(widthFraction * i, size.height),
-        style.gridStyle.xAxisPaint,
-      );
-    }
-
-    final yDivisions = settings.yAxisDivisions + 1;
-    final heightFraction = size.height / yDivisions;
-    final hasTop = settings.axisDivisionEdges == AxisDivisionEdges.all ||
-        settings.axisDivisionEdges == AxisDivisionEdges.vertical ||
-        settings.axisDivisionEdges == AxisDivisionEdges.top;
-    final hasBottom = settings.axisDivisionEdges == AxisDivisionEdges.all ||
-        settings.axisDivisionEdges == AxisDivisionEdges.vertical ||
-        settings.axisDivisionEdges == AxisDivisionEdges.bottom;
-    final yStart = hasTop ? 0 : 1;
-    final yEnd = hasBottom ? yDivisions + 1 : yDivisions;
-    for (var i = yStart; i < yEnd; i++) {
-      canvas.drawLine(
-        Offset(0, heightFraction * i),
-        Offset(size.width, heightFraction * i),
-        style.gridStyle.yAxisPaint,
-      );
-
-      /// skip paint of y axis labels if [showAxisYLabels] is set to `true`
-      /// or
-      /// force to skip last (beneath axis) division paint of axis label.
-      if (!settings.showAxisYLabels || hasBottom && i == yEnd - 1) {
-        continue;
-      }
-
-      final labelValue =
-          roundedMaxValue * (yDivisions - i) / yDivisions - roundedMinValue;
-      final textPainter = MDTextPainter(
-        TextSpan(
-          text: data.yAxisLabelBuilder(labelValue),
-          style: style.axisStyle.yAxisLabelStyle,
-        ),
-      );
-
-      if (settings.yAxisLayout == YAxisLayout.displace &&
-          maxLabelWidth < textPainter.size.width) {
-        maxLabelWidth = textPainter.size.width;
-      }
-
-      textPainter.paint(
-        canvas,
-        Offset(0, heightFraction * i + style.gridStyle.yAxisPaint.strokeWidth),
-      );
-    }
-
-    onYAxisLabelSizeCalculated(maxLabelWidth);
-  }
-
-  /// Axis painter.
-  void paintAxis(Canvas canvas, Size size) {
-    if (!settings.showAxisX && !settings.showAxisY) {
-      return;
-    }
-
-    final axisPaint = style.axisStyle.paint;
-
-    const topLeft = Offset.zero;
-    final bottomLeft = Offset(0, size.height);
-    final bottomRight = Offset(size.width, size.height);
-
-    // x axis
-    if (settings.showAxisX) {
-      if (data.hasNegativeMinValue) {
-        final y =
-            normalizeInverted(roundedMinValue, roundedMaxValue) * size.height;
-        canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
-      } else {
-        canvas.drawLine(bottomLeft, bottomRight, axisPaint);
-      }
-    }
-    // y axis
-    if (settings.showAxisY) {
-      canvas.drawLine(topLeft, bottomLeft, axisPaint);
-    }
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    paintGrid(canvas, size);
-    paintAxis(canvas, size);
-  }
-
-  @override
-  bool shouldRepaint(covariant CandlestickChartGridPainter oldDelegate) =>
-      data != oldDelegate.data ||
-      style != oldDelegate.style ||
-      settings != oldDelegate.settings;
 }
 
 /// X axis label painter of the [CandlestickChart].
