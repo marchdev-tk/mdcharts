@@ -36,6 +36,26 @@ class LineChartStyle extends GridAxisStyle {
   /// Style of the tooltip.
   final LineChartTooltipStyle tooltipStyle;
 
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  @override
+  LineChartStyle copyWith({
+    GridStyle? gridStyle,
+    AxisStyle? axisStyle,
+    LineChartLineStyle? lineStyle,
+    LineChartLimitStyle? limitStyle,
+    LineChartPointStyle? pointStyle,
+    LineChartTooltipStyle? tooltipStyle,
+  }) =>
+      LineChartStyle(
+        gridStyle: gridStyle ?? this.gridStyle,
+        axisStyle: axisStyle ?? this.axisStyle,
+        lineStyle: lineStyle ?? this.lineStyle,
+        limitStyle: limitStyle ?? this.limitStyle,
+        pointStyle: pointStyle ?? this.pointStyle,
+        tooltipStyle: tooltipStyle ?? this.tooltipStyle,
+      );
+
   @override
   int get hashCode =>
       gridStyle.hashCode ^

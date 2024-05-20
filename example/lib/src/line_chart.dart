@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'scaffolds/setup_scaffold.dart';
 import 'widgets/button.dart';
+import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
@@ -69,9 +70,15 @@ class LineChartExample extends StatelessWidget {
         SetupDivider(),
         _GeneralSettingsSetupGroup(),
         SetupDivider(),
+        _YAxisLayoutSetupGroup(),
+        SetupDivider(),
         _AxisDivisionsEdgesSetupGroup(),
         SetupDivider(),
         _LimitLabelSnapPositionSetupGroup(),
+        SetupDivider(),
+        _GridStyleSetupGroup(),
+        SetupDivider(),
+        _AxisStyleSetupGroup(),
       ],
     );
   }
@@ -485,6 +492,14 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   .add(data.copyWith(showAxisXLabelSelection: value == true)),
               title: const Text('showAxisXLabelSelection'),
             ),
+            IntListTile(
+              value: data.yAxisLabelSpacing.toInt(),
+              onChanged: (value) {
+                final doubleValue = value.toDouble();
+                _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
+              },
+              title: const Text('yAxisLabelSpacing'),
+            ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
               value: data.showPoint,
@@ -506,6 +521,36 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   _settings.add(data.copyWith(selectionEnabled: value == true)),
               title: const Text('selectionEnabled'),
             ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _YAxisLayoutSetupGroup extends StatelessWidget {
+  const _YAxisLayoutSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Y Axis Layout',
+          children: [
+            for (var i = 0; i < YAxisLayout.values.length; i++)
+              RadioListTile<YAxisLayout>(
+                controlAffinity: ListTileControlAffinity.trailing,
+                groupValue: data.yAxisLayout,
+                value: YAxisLayout.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(yAxisLayout: value)),
+                title: Text(YAxisLayout.values[i].name),
+              ),
           ],
         );
       },
@@ -566,6 +611,168 @@ class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
                     _settings.add(data.copyWith(limitLabelSnapPosition: value)),
                 title: Text(LimitLabelSnapPosition.values[i].name),
               ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _GridStyleSetupGroup extends StatelessWidget {
+  const _GridStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Grid Style',
+          children: [
+            IntListTile(
+              value: data.gridStyle.xAxisStroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    gridStyle: data.gridStyle.copyWith(
+                      xAxisStroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisStroke'),
+            ),
+            IntListTile(
+              value: data.gridStyle.yAxisStroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    gridStyle: data.gridStyle.copyWith(
+                      yAxisStroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('yAxisStroke'),
+            ),
+            ColorListTile(
+              value: data.gridStyle.xAxisColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    gridStyle: data.gridStyle.copyWith(
+                      xAxisColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisColor'),
+            ),
+            ColorListTile(
+              value: data.gridStyle.yAxisColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    gridStyle: data.gridStyle.copyWith(
+                      yAxisColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('yAxisColor'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _AxisStyleSetupGroup extends StatelessWidget {
+  const _AxisStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Axis Style',
+          children: [
+            ColorListTile(
+              value: data.axisStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    axisStyle: data.axisStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            ColorListTile(
+              value: data.axisStyle.xAxisSelectedLabelBackgroundColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    axisStyle: data.axisStyle.copyWith(
+                      xAxisSelectedLabelBackgroundColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisSelectedLabelBackgroundColor'),
+            ),
+            IntListTile(
+              value: data.axisStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    axisStyle: data.axisStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            IntListTile(
+              value: data.axisStyle.xAxisLabelTopMargin.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    axisStyle: data.axisStyle.copyWith(
+                      xAxisLabelTopMargin: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisLabelTopMargin'),
+            ),
+            IntListTile(
+              value: data.axisStyle.xAxisSelectedLabelBorderRadius.topLeft.x
+                  .toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    axisStyle: data.axisStyle.copyWith(
+                      xAxisSelectedLabelBorderRadius: BorderRadius.all(
+                        Radius.circular(value.toDouble()),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisSelectedLabelBorderRadius'),
+            ),
           ],
         );
       },
