@@ -6,6 +6,7 @@ library mdcharts;
 
 export 'src/bar.dart';
 export 'src/candlestick.dart';
+export 'src/common.dart' show GridStyle, AxisStyle;
 export 'src/donut.dart';
 export 'src/gauge.dart';
 export 'src/line.dart';

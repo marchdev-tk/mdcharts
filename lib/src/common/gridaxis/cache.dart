@@ -2,13 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
+import 'package:meta/meta.dart';
 
-class GridAxisCacheHolder extends MDCacheHolder {
-  factory GridAxisCacheHolder() => _instance;
-  GridAxisCacheHolder._();
-  static final _instance = GridAxisCacheHolder._();
-
+@internal
+base class GridAxisCacheHolder extends MDCacheHolder {
   /// Cached value of `roundedDivisionSize`.
   ///
   /// It is needed to store this cache due to VERY insufficient way of it's

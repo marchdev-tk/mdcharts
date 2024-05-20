@@ -6,7 +6,7 @@ import 'dart:math' as math;
 
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'painter.dart';
@@ -33,10 +33,7 @@ class CandlestickChart extends StatefulWidget {
 
   /// Padding around the chart.
   ///
-  /// If not set, will be used default one:
-  /// - left/right/bottom: `0`;
-  /// - top: dynamic value that depends on the style of the tooltip, more info
-  /// at [LineChartPointStyle.tooltipHeight].
+  /// If not set, will be used [LineChartPointStyle.defaultChartPadding].
   final EdgeInsets? padding;
 
   @override
@@ -221,13 +218,7 @@ class _CandlestickChartState extends State<CandlestickChart>
             widget.style.candleStickStyle.candleStroke / 2,
             0,
           ),
-      //  ??
-      //     EdgeInsets.fromLTRB(
-      //       widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-      //       widget.style.pointStyle.tooltipHeight,
-      //       widget.style.pointStyle.tooltipHorizontalOverflowWidth,
-      //       0,
-      //     ),
+      //  ?? widget.style.pointStyle.defaultChartPadding,
       child: _buildChart(maxContentWidth),
     );
   }
@@ -264,6 +255,8 @@ class _CandlestickChartState extends State<CandlestickChart>
 
   @override
   void dispose() {
+    _cache.clear();
+    _yAxisLabelWidth.close();
     _valueController.dispose();
     super.dispose();
   }

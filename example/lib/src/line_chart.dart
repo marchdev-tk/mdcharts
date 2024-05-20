@@ -223,11 +223,11 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                   showAxisY: false,
                 );
                 final style = LineChartStyle(
-                  gridStyle: LineChartGridStyle.same(
+                  gridStyle: GridStyle.same(
                     color: materialColor.withOpacity(0.1),
                     stroke: 0.5,
                   ),
-                  axisStyle: LineChartAxisStyle(
+                  axisStyle: AxisStyle(
                     color: materialColor.withOpacity(0.1),
                     stroke: 0.5,
                     xAxisLabelTopMargin: 6,

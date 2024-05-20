@@ -6,8 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 /// Defines how values of the [LineChartData.data] must be represented.
 ///
@@ -72,18 +71,18 @@ enum LineChartGridType {
 }
 
 /// Data for the [LineChart].
-class LineChartData {
+class LineChartData extends GridAxisData<double> {
   /// Constructs an instance of [LineChartData].
   const LineChartData({
-    required this.data,
-    this.predefinedMaxValue,
-    this.maxValueRoundingMap = defaultMaxValueRoundingMap,
+    required super.data,
+    super.predefinedMaxValue,
+    super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
     this.limit,
     this.limitText,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
-    this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
-    this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
+    super.xAxisLabelBuilder = defaultXAxisLabelBuilder,
+    super.yAxisLabelBuilder = defaultYAxisLabelBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   });
@@ -92,59 +91,6 @@ class LineChartData {
       '${key.year}-${key.month}-${key.day}';
   static String defaultSubtitleBuilder(DateTime key, double value) =>
       value.toString();
-  static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
-      TextSpan(text: '${key.month}-${key.day}', style: style);
-  static String defaultYAxisLabelBuilder(double value) => '$value';
-  static const Map<num, num> defaultMaxValueRoundingMap = {
-    100: 5,
-    1000: 10,
-    10000: 100,
-    100000: 1000,
-    1000000: 10000,
-  };
-
-  /// Map of the values that corresponds to the dates.
-  ///
-  /// It is a main source of [LineChart] data.
-  ///
-  /// If [LineChartGridType.undefined] is set, then [data] must contain at least 2
-  /// entries.
-  ///
-  /// If [LineChartGridType.monthly] is set, then [data] must contain entries with
-  /// the same month.
-  final Map<DateTime, double> data;
-
-  /// Predefined max value for the chart.
-  ///
-  /// By default it will be calculated based on the logic of [maxValue].
-  final double? predefinedMaxValue;
-
-  /// Rounding map of the [maxValue].
-  ///
-  /// Logic of rounding is following:
-  ///
-  /// `key` is compared to [maxValue].
-  ///
-  /// If [maxValue] is less than `key` - `value` of this `key` is used as a
-  /// complement to [maxValue] to find the closest value that will be divided by
-  /// quantity of Y axis divisions to "buitify" Y axis labels.
-  ///
-  /// Otherwise, next `key` is compared to [maxValue]. And so on.
-  ///
-  /// In case of absence of `key` that might satisfy the rule, described above,
-  /// last entry of this map will be used as a fallback.
-  ///
-  /// Example:
-  /// - `yAxisDivisions` = 2 (so 2 division lines results with 3 chunks of chart);
-  /// - `maxValue` = 83 (from data).
-  ///
-  /// So, based on these values maxValue will be rounded to `90`.
-  ///
-  /// **Please note**: it is preferred to provide ascending keys for this map,
-  /// omitting this simple rule may cause malfunctioning of rounding function.
-  /// As a sample of correctly formed map [defaultMaxValueRoundingMap] could be
-  /// used.
-  final Map<num, num> maxValueRoundingMap;
 
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.
@@ -165,16 +111,6 @@ class LineChartData {
   ///
   /// If not set explicitly, [defaultSubtitleBuilder] will be used.
   final TooltipBuilder<double> subtitleBuilder;
-
-  /// Text builder for the X axis label.
-  ///
-  /// If not set explicitly, [defaultXAxisLabelBuilder] will be used.
-  final RichLabelBuilder<DateTime> xAxisLabelBuilder;
-
-  /// Text builder for the Y axis label.
-  ///
-  /// If not set explicitly, [defaultYAxisLabelBuilder] will be used.
-  final LabelBuilder<double> yAxisLabelBuilder;
 
   /// Grid type of the line chart.
   ///
@@ -237,19 +173,18 @@ class LineChartData {
     return LineChartDataDirection.ascending;
   }
 
-  /// Checks whether chart and point could be drawned or not.
-  ///
-  /// It checks for [data] length to be greater than or equal to 1.
-  bool get canDraw => data.isNotEmpty;
+  @override
+  double maxValuePredicate(double value) => value;
+  @override
+  double minValuePredicate(double value) => value;
 
-  /// Determines max value for chart to draw.
-  ///
-  /// If [predefinedMaxValue] is set, then it will be used as max value,
-  /// omitting [limit] value.
+  /// {@macro ChartData.maxValue}
+  /// (Omitting [limit] value)
   ///
   /// If [limit] is not set, then max value will be retrieved from [data].
   /// Otherwise it will be one of [limit] or max value from [data], depending
   /// on which one is greater.
+  @override
   double get maxValue {
     if (!canDraw) {
       return 1;
@@ -271,21 +206,6 @@ class LineChartData {
     return limit!;
   }
 
-  /// Determines min value for chart to draw.
-  double get minValue {
-    if (!canDraw) {
-      return 0;
-    }
-
-    return math.min(data.values.min, .0);
-  }
-
-  /// Whether [minValue] is less than `0`.
-  bool get hasNegativeMinValue => minValue < 0;
-
-  /// Determines sum of the [maxValue] and absolute value of [minValue].
-  double get totalValue => maxValue - minValue;
-
   /// Determines whether max value from [data] is greater than limit.
   /// If so - [limit] is overused. Otherwise - no.
   ///
@@ -297,6 +217,7 @@ class LineChartData {
   }
 
   /// Gets divisions of the X axis.
+  @override
   int get xAxisDivisions {
     if (data.isEmpty) {
       // returning 1 to ensure no "division by 0" would occur.

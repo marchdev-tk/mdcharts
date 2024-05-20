@@ -2,9 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'cache.dart';
 import 'painter.dart';
@@ -40,6 +43,9 @@ class LineChart extends StatefulWidget {
 
 class _LineChartState extends State<LineChart>
     with SingleTickerProviderStateMixin {
+  final _cache = LineChartCacheHolder();
+  final _yAxisLabelWidth = BehaviorSubject<double>.seeded(0);
+
   late AnimationController _valueController;
   late Animation<double> _valueAnimation;
 
@@ -78,7 +84,7 @@ class _LineChartState extends State<LineChart>
     data = widget.data;
     _adjustOldData();
     oldDataHashCode = oldData.hashCode;
-    cache.add(data.hashCode, oldDataHashCode);
+    _cache.add(data.hashCode, oldDataHashCode);
 
     _valueController = AnimationController(
       vsync: this,
@@ -102,83 +108,140 @@ class _LineChartState extends State<LineChart>
     oldDataHashCode = oldData.hashCode;
     _adjustOldData();
     if (data != oldData) {
-      cache.add(data.hashCode, oldDataHashCode);
+      _cache.add(data.hashCode, oldDataHashCode);
     }
     _startAnimation();
     super.didUpdateWidget(oldWidget);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget chart = AnimatedBuilder(
-      animation: _valueAnimation,
-      builder: (context, _) {
-        return CustomPaint(
-          painter: LineChartPainter(
+  Widget _buildChart(double maxWidth) {
+    return StreamBuilder<double>(
+      stream: _yAxisLabelWidth.distinct(),
+      initialData: _yAxisLabelWidth.value,
+      builder: (context, snapshot) {
+        var spacing = .0;
+        var displaceInset = .0;
+        var maxWidthAdjusted = maxWidth;
+        if (widget.settings.yAxisLayout == YAxisLayout.displace) {
+          spacing = widget.settings.yAxisLabelSpacing;
+          displaceInset = snapshot.requireData + spacing;
+          maxWidthAdjusted = maxWidth - displaceInset;
+        }
+
+        Widget chart = AnimatedBuilder(
+          animation: _valueAnimation,
+          builder: (context, _) {
+            return CustomPaint(
+              painter: LineChartPainter(
+                _cache,
+                widget.data,
+                widget.style,
+                widget.settings,
+                oldDataHashCode!,
+                widget.padding,
+                xPosition,
+                _valueAnimation.value,
+              ),
+              size: Size(
+                math.max(0, maxWidthAdjusted),
+                double.infinity,
+              ),
+            );
+          },
+        );
+
+        if (widget.settings.selectionEnabled) {
+          if (Platform.isMobile) {
+            chart = GestureDetector(
+              onHorizontalDragCancel: _clearXPosition,
+              onHorizontalDragEnd: _clearXPosition,
+              onHorizontalDragStart: _setXPosition,
+              onHorizontalDragUpdate: _setXPosition,
+              child: chart,
+            );
+          } else {
+            chart = MouseRegion(
+              onExit: _clearXPosition,
+              onHover: _setXPosition,
+              child: chart,
+            );
+          }
+        }
+
+        final xAxisLabels = CustomPaint(
+          painter: LineChartXAxisLabelPainter(
+            _cache,
             widget.data,
             widget.style,
             widget.settings,
-            oldDataHashCode!,
-            widget.padding,
             xPosition,
-            _valueAnimation.value,
           ),
-          size: Size.infinite,
+          size: Size(
+            math.max(0, maxWidthAdjusted),
+            widget.style.axisStyle.labelHeight,
+          ),
         );
+
+        Widget child;
+        if (widget.settings.showAxisXLabels) {
+          child = Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(child: chart),
+              SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
+              xAxisLabels,
+            ],
+          );
+        } else {
+          child = chart;
+        }
+
+        return child;
       },
     );
+  }
 
-    if (widget.settings.selectionEnabled) {
-      if (Platform.isMobile) {
-        chart = GestureDetector(
-          onHorizontalDragCancel: _clearXPosition,
-          onHorizontalDragEnd: _clearXPosition,
-          onHorizontalDragStart: _setXPosition,
-          onHorizontalDragUpdate: _setXPosition,
-          child: chart,
-        );
-      } else {
-        chart = MouseRegion(
-          onExit: _clearXPosition,
-          onHover: _setXPosition,
-          child: chart,
-        );
-      }
-    }
-
-    final xAxisLabels = CustomPaint(
-      painter: LineChartXAxisLabelPainter(
-        widget.data,
-        widget.style,
-        widget.settings,
-        xPosition,
-      ),
-      size: Size.fromHeight(widget.style.axisStyle.labelHeight),
+  Widget _buildContent(BoxConstraints constraints) {
+    return Padding(
+      padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
+      child: _buildChart(constraints.maxWidth),
     );
+  }
 
-    Widget child;
-    if (widget.settings.showAxisXLabels) {
-      child = Column(
-        children: [
-          Expanded(child: chart),
-          SizedBox(height: widget.style.axisStyle.xAxisLabelTopMargin),
-          xAxisLabels,
-        ],
-      );
-    } else {
-      child = chart;
-    }
-
+  @override
+  Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: Padding(
-        padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
-        child: child,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final chart = Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: GridAxis(
+                  cache: _cache,
+                  data: data,
+                  style: widget.style,
+                  settings: widget.settings,
+                  padding: widget.padding,
+                  yAxisLabelWidth: _yAxisLabelWidth,
+                ),
+              ),
+              Positioned.fill(
+                child: _buildContent(constraints),
+              ),
+            ],
+          );
+
+          return chart;
+        },
       ),
     );
   }
 
   @override
   void dispose() {
+    _cache.clear();
+    _yAxisLabelWidth.close();
     _valueController.dispose();
     super.dispose();
   }

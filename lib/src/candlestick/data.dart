@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 class CandlestickData {
   const CandlestickData({
@@ -39,8 +39,8 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
-    super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
-    super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
+    super.xAxisLabelBuilder = defaultXAxisLabelBuilder,
+    super.yAxisLabelBuilder = defaultYAxisLabelBuilder,
   });
 
   static String defaultTitleBuilder(DateTime key, double value) =>

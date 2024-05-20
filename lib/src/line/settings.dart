@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 /// Snap position options of limit label.
 enum LimitLabelSnapPosition {
@@ -16,23 +16,25 @@ enum LimitLabelSnapPosition {
 }
 
 /// Set of settings of the [LineChart].
-class LineChartSettings {
+class LineChartSettings extends GridAxisSettings {
   /// Constructs an instance of [LineChartSettings].
   const LineChartSettings({
-    this.xAxisDivisions = 3,
-    this.yAxisDivisions = 2,
-    this.xAxisLabelQuantity,
-    this.axisDivisionEdges = AxisDivisionEdges.none,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
+    super.xAxisDivisions = 3,
+    super.yAxisDivisions = 2,
+    super.xAxisLabelQuantity,
+    super.axisDivisionEdges = AxisDivisionEdges.none,
+    super.showAxisX = true,
+    super.showAxisXSelectedLabelIfConcealed = false,
+    super.showAxisY = true,
+    super.showAxisXLabels = true,
+    super.showAxisYLabels = true,
+    super.showAxisXLabelSelection = false,
+    super.yAxisLayout = YAxisLayout.overlay,
+    super.yAxisLabelSpacing = 0,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
     this.showPoint = true,
     this.showTooltip = true,
     this.selectionEnabled = true,
@@ -40,79 +42,23 @@ class LineChartSettings {
 
   /// Constructs an instance of [LineChartSettings] without grids.
   const LineChartSettings.gridless({
-    this.xAxisLabelQuantity,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
+    super.xAxisLabelQuantity,
+    super.showAxisX = true,
+    super.showAxisXSelectedLabelIfConcealed = false,
+    super.showAxisY = true,
+    super.showAxisXLabels = true,
+    super.showAxisYLabels = true,
+    super.showAxisXLabelSelection = false,
+    super.yAxisLayout = YAxisLayout.overlay,
+    super.yAxisLabelSpacing = 0,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
     this.showPoint = true,
     this.showTooltip = true,
     this.selectionEnabled = true,
-  })  : xAxisDivisions = 0,
-        yAxisDivisions = 0,
-        axisDivisionEdges = AxisDivisionEdges.none;
-
-  /// Divisions of the X axis or the quantity of the grid lines on X axis.
-  ///
-  /// Defaults to `3` for basic constructor.
-  ///
-  /// **Note**: to prevent from displaying only X axis - set
-  /// [xAxisDivisions] to `0`, so X axis will not be painted, but Y axis will.
-  ///
-  /// **Note**: to prevent from displaying entire grid set both [xAxisDivisions]
-  /// and [yAxisDivisions] to `0` or consider using [LineChartSettings.gridless]
-  /// constructor.
-  final int xAxisDivisions;
-
-  /// Divisions of the Y axis or the quantity of the grid lines on Y axis.
-  ///
-  /// Defaults to `2` for basic constructor.
-  ///
-  /// **Note**: to prevent from displaying only Y axis - set
-  /// [xAxisDivisions] to `0`, so Y axis will not be painted, but X axis will.
-  ///
-  /// **Note**: to prevent from displaying entire grid set both [xAxisDivisions]
-  /// and [yAxisDivisions] to `0` or consider using [LineChartSettings.gridless]
-  /// constructor.
-  final int yAxisDivisions;
-
-  /// Quantity of the X axis labels to draw.
-  ///
-  /// Defaults to `null`.
-  ///
-  /// If X axis label quantity is set - it could be less than or equal to a
-  /// specified value, but no less than `2`.
-  ///
-  /// **Note**: that X axis labels are dynamically displaying beneath X axis
-  /// based on width that they occupy and available drawing space.
-  final int? xAxisLabelQuantity;
-
-  /// Axis division edges to be painted.
-  ///
-  /// Defaults to [AxisDivisionEdges.none].
-  final AxisDivisionEdges axisDivisionEdges;
-
-  /// Whether to show X axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisX;
-
-  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
-  /// label is concealed in normal circumstances.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXSelectedLabelIfConcealed;
-
-  /// Whether to show Y axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisY;
+  });
 
   /// Whether to fill the space between the line and the X axis with
   /// color or gradient, which depends on provided style.
@@ -135,22 +81,6 @@ class LineChartSettings {
   /// Defaults to [LimitLabelSnapPosition.axis].
   final LimitLabelSnapPosition limitLabelSnapPosition;
 
-  /// Whether to show X axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisXLabels;
-
-  /// Whether to show Y axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisYLabels;
-
-  /// Whether to paint with selected style currently selected X axis label or
-  /// not.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXLabelSelection;
-
   /// Whether to show current or selected point or not.
   ///
   /// Defaults to `true`.
@@ -168,6 +98,7 @@ class LineChartSettings {
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.
+  @override
   LineChartSettings copyWith({
     bool allowNullXAxisLabelQuantity = false,
     int? xAxisDivisions,
@@ -177,13 +108,15 @@ class LineChartSettings {
     bool? showAxisX,
     bool? showAxisXSelectedLabelIfConcealed,
     bool? showAxisY,
+    bool? showAxisXLabels,
+    bool? showAxisYLabels,
+    bool? showAxisXLabelSelection,
+    YAxisLayout? yAxisLayout,
+    double? yAxisLabelSpacing,
     bool? lineFilling,
     bool? lineShadow,
     bool? altitudeLine,
     LimitLabelSnapPosition? limitLabelSnapPosition,
-    bool? showAxisXLabels,
-    bool? showAxisYLabels,
-    bool? showAxisXLabelSelection,
     bool? showPoint,
     bool? showTooltip,
     bool? selectionEnabled,
@@ -199,15 +132,17 @@ class LineChartSettings {
         showAxisXSelectedLabelIfConcealed: showAxisXSelectedLabelIfConcealed ??
             this.showAxisXSelectedLabelIfConcealed,
         showAxisY: showAxisY ?? this.showAxisY,
+        showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
+        showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
+        showAxisXLabelSelection:
+            showAxisXLabelSelection ?? this.showAxisXLabelSelection,
+        yAxisLayout: yAxisLayout ?? this.yAxisLayout,
+        yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
         lineFilling: lineFilling ?? this.lineFilling,
         lineShadow: lineShadow ?? this.lineShadow,
         altitudeLine: altitudeLine ?? this.altitudeLine,
         limitLabelSnapPosition:
             limitLabelSnapPosition ?? this.limitLabelSnapPosition,
-        showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
-        showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
-        showAxisXLabelSelection:
-            showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         showPoint: showPoint ?? this.showPoint,
         showTooltip: showTooltip ?? this.showTooltip,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
@@ -222,13 +157,15 @@ class LineChartSettings {
       showAxisX.hashCode ^
       showAxisXSelectedLabelIfConcealed.hashCode ^
       showAxisY.hashCode ^
+      showAxisXLabels.hashCode ^
+      showAxisYLabels.hashCode ^
+      showAxisXLabelSelection.hashCode ^
+      yAxisLayout.hashCode ^
+      yAxisLabelSpacing.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
-      showAxisXLabels.hashCode ^
-      showAxisYLabels.hashCode ^
-      showAxisXLabelSelection.hashCode ^
       showPoint.hashCode ^
       showTooltip.hashCode ^
       selectionEnabled.hashCode;
@@ -244,13 +181,15 @@ class LineChartSettings {
       showAxisXSelectedLabelIfConcealed ==
           other.showAxisXSelectedLabelIfConcealed &&
       showAxisY == other.showAxisY &&
+      showAxisXLabels == other.showAxisXLabels &&
+      showAxisYLabels == other.showAxisYLabels &&
+      showAxisXLabelSelection == other.showAxisXLabelSelection &&
+      yAxisLayout == other.yAxisLayout &&
+      yAxisLabelSpacing == other.yAxisLabelSpacing &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
-      showAxisXLabels == other.showAxisXLabels &&
-      showAxisYLabels == other.showAxisYLabels &&
-      showAxisXLabelSelection == other.showAxisXLabelSelection &&
       showPoint == other.showPoint &&
       showTooltip == other.showTooltip &&
       selectionEnabled == other.selectionEnabled;

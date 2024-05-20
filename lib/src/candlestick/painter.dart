@@ -6,7 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/src/_internal.dart';
 
 /// Main painter of the [LineChart].
 class CandlestickChartPainter extends CustomPainter {
@@ -138,7 +138,7 @@ class CandlestickChartPainter extends CustomPainter {
     }
 
     // final selectedIndex = _getSelectedIndex(size);
-    final widthFraction = size.width / data.lastDivisionIndex;
+    final widthFraction = size.width / data.xAxisDivisions;
     final map = data.data;
     final oldMap = _adjustMap(data.data, oldData.data);
     // final zeroHeight = _getZeroHeight(size);
@@ -219,10 +219,10 @@ class CandlestickChartXAxisLabelPainter extends CustomPainter {
       return null;
     }
 
-    final widthFraction = size.width / data.lastDivisionIndex;
+    final widthFraction = size.width / data.xAxisDivisions;
 
     int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, data.lastDivisionIndex);
+    index = math.min(index, data.xAxisDivisions);
 
     return index;
   }
@@ -255,7 +255,7 @@ class CandlestickChartXAxisLabelPainter extends CustomPainter {
     }
 
     final selectedIndex = _getSelectedIndex(size);
-    final widthFraction = size.width / data.lastDivisionIndex;
+    final widthFraction = size.width / data.xAxisDivisions;
 
     Offset point;
     if (index == 0) {

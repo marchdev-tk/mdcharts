@@ -69,14 +69,11 @@ abstract class ChartData<T> {
   /// Predicate that must be resolved with max value of the provided data type [T].
   double maxValuePredicate(T value);
 
+  /// {@template ChartData.maxValue}
   /// Determines max value for chart to draw.
   ///
-  /// If [predefinedMaxValue] is set, then it will be used as max value,
-  /// omitting [limit] value.
-  ///
-  /// If [limit] is not set, then max value will be retrieved from [data].
-  /// Otherwise it will be one of [limit] or max value from [data], depending
-  /// on which one is greater.
+  /// If [predefinedMaxValue] is set, then it will be used as max value.
+  /// {@endtemplate}
   double get maxValue {
     if (!canDraw) {
       return 1;
@@ -111,8 +108,17 @@ abstract class ChartData<T> {
   /// Determines sum of the [maxValue] and absolute value of [minValue].
   double get totalValue => maxValue - minValue;
 
-  /// Gets last division index.
-  int get lastDivisionIndex {
+  /// Gets divisions of the X axis.
+  int get xAxisDivisions {
+    if (data.isEmpty) {
+      // returning 1 to ensure no "division by 0" would occur.
+      return 1;
+    }
+
+    if (data.length == 1) {
+      return 1;
+    }
+
     // minus 1 due to to the first point that lies on the Y axis.
     return data.length - 1;
   }
