@@ -202,7 +202,7 @@ Feel free to post a feature requests or report a bug [here](https://github.com/m
 
 ## TODO
 
-* Impl common Grid and Axis styles/settings/painters for BarChart
 * Move to common Tooltip styles/settings/painters
+* Impl common Grid and Axis styles/settings/painters for BarChart
 * Add MdDate to all charts (with unit-tests)
 * Add ability to accept custom painters (paint funcs) (requires ENORMOUS amount of time)
