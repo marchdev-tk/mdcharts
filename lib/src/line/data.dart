@@ -81,8 +81,8 @@ class LineChartData extends GridAxisData<double> {
     this.limitText,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
-    super.xAxisLabelBuilder = defaultXAxisLabelBuilder,
-    super.yAxisLabelBuilder = defaultYAxisLabelBuilder,
+    super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
+    super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   });
