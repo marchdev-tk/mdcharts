@@ -201,39 +201,35 @@ class _LineChartState extends State<LineChart>
     );
   }
 
-  Widget _buildContent(BoxConstraints constraints) {
-    return Padding(
-      padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
-      child: _buildChart(constraints.maxWidth),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final chart = Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned.fill(
-                child: GridAxis(
-                  cache: _cache,
-                  data: data,
-                  style: widget.style,
-                  settings: widget.settings,
-                  padding: widget.padding,
-                  yAxisLabelWidth: _yAxisLabelWidth,
+      child: Padding(
+        padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final chart = Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: GridAxis(
+                    cache: _cache,
+                    data: data,
+                    style: widget.style,
+                    settings: widget.settings,
+                    padding: widget.padding,
+                    yAxisLabelWidth: _yAxisLabelWidth,
+                  ),
                 ),
-              ),
-              Positioned.fill(
-                child: _buildContent(constraints),
-              ),
-            ],
-          );
+                Positioned.fill(
+                  child: _buildChart(constraints.maxWidth),
+                ),
+              ],
+            );
 
-          return chart;
-        },
+            return chart;
+          },
+        ),
       ),
     );
   }
