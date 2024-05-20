@@ -274,10 +274,10 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final snapBias =
-        settings.limitLabelSnapPosition == LimitLabelSnapPosition.chartBoundary
-            ? (padding?.left ?? style.pointStyle.tooltipHorizontalOverflowWidth)
-            : .0;
+    final snapBias = settings.limitLabelSnapPosition ==
+            LimitLabelSnapPosition.chartBoundary
+        ? (padding?.left ?? style.tooltipStyle.tooltipHorizontalOverflowWidth)
+        : .0;
     final yCenter =
         normalizeInverted(data.limit!, roundedMaxValue) * _getZeroHeight(size);
     final textSpan = TextSpan(
@@ -388,28 +388,28 @@ class LineChartPainter extends CustomPainter {
     final entry = _typedData.entries.elementAt(selectedIndex);
     final titlePainter = MDTextPainter(TextSpan(
       text: data.titleBuilder(entry.key, entry.value),
-      style: style.pointStyle.tooltipTitleStyle,
+      style: style.tooltipStyle.titleStyle,
     ));
     final subtitlePainter = MDTextPainter(TextSpan(
       text: data.subtitleBuilder(entry.key, entry.value),
-      style: style.pointStyle.tooltipSubtitleStyle,
+      style: style.tooltipStyle.subtitleStyle,
     ));
     final point = _getPoint(size, selectedIndex);
     final outerRadius = style.pointStyle.outerSize / 2;
-    final triangleWidth = style.pointStyle.tooltipTriangleWidth;
-    final triangleHeight = style.pointStyle.tooltipTriangleHeight;
+    final triangleWidth = style.tooltipStyle.triangleWidth;
+    final triangleHeight = style.tooltipStyle.triangleHeight;
     final bottomMargin =
-        style.pointStyle.tooltipBottomMargin + outerRadius + triangleHeight;
+        style.tooltipStyle.bottomMargin + outerRadius + triangleHeight;
     final titleSize = titlePainter.size;
     final subtitleSize = subtitlePainter.size;
-    final spacing = style.pointStyle.tooltipSpacing;
-    final padding = style.pointStyle.tooltipPadding;
+    final spacing = style.tooltipStyle.spacing;
+    final padding = style.tooltipStyle.padding;
     final contentWidth = math.max(titleSize.width, subtitleSize.width);
     final tooltipSize = Size(
       contentWidth + padding.horizontal,
       titleSize.height + spacing + subtitleSize.height + padding.vertical,
     );
-    final radius = Radius.circular(style.pointStyle.tooltipRadius);
+    final radius = Radius.circular(style.tooltipStyle.radius);
     final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
     final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
     final xBias = isSelectedIndexFirst
@@ -452,11 +452,11 @@ class LineChartPainter extends CustomPainter {
 
     canvas.drawShadow(
       path,
-      style.pointStyle.tooltipShadowColor,
-      style.pointStyle.tooltipShadowElevation,
+      style.tooltipStyle.shadowColor,
+      style.tooltipStyle.shadowElevation,
       false,
     );
-    canvas.drawPath(path, style.pointStyle.tooltipPaint);
+    canvas.drawPath(path, style.tooltipStyle.tooltipPaint);
 
     titlePainter.paint(canvas, titleOffset);
     subtitlePainter.paint(canvas, subtitleOffset);

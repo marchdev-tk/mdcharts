@@ -205,7 +205,8 @@ class _LineChartState extends State<LineChart>
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: Padding(
-        padding: widget.padding ?? widget.style.pointStyle.defaultChartPadding,
+        padding:
+            widget.padding ?? widget.style.tooltipStyle.defaultChartPadding,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final chart = Stack(

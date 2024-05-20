@@ -264,7 +264,9 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                     innerColor: materialColor,
                     outerColor: chartColor,
                     dropLineColor: materialColor.withOpacity(0.5),
-                    tooltipColor: materialColor,
+                  ),
+                  tooltipStyle: const LineChartTooltipStyle(
+                    color: materialColor,
                   ),
                 );
 

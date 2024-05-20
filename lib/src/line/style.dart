@@ -16,6 +16,7 @@ class LineChartStyle extends GridAxisStyle {
     this.lineStyle = const LineChartLineStyle(),
     this.limitStyle = const LineChartLimitStyle(),
     this.pointStyle = const LineChartPointStyle(),
+    this.tooltipStyle = const LineChartTooltipStyle(),
   });
 
   /// Style of the line.
@@ -29,9 +30,11 @@ class LineChartStyle extends GridAxisStyle {
 
   /// Style of the point.
   ///
-  /// It contains customizaiton for the point itself, drop line, tooltip and
-  /// bottom margin.
+  /// It contains customizaiton for the drop line and point itself.
   final LineChartPointStyle pointStyle;
+
+  /// Style of the tooltip.
+  final LineChartTooltipStyle tooltipStyle;
 
   @override
   int get hashCode =>
@@ -39,7 +42,8 @@ class LineChartStyle extends GridAxisStyle {
       axisStyle.hashCode ^
       lineStyle.hashCode ^
       limitStyle.hashCode ^
-      pointStyle.hashCode;
+      pointStyle.hashCode ^
+      tooltipStyle.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -48,7 +52,8 @@ class LineChartStyle extends GridAxisStyle {
       axisStyle == other.axisStyle &&
       lineStyle == other.lineStyle &&
       limitStyle == other.limitStyle &&
-      pointStyle == other.pointStyle;
+      pointStyle == other.pointStyle &&
+      tooltipStyle == other.tooltipStyle;
 }
 
 /// Contains various customization options for the line of the chart itself.
@@ -363,30 +368,7 @@ class LineChartPointStyle {
     this.dropLineStroke = 1,
     this.dropLineDashSize = 2,
     this.dropLineGapSize = 2,
-    this.tooltipColor = const Color(0xFFFFFFFF),
-    this.tooltipTitleStyle = defaultTooltipTitleStyle,
-    this.tooltipSubtitleStyle = defaultTooltipSubtitleStyle,
-    this.tooltipPadding = defaultTooltipPadding,
-    this.tooltipSpacing = 2,
-    this.tooltipRadius = 8,
-    this.tooltipTriangleWidth = 12,
-    this.tooltipTriangleHeight = 5,
-    this.tooltipShadowColor = const Color(0xFF000000),
-    this.tooltipShadowElevation = 4,
-    this.tooltipBottomMargin = 6,
   });
-
-  static const defaultTooltipTitleStyle = TextStyle(
-    height: 1,
-    fontSize: 10,
-    color: Color(0xCC000000),
-  );
-  static const defaultTooltipSubtitleStyle = TextStyle(
-    height: 16 / 12,
-    fontSize: 12,
-    color: Color(0xFF000000),
-  );
-  static const defaultTooltipPadding = EdgeInsets.fromLTRB(12, 4, 12, 4);
 
   /// Color of the inner circle.
   ///
@@ -443,106 +425,6 @@ class LineChartPointStyle {
   /// Defaults to `2`.
   final double dropLineGapSize;
 
-  /// Color of the tooltip.
-  ///
-  /// Defaults to `0xFFFFFFFF`.
-  final Color tooltipColor;
-
-  /// Title style of the tooltip.
-  ///
-  /// Defaults to [defaultTooltipTitleStyle].
-  final TextStyle tooltipTitleStyle;
-
-  /// Subtitle style of the tooltip.
-  ///
-  /// Defaults to [defaultTooltipSubtitleStyle].
-  final TextStyle tooltipSubtitleStyle;
-
-  /// Padding around title and subtitle of the tooltip.
-  ///
-  /// Defaults to [defaultTooltipPadding].
-  final EdgeInsets tooltipPadding;
-
-  /// Spacing between title and subtitle of the tooltip.
-  ///
-  /// Defaults to `2`.
-  final double tooltipSpacing;
-
-  /// Circular radius of the tooltip.
-  ///
-  /// Defaults to `8`.
-  final double tooltipRadius;
-
-  /// Width of the tooltip triangle.
-  ///
-  /// Defaults to `12`.
-  final double tooltipTriangleWidth;
-
-  /// Height of the tooltip triangle.
-  ///
-  /// Defaults to `5`.
-  final double tooltipTriangleHeight;
-
-  /// Shadow color of the tooltip.
-  ///
-  /// Defaults to `0xFF000000`.
-  final Color tooltipShadowColor;
-
-  /// Elevation of the tooltip.
-  ///
-  /// Defaults to `4`.
-  final double tooltipShadowElevation;
-
-  /// Bottom margin of the tooltip.
-  ///
-  /// Defaults to `6`.
-  final double tooltipBottomMargin;
-
-  /// Gets size of the tooltip based on following:
-  /// - [tooltipBottomMargin];
-  /// - [tooltipPadding.vertical];
-  /// - [tooltipSpacing];
-  /// - [tooltipTitleStyle];
-  /// - [tooltipSubtitleStyle].
-  double get tooltipHeight {
-    final titleHeight = MDTextPainter(TextSpan(
-      text: '',
-      style: tooltipTitleStyle,
-    )).size.height;
-    final subtitleHeight = MDTextPainter(TextSpan(
-      text: '',
-      style: tooltipSubtitleStyle,
-    )).size.height;
-
-    return tooltipBottomMargin +
-        tooltipPadding.vertical +
-        tooltipSpacing +
-        titleHeight +
-        subtitleHeight;
-  }
-
-  /// Gets horizontal overflow width of the tooltip based on following:
-  /// - [tooltipRadius];
-  /// - half size of [tooltipTriangleWidth].
-  double get tooltipHorizontalOverflowWidth {
-    return tooltipRadius + tooltipTriangleWidth / 2;
-  }
-
-  /// Default padding of the chart caused by tooltip.
-  ///
-  /// Description:
-  /// - left/right: [tooltipHorizontalOverflowWidth].
-  /// - bottom: `0`;
-  /// - top: [tooltipHeight].
-  EdgeInsets get defaultChartPadding {
-    return EdgeInsets.fromLTRB(
-      tooltipHorizontalOverflowWidth,
-      tooltipHeight,
-      tooltipHorizontalOverflowWidth,
-      0,
-    );
-  }
-
   /// Gets a [Paint] for the drawing of the inner circle of the point.
   Paint get innerPaint => Paint()
     ..isAntiAlias = true
@@ -578,13 +460,6 @@ class LineChartPointStyle {
     ..strokeWidth = dropLineStroke
     ..color = dropLineColor;
 
-  /// Gets a [Paint] for the tooltip drawing.
-  Paint get tooltipPaint => Paint()
-    ..isAntiAlias = true
-    ..filterQuality = FilterQuality.medium
-    ..style = PaintingStyle.fill
-    ..color = tooltipColor;
-
   @override
   int get hashCode =>
       innerColor.hashCode ^
@@ -596,18 +471,7 @@ class LineChartPointStyle {
       shadowBlurRadius.hashCode ^
       dropLineColor.hashCode ^
       dropLineDashSize.hashCode ^
-      dropLineGapSize.hashCode ^
-      tooltipColor.hashCode ^
-      tooltipTitleStyle.hashCode ^
-      tooltipSubtitleStyle.hashCode ^
-      tooltipPadding.hashCode ^
-      tooltipSpacing.hashCode ^
-      tooltipRadius.hashCode ^
-      tooltipTriangleWidth.hashCode ^
-      tooltipTriangleHeight.hashCode ^
-      tooltipShadowColor.hashCode ^
-      tooltipShadowElevation.hashCode ^
-      tooltipBottomMargin.hashCode;
+      dropLineGapSize.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -621,16 +485,200 @@ class LineChartPointStyle {
       shadowBlurRadius == other.shadowBlurRadius &&
       dropLineColor == other.dropLineColor &&
       dropLineDashSize == other.dropLineDashSize &&
-      dropLineGapSize == other.dropLineGapSize &&
-      tooltipColor == other.tooltipColor &&
-      tooltipTitleStyle == other.tooltipTitleStyle &&
-      tooltipSubtitleStyle == other.tooltipSubtitleStyle &&
-      tooltipPadding == other.tooltipPadding &&
-      tooltipSpacing == other.tooltipSpacing &&
-      tooltipRadius == other.tooltipRadius &&
-      tooltipTriangleWidth == other.tooltipTriangleWidth &&
-      tooltipTriangleHeight == other.tooltipTriangleHeight &&
-      tooltipShadowColor == other.tooltipShadowColor &&
-      tooltipShadowElevation == other.tooltipShadowElevation &&
-      tooltipBottomMargin == other.tooltipBottomMargin;
+      dropLineGapSize == other.dropLineGapSize;
+}
+
+/// Contains various customization options for the tooltip.
+class LineChartTooltipStyle {
+  /// Constructs an instance of [LineChartTooltipStyle].
+  const LineChartTooltipStyle({
+    this.color = const Color(0xFFFFFFFF),
+    this.titleStyle = defaultTitleStyle,
+    this.subtitleStyle = defaultSubtitleStyle,
+    this.padding = defaultPadding,
+    this.spacing = 2,
+    this.radius = 8,
+    this.triangleWidth = 12,
+    this.triangleHeight = 5,
+    this.shadowColor = const Color(0xFF000000),
+    this.shadowElevation = 4,
+    this.bottomMargin = 6,
+  });
+
+  static const defaultTitleStyle = TextStyle(
+    height: 1,
+    fontSize: 10,
+    color: Color(0xCC000000),
+  );
+  static const defaultSubtitleStyle = TextStyle(
+    height: 16 / 12,
+    fontSize: 12,
+    color: Color(0xFF000000),
+  );
+  static const defaultPadding = EdgeInsets.fromLTRB(12, 4, 12, 4);
+
+  /// Color of the tooltip.
+  ///
+  /// Defaults to `0xFFFFFFFF`.
+  final Color color;
+
+  /// Title style of the tooltip.
+  ///
+  /// Defaults to [defaultTitleStyle].
+  final TextStyle titleStyle;
+
+  /// Subtitle style of the tooltip.
+  ///
+  /// Defaults to [defaultSubtitleStyle].
+  final TextStyle subtitleStyle;
+
+  /// Padding around title and subtitle of the tooltip.
+  ///
+  /// Defaults to [defaultPadding].
+  final EdgeInsets padding;
+
+  /// Spacing between title and subtitle of the tooltip.
+  ///
+  /// Defaults to `2`.
+  final double spacing;
+
+  /// Circular radius of the tooltip.
+  ///
+  /// Defaults to `8`.
+  final double radius;
+
+  /// Width of the tooltip triangle.
+  ///
+  /// Defaults to `12`.
+  final double triangleWidth;
+
+  /// Height of the tooltip triangle.
+  ///
+  /// Defaults to `5`.
+  final double triangleHeight;
+
+  /// Shadow color of the tooltip.
+  ///
+  /// Defaults to `0xFF000000`.
+  final Color shadowColor;
+
+  /// Elevation of the tooltip.
+  ///
+  /// Defaults to `4`.
+  final double shadowElevation;
+
+  /// Bottom margin of the tooltip.
+  ///
+  /// Defaults to `6`.
+  final double bottomMargin;
+
+  /// Gets size of the tooltip based on following:
+  /// - [bottomMargin];
+  /// - [padding.vertical];
+  /// - [spacing];
+  /// - [titleStyle];
+  /// - [subtitleStyle].
+  double get tooltipHeight {
+    final titleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: titleStyle,
+    )).size.height;
+    final subtitleHeight = MDTextPainter(TextSpan(
+      text: '',
+      style: subtitleStyle,
+    )).size.height;
+
+    return bottomMargin +
+        padding.vertical +
+        spacing +
+        titleHeight +
+        subtitleHeight;
+  }
+
+  /// Gets horizontal overflow width of the tooltip based on following:
+  /// - [radius];
+  /// - half size of [triangleWidth].
+  double get tooltipHorizontalOverflowWidth {
+    return radius + triangleWidth / 2;
+  }
+
+  /// Default padding of the chart caused by tooltip.
+  ///
+  /// Description:
+  /// - left/right: [tooltipHorizontalOverflowWidth].
+  /// - bottom: `0`;
+  /// - top: [tooltipHeight].
+  EdgeInsets get defaultChartPadding {
+    return EdgeInsets.fromLTRB(
+      tooltipHorizontalOverflowWidth,
+      tooltipHeight,
+      tooltipHorizontalOverflowWidth,
+      0,
+    );
+  }
+
+  /// Gets a [Paint] for the tooltip drawing.
+  Paint get tooltipPaint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.fill
+    ..color = color;
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartTooltipStyle copyWith({
+    Color? color,
+    TextStyle? titleStyle,
+    TextStyle? subtitleStyle,
+    EdgeInsets? padding,
+    double? spacing,
+    double? radius,
+    double? triangleWidth,
+    double? triangleHeight,
+    Color? shadowColor,
+    double? shadowElevation,
+    double? bottomMargin,
+  }) =>
+      LineChartTooltipStyle(
+        color: color ?? this.color,
+        titleStyle: titleStyle ?? this.titleStyle,
+        subtitleStyle: subtitleStyle ?? this.subtitleStyle,
+        padding: padding ?? this.padding,
+        spacing: spacing ?? this.spacing,
+        radius: radius ?? this.radius,
+        triangleWidth: triangleWidth ?? this.triangleWidth,
+        triangleHeight: triangleHeight ?? this.triangleHeight,
+        shadowColor: shadowColor ?? this.shadowColor,
+        shadowElevation: shadowElevation ?? this.shadowElevation,
+        bottomMargin: bottomMargin ?? this.bottomMargin,
+      );
+
+  @override
+  int get hashCode =>
+      color.hashCode ^
+      titleStyle.hashCode ^
+      subtitleStyle.hashCode ^
+      padding.hashCode ^
+      spacing.hashCode ^
+      radius.hashCode ^
+      triangleWidth.hashCode ^
+      triangleHeight.hashCode ^
+      shadowColor.hashCode ^
+      shadowElevation.hashCode ^
+      bottomMargin.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineChartTooltipStyle &&
+      color == other.color &&
+      titleStyle == other.titleStyle &&
+      subtitleStyle == other.subtitleStyle &&
+      padding == other.padding &&
+      spacing == other.spacing &&
+      radius == other.radius &&
+      triangleWidth == other.triangleWidth &&
+      triangleHeight == other.triangleHeight &&
+      shadowColor == other.shadowColor &&
+      shadowElevation == other.shadowElevation &&
+      bottomMargin == other.bottomMargin;
 }
