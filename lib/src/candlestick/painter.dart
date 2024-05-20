@@ -157,18 +157,6 @@ class CandlestickChartPainter extends CustomPainter {
     return maxValue;
   }
 
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [maxValue] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  ///
-  /// Returns `1 - result`, where `result` was calculated in the previously
-  /// metioned step.
-  double normalize(double value, double maxValue) {
-    final normalizedValue = 1 - value / maxValue;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
-
   // int? _getSelectedIndex(Size size) {
   //   if (selectedXPosition == null) {
   //     return null;
@@ -209,7 +197,7 @@ class CandlestickChartPainter extends CustomPainter {
 
   /// Height of the X axis.
   // double _getZeroHeight(Size size) => data.hasNegativeMinValue
-  //     ? normalize(roundedMinValue, roundedMaxValue) * size.height
+  //     ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
   //     : size.height;
 
   // bool get _showDetails => selectedXPosition != null && settings.showTooltip;
@@ -221,11 +209,12 @@ class CandlestickChartPainter extends CustomPainter {
     }
 
     double getYValue(double y, double oldY) {
-      final normalizedOldY = normalize(
+      final normalizedOldY = normalizeInverted(
         oldY + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
         cache.getRoundedMaxValue(oldDataHashCode) ?? 1,
       );
-      final normalizedY = normalize(y + roundedMinValue, roundedMaxValue);
+      final normalizedY =
+          normalizeInverted(y + roundedMinValue, roundedMaxValue);
       final animatedY =
           normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
 
@@ -304,18 +293,6 @@ class CandlestickChartGridPainter extends CustomPainter {
 
   /// Callback that notifies that Y axis label size successfuly calculated.
   final ValueChanged<double> onYAxisLabelSizeCalculated;
-
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [maxValue] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  ///
-  /// Returns `1 - result`, where `result` was calculated in the previously
-  /// metioned step.
-  double normalize(double value, double maxValue) {
-    final normalizedValue = 1 - value / maxValue;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
 
   /// Rounding method that calculates and rounds Y axis division size.
   ///
@@ -498,7 +475,8 @@ class CandlestickChartGridPainter extends CustomPainter {
     // x axis
     if (settings.showAxisX) {
       if (data.hasNegativeMinValue) {
-        final y = normalize(roundedMinValue, roundedMaxValue) * size.height;
+        final y =
+            normalizeInverted(roundedMinValue, roundedMaxValue) * size.height;
         canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
       } else {
         canvas.drawLine(bottomLeft, bottomRight, axisPaint);

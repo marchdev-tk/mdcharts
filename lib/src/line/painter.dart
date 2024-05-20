@@ -167,18 +167,6 @@ class LineChartPainter extends CustomPainter {
     return maxValue;
   }
 
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [maxValue] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  ///
-  /// Returns `1 - result`, where `result` was calculated in the previously
-  /// metioned step.
-  double normalize(double value, double maxValue) {
-    final normalizedValue = 1 - value / maxValue;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
-
   bool get _isDescendingChart =>
       data.dataType == LineChartDataType.unidirectional &&
       data.dataDirection == LineChartDataDirection.descending;
@@ -223,7 +211,7 @@ class LineChartPainter extends CustomPainter {
 
   /// Height of the X axis.
   double _getZeroHeight(Size size) => data.hasNegativeMinValue
-      ? normalize(roundedMinValue, roundedMaxValue) * size.height
+      ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
       : size.height;
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
@@ -240,7 +228,8 @@ class LineChartPainter extends CustomPainter {
 
     final x = widthFraction * index;
     final y =
-        normalize(entry.value + roundedMinValue, roundedMaxValue) * size.height;
+        normalizeInverted(entry.value + roundedMinValue, roundedMaxValue) *
+            size.height;
     final point = Offset(x, y);
 
     if (!_showDetails) {
@@ -331,7 +320,8 @@ class LineChartPainter extends CustomPainter {
     // x axis
     if (settings.showAxisX) {
       if (data.hasNegativeMinValue) {
-        final y = normalize(roundedMinValue, roundedMaxValue) * size.height;
+        final y =
+            normalizeInverted(roundedMinValue, roundedMaxValue) * size.height;
         canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
       } else {
         canvas.drawLine(bottomLeft, bottomRight, axisPaint);
@@ -369,11 +359,12 @@ class LineChartPainter extends CustomPainter {
       final oldValue = // TODO: figure out why it is needed (case: from 7 dots to 30 dots)
           i >= oldMap.entries.length ? 0 : oldMap.entries.elementAt(i).value;
 
-      final normalizedOldY = normalize(
+      final normalizedOldY = normalizeInverted(
         oldValue + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
         cache.getRoundedMaxValue(oldDataHashCode) ?? 1,
       );
-      final normalizedY = normalize(value + roundedMinValue, roundedMaxValue);
+      final normalizedY =
+          normalizeInverted(value + roundedMinValue, roundedMaxValue);
       final animatedY =
           normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
 
@@ -435,7 +426,8 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y = normalize(data.limit!, roundedMaxValue) * _getZeroHeight(size);
+    final y =
+        normalizeInverted(data.limit!, roundedMaxValue) * _getZeroHeight(size);
 
     path.moveTo(0, y);
 
@@ -461,7 +453,7 @@ class LineChartPainter extends CustomPainter {
             ? (padding?.left ?? style.pointStyle.tooltipHorizontalOverflowWidth)
             : .0;
     final yCenter =
-        normalize(data.limit!, roundedMaxValue) * _getZeroHeight(size);
+        normalizeInverted(data.limit!, roundedMaxValue) * _getZeroHeight(size);
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused

@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 
 import '../common.dart';
 import '../models.dart';
+import '../utils.dart';
 import 'cache.dart';
 import 'data.dart';
 import 'settings.dart';
@@ -48,15 +49,6 @@ class DonutPainter extends CustomPainter {
   final pathHolders = <ArcDataHolder>[];
 
   double _innerWidth = 0;
-
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [total] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  double normalize(double value, double total) {
-    final normalizedValue = value / total;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
 
   /// Normalization method for the list of values.
   ///

@@ -61,17 +61,8 @@ class BarChartBarPainter extends CustomPainter {
         settings.yAxisDivisions,
       );
 
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [roundedMaxValue] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  ///
-  /// Returns `1 - result`, where `result` was calculated in the previously
-  /// metioned step.
-  double normalize(double value) {
-    final normalizedValue = 1 - value / roundedMaxValue;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
+  /// {@macro normalizeInverted}
+  double normalize(double value) => normalizeInverted(value, roundedMaxValue);
 
   /// Whether border of the bar could be painted based on the top radius of
   /// the bar and border stroke or not.

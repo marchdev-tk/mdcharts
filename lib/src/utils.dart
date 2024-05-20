@@ -5,5 +5,6 @@
 export 'utils/adaptive_scroll_behavior.dart';
 export 'utils/date.utils.dart';
 export 'utils/hash.utils.dart';
+export 'utils/normalization.utils.dart';
 export 'utils/rounding.utils.dart';
 export 'utils/typedefs.dart';

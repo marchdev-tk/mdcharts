@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 
 import '../common.dart';
 import '../models.dart';
+import '../utils.dart';
 import 'cache.dart';
 import 'data.dart';
 import 'settings.dart';
@@ -52,15 +53,6 @@ class GaugeChartPainter extends CustomPainter {
 
   /// Path of the background border to paint.
   Path? _borderPath;
-
-  /// Normalization method.
-  ///
-  /// Converts provided [value] based on [total] into a percentage
-  /// proportion with valid values in inclusive range [0..1].
-  double normalize(double value, double total) {
-    final normalizedValue = value / total;
-    return normalizedValue.isNaN ? 0 : normalizedValue;
-  }
 
   /// Normalization method for the list of values.
   ///

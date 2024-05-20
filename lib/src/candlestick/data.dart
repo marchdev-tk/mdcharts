@@ -31,9 +31,6 @@ class CandlestickData {
   final double bid;
   final double ask;
 
-  double get max => math.max(high, math.max(bid, ask));
-  double get min => math.min(low, math.min(bid, ask));
-
   bool get isDescending => ask > bid;
   bool get isAscending => ask <= bid;
 }
@@ -149,7 +146,7 @@ class CandlestickChartData {
       return predefinedMaxValue!;
     }
 
-    return data.values.map((v) => v.max).max;
+    return data.values.map((v) => v.high).max;
   }
 
   /// Determines min value for chart to draw.
@@ -158,7 +155,7 @@ class CandlestickChartData {
       return 0;
     }
 
-    return math.min(data.values.map((v) => v.min).min, .0);
+    return math.min(data.values.map((v) => v.low).min, .0);
   }
 
   /// Whether [minValue] is less than `0`.
