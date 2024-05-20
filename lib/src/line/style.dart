@@ -5,8 +5,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
-
-import '../common.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Contains various customization options for the [LineChart].
 class LineChartStyle {

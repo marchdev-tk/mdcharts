@@ -6,14 +6,9 @@ import 'dart:math' show Point, max, pi, sqrt;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mdcharts/_internal.dart';
 
-import '../common.dart';
-import '../models.dart';
-import '../utils.dart';
 import 'cache.dart';
-import 'data.dart';
-import 'settings.dart';
-import 'style.dart';
 
 class DonutPainter extends CustomPainter {
   DonutPainter(
@@ -46,7 +41,7 @@ class DonutPainter extends CustomPainter {
   final double valueCoef;
 
   /// List of path holders for hit tests and selection.
-  final pathHolders = <ArcDataHolder>[];
+  final pathHolders = <ArcPainterData>[];
 
   double _innerWidth = 0;
 
@@ -211,7 +206,7 @@ class DonutPainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: endAngle,
       );
-      pathHolders.add(ArcDataHolder(startAngle, endAngle, path));
+      pathHolders.add(ArcPainterData(startAngle, endAngle, path));
       canvas.drawPath(
         path,
         style.sectionStyle.sectionPaint..color = sectionColor(i),

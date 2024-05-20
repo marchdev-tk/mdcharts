@@ -6,14 +6,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:mdcharts/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../models.dart';
-import '../utils.dart';
-import 'data.dart';
 import 'painter.dart';
-import 'settings.dart';
-import 'style.dart';
 import 'utils.dart';
 
 // TODO fix YAxisLayout.displace related issue for BarFit.none (extra scroll)

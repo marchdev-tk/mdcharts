@@ -3,8 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-
-import '../utils.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Data for the [GaugeChart].
 class GaugeChartData {

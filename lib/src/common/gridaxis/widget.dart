@@ -3,12 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
+import 'package:mdcharts/_internal.dart';
 
-import 'cache.dart';
-import 'data.dart';
 import 'painter.dart';
-import 'settings.dart';
-import 'style.dart';
 
 /// Charts Grid and Axis.
 class GridAxis extends StatelessWidget {

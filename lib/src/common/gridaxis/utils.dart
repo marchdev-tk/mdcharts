@@ -4,10 +4,8 @@
 
 import 'dart:math' as math;
 
-import '../../utils.dart' as utils;
-import 'cache.dart';
-import 'data.dart';
-import 'settings.dart';
+import 'package:mdcharts/_internal.dart';
+import 'package:mdcharts/_internal.dart' as utils show getRoundedMaxValue;
 
 class GridAxisUtils {
   const GridAxisUtils._();

@@ -6,8 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
-
-import '../common.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Axis division borders.
 enum BarBorder {

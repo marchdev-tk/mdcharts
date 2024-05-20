@@ -2,6 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'models/arc_data_holder.model.dart';
+export 'models/arc_painter_data.model.dart';
 export 'models/axis_division_edges.enum.dart';
 export 'models/y_axis_layout.enum.dart';

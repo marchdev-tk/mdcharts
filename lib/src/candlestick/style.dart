@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/painting.dart';
-import 'package:mdcharts/mdcharts.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Contains various customization options for the [CandleStickChart].
 class CandlestickChartStyle extends GridAxisStyle {

@@ -7,8 +7,7 @@ import 'dart:math' as math;
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-
-import '../utils.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Defines how values of the [LineChartData.data] must be represented.
 ///

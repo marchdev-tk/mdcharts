@@ -6,9 +6,9 @@ import 'dart:ui';
 
 /// Holder object of the start/end angles of the path alongside with path data
 /// itself that is mostly required for hit testing.
-class ArcDataHolder {
-  /// Constructs an instance of [ArcDataHolder].
-  const ArcDataHolder(
+class ArcPainterData {
+  /// Constructs an instance of [ArcPainterData].
+  const ArcPainterData(
     this.startAngle,
     this.endAngle,
     this.path,

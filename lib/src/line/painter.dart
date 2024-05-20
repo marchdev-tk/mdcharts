@@ -6,14 +6,9 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mdcharts/_internal.dart';
 
-import '../common.dart';
-import '../models.dart';
-import '../utils.dart';
 import 'cache.dart';
-import 'data.dart';
-import 'settings.dart';
-import 'style.dart';
 
 /// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {

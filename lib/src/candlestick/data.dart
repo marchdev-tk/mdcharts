@@ -3,9 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:mdcharts/mdcharts.dart';
-
-import '../utils.dart';
+import 'package:mdcharts/_internal.dart';
 
 class CandlestickData {
   const CandlestickData({

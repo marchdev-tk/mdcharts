@@ -6,9 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/mdcharts.dart';
-
-import '../utils.dart';
+import 'package:mdcharts/_internal.dart';
 
 /// Main painter of the [LineChart].
 class CandlestickChartPainter extends CustomPainter {

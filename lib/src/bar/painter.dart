@@ -6,14 +6,9 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mdcharts/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../common.dart';
-import '../models.dart';
-import '../utils.dart';
-import 'data.dart';
-import 'settings.dart';
-import 'style.dart';
 import 'utils.dart';
 
 /// Main painter of the [BarChart] that paints bars and tooltips.

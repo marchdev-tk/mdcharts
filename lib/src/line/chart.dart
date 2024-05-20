@@ -4,12 +4,10 @@
 
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mdcharts/_internal.dart';
 
 import 'cache.dart';
-import 'data.dart';
 import 'painter.dart';
-import 'settings.dart';
-import 'style.dart';
 
 /// Line chart.
 class LineChart extends StatefulWidget {
