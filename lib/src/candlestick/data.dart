@@ -174,8 +174,6 @@ class CandlestickChartData {
   /// arguments.
   CandlestickChartData copyWith({
     bool allowNullPredefinedMaxValue = false,
-    bool allowNullLimit = false,
-    bool allowNullLimitText = false,
     Map<DateTime, CandlestickData>? data,
     double? predefinedMaxValue,
     Map<num, num>? maxValueRoundingMap,
