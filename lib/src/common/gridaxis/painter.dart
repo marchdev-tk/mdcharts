@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
 
@@ -155,4 +157,90 @@ class GridAxisPainter extends CustomPainter {
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
+}
+
+/// Tooltip painter.
+void paintTooltip<T>(
+  Canvas canvas,
+  Size size,
+  GridAxisData data,
+  TooltipStyle tooltipStyle,
+  MapEntry<DateTime, double> entry,
+  Offset point,
+) {
+  if (!data.canDraw) {
+    return;
+  }
+
+  final titlePainter = MDTextPainter(TextSpan(
+    text: data.titleBuilder(entry.key, entry.value),
+    style: tooltipStyle.titleStyle,
+  ));
+  final subtitlePainter = MDTextPainter(TextSpan(
+    text: data.subtitleBuilder(entry.key, entry.value),
+    style: tooltipStyle.subtitleStyle,
+  ));
+  final triangleWidth = tooltipStyle.triangleWidth;
+  final triangleHeight = tooltipStyle.triangleHeight;
+  final bottomMargin = tooltipStyle.bottomMargin + triangleHeight;
+  final titleSize = titlePainter.size;
+  final subtitleSize = subtitlePainter.size;
+  final spacing = tooltipStyle.spacing;
+  final padding = tooltipStyle.padding;
+  final contentWidth = math.max(titleSize.width, subtitleSize.width);
+  final tooltipSize = Size(
+    contentWidth + padding.horizontal,
+    titleSize.height + spacing + subtitleSize.height + padding.vertical,
+  );
+  final radius = Radius.circular(tooltipStyle.radius);
+  final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
+  final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
+  final xBias = isSelectedIndexFirst
+      ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
+      : isSelectedIndexLast
+          ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
+          : 0;
+  final titleOffset = Offset(
+    point.dx - titleSize.width / 2 + xBias,
+    point.dy -
+        bottomMargin -
+        padding.bottom -
+        subtitleSize.height -
+        spacing -
+        titleSize.height,
+  );
+  final subtitleOffset = Offset(
+    point.dx - subtitleSize.width / 2 + xBias,
+    point.dy - bottomMargin - padding.bottom - subtitleSize.height,
+  );
+  final rrect = RRect.fromRectAndRadius(
+    Rect.fromCenter(
+      center: Offset(
+        point.dx + xBias,
+        point.dy - bottomMargin - tooltipSize.height / 2,
+      ),
+      width: tooltipSize.width,
+      height: tooltipSize.height,
+    ),
+    radius,
+  );
+
+  final path = Path();
+  path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
+  path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
+  path.relativeLineTo(triangleWidth, 0);
+  path.relativeLineTo(-triangleWidth / 2, triangleHeight);
+  path.close();
+  path.addRRect(rrect);
+
+  canvas.drawShadow(
+    path,
+    tooltipStyle.shadowColor,
+    tooltipStyle.shadowElevation,
+    false,
+  );
+  canvas.drawPath(path, tooltipStyle.tooltipPaint);
+
+  titlePainter.paint(canvas, titleOffset);
+  subtitlePainter.paint(canvas, subtitleOffset);
 }

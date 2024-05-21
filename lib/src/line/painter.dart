@@ -160,7 +160,7 @@ class LineChartPainter extends CustomPainter {
   bool get _showDetails => selectedXPosition != null && settings.showTooltip;
 
   /// Line painter.
-  void paintChartLine(Canvas canvas, Size size) {
+  void paintLine(Canvas canvas, Size size) {
     if (!data.canDraw) {
       return;
     }
@@ -246,7 +246,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Limit line painter.
-  void paintChartLimitLine(Canvas canvas, Size size) {
+  void paintLimitLine(Canvas canvas, Size size) {
     if (data.limit == null) {
       return;
     }
@@ -269,7 +269,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Limit label painter.
-  void paintChartLimitLabel(Canvas canvas, Size size) {
+  void paintLimitLabel(Canvas canvas, Size size) {
     if (data.limit == null) {
       return;
     }
@@ -378,98 +378,27 @@ class LineChartPainter extends CustomPainter {
     );
   }
 
-  /// Tooltip painter.
-  void paintTooltip(Canvas canvas, Size size) {
-    if (!data.canDraw || !_showDetails) {
-      return;
-    }
-
-    final selectedIndex = _getSelectedIndex(size)!;
-    final entry = _typedData.entries.elementAt(selectedIndex);
-    final titlePainter = MDTextPainter(TextSpan(
-      text: data.titleBuilder(entry.key, entry.value),
-      style: style.tooltipStyle.titleStyle,
-    ));
-    final subtitlePainter = MDTextPainter(TextSpan(
-      text: data.subtitleBuilder(entry.key, entry.value),
-      style: style.tooltipStyle.subtitleStyle,
-    ));
-    final point = _getPoint(size, selectedIndex);
-    final outerRadius = style.pointStyle.outerSize / 2;
-    final triangleWidth = style.tooltipStyle.triangleWidth;
-    final triangleHeight = style.tooltipStyle.triangleHeight;
-    final bottomMargin =
-        style.tooltipStyle.bottomMargin + outerRadius + triangleHeight;
-    final titleSize = titlePainter.size;
-    final subtitleSize = subtitlePainter.size;
-    final spacing = style.tooltipStyle.spacing;
-    final padding = style.tooltipStyle.padding;
-    final contentWidth = math.max(titleSize.width, subtitleSize.width);
-    final tooltipSize = Size(
-      contentWidth + padding.horizontal,
-      titleSize.height + spacing + subtitleSize.height + padding.vertical,
-    );
-    final radius = Radius.circular(style.tooltipStyle.radius);
-    final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
-    final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
-    final xBias = isSelectedIndexFirst
-        ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
-        : isSelectedIndexLast
-            ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
-            : 0;
-    final titleOffset = Offset(
-      point.dx - titleSize.width / 2 + xBias,
-      point.dy -
-          bottomMargin -
-          padding.bottom -
-          subtitleSize.height -
-          spacing -
-          titleSize.height,
-    );
-    final subtitleOffset = Offset(
-      point.dx - subtitleSize.width / 2 + xBias,
-      point.dy - bottomMargin - padding.bottom - subtitleSize.height,
-    );
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(
-          point.dx + xBias,
-          point.dy - bottomMargin - tooltipSize.height / 2,
-        ),
-        width: tooltipSize.width,
-        height: tooltipSize.height,
-      ),
-      radius,
-    );
-
-    final path = Path();
-    path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
-    path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
-    path.relativeLineTo(triangleWidth, 0);
-    path.relativeLineTo(-triangleWidth / 2, triangleHeight);
-    path.close();
-    path.addRRect(rrect);
-
-    canvas.drawShadow(
-      path,
-      style.tooltipStyle.shadowColor,
-      style.tooltipStyle.shadowElevation,
-      false,
-    );
-    canvas.drawPath(path, style.tooltipStyle.tooltipPaint);
-
-    titlePainter.paint(canvas, titleOffset);
-    subtitlePainter.paint(canvas, subtitleOffset);
-  }
-
   @override
   void paint(Canvas canvas, Size size) {
-    paintChartLine(canvas, size);
-    paintChartLimitLine(canvas, size);
-    paintChartLimitLabel(canvas, size);
+    paintLine(canvas, size);
+    paintLimitLine(canvas, size);
+    paintLimitLabel(canvas, size);
     paintDropLine(canvas, size);
     paintPoint(canvas, size);
-    paintTooltip(canvas, size);
+
+    if (_showDetails) {
+      final selectedIndex = _getSelectedIndex(size)!;
+      final entry = _typedData.entries.elementAt(selectedIndex);
+      final point = _getPoint(size, selectedIndex);
+      paintTooltip(
+        canvas,
+        size,
+        data,
+        style.tooltipStyle,
+        entry,
+        point,
+      );
+    }
   }
 
   @override

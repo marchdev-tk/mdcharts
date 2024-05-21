@@ -20,6 +20,7 @@ class GridAxisSettings {
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
+    this.showTooltip = true,
   });
 
   /// Constructs an instance of [GridAxisSettings] without grids.
@@ -33,6 +34,7 @@ class GridAxisSettings {
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
+    this.showTooltip = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
@@ -122,6 +124,11 @@ class GridAxisSettings {
   /// Defaults to `0`.
   final double yAxisLabelSpacing;
 
+  /// Whether to show tooltip over the selected point or not.
+  ///
+  /// Defaults to `true`.
+  final bool showTooltip;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GridAxisSettings copyWith({
@@ -138,6 +145,7 @@ class GridAxisSettings {
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
+    bool? showTooltip,
   }) =>
       GridAxisSettings(
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
@@ -156,6 +164,7 @@ class GridAxisSettings {
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showTooltip: showTooltip ?? this.showTooltip,
       );
 
   @override
@@ -171,7 +180,8 @@ class GridAxisSettings {
       showAxisYLabels.hashCode ^
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
-      yAxisLabelSpacing.hashCode;
+      yAxisLabelSpacing.hashCode ^
+      showTooltip.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -188,5 +198,6 @@ class GridAxisSettings {
       showAxisYLabels == other.showAxisYLabels &&
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
-      yAxisLabelSpacing == other.yAxisLabelSpacing;
+      yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showTooltip == other.showTooltip;
 }

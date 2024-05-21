@@ -37,26 +37,16 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     required super.data,
     super.predefinedMaxValue,
     super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
-    this.titleBuilder = defaultTitleBuilder,
-    this.subtitleBuilder = defaultSubtitleBuilder,
     super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
+    super.titleBuilder = GridAxisData.defaultTitleBuilder,
+    super.subtitleBuilder = GridAxisData.defaultSubtitleBuilder,
   });
 
   static String defaultTitleBuilder(DateTime key, double value) =>
       '${key.year}-${key.month}-${key.day}';
   static String defaultSubtitleBuilder(DateTime key, double value) =>
       value.toString();
-
-  /// Text builder for the tooltip title.
-  ///
-  /// If not set explicitly, [defaultTitleBuilder] will be used.
-  final TooltipBuilder<double> titleBuilder;
-
-  /// Text builder for the tooltip subtitle.
-  ///
-  /// If not set explicitly, [defaultSubtitleBuilder] will be used.
-  final TooltipBuilder<double> subtitleBuilder;
 
   @override
   double maxValuePredicate(CandlestickData value) => value.high;

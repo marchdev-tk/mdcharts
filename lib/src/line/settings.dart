@@ -31,12 +31,12 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showTooltip = true,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showPoint = true,
-    this.showTooltip = true,
     this.selectionEnabled = true,
   });
 
@@ -51,12 +51,12 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showTooltip = true,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showPoint = true,
-    this.showTooltip = true,
     this.selectionEnabled = true,
   });
 
@@ -86,11 +86,6 @@ class LineChartSettings extends GridAxisSettings {
   /// Defaults to `true`.
   final bool showPoint;
 
-  /// Whether to show tooltip over the selected point or not.
-  ///
-  /// Defaults to `true`.
-  final bool showTooltip;
-
   /// Whether interactive selection is enabled or not.
   ///
   /// Defaults to `true`.
@@ -113,12 +108,12 @@ class LineChartSettings extends GridAxisSettings {
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
+    bool? showTooltip,
     bool? lineFilling,
     bool? lineShadow,
     bool? altitudeLine,
     LimitLabelSnapPosition? limitLabelSnapPosition,
     bool? showPoint,
-    bool? showTooltip,
     bool? selectionEnabled,
   }) =>
       LineChartSettings(
@@ -138,13 +133,13 @@ class LineChartSettings extends GridAxisSettings {
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showTooltip: showTooltip ?? this.showTooltip,
         lineFilling: lineFilling ?? this.lineFilling,
         lineShadow: lineShadow ?? this.lineShadow,
         altitudeLine: altitudeLine ?? this.altitudeLine,
         limitLabelSnapPosition:
             limitLabelSnapPosition ?? this.limitLabelSnapPosition,
         showPoint: showPoint ?? this.showPoint,
-        showTooltip: showTooltip ?? this.showTooltip,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
       );
 

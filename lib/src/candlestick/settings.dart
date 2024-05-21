@@ -20,6 +20,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showTooltip = true,
     this.selectionEnabled = true,
   });
 
@@ -34,6 +35,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showTooltip = true,
     this.selectionEnabled = true,
   });
 
@@ -59,6 +61,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
+    bool? showTooltip,
     bool? selectionEnabled,
   }) =>
       CandlestickChartSettings(
@@ -78,6 +81,7 @@ class CandlestickChartSettings extends GridAxisSettings {
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showTooltip: showTooltip ?? this.showTooltip,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
       );
 

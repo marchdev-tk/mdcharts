@@ -77,12 +77,12 @@ class LineChartData extends GridAxisData<double> {
     required super.data,
     super.predefinedMaxValue,
     super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
-    this.limit,
-    this.limitText,
-    this.titleBuilder = defaultTitleBuilder,
-    this.subtitleBuilder = defaultSubtitleBuilder,
     super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
+    super.titleBuilder = GridAxisData.defaultTitleBuilder,
+    super.subtitleBuilder = GridAxisData.defaultSubtitleBuilder,
+    this.limit,
+    this.limitText,
     this.gridType = LineChartGridType.monthly,
     this.dataType = LineChartDataType.bidirectional,
   });
@@ -101,16 +101,6 @@ class LineChartData extends GridAxisData<double> {
   ///
   /// If this value is omitted - [limit] will be used as a fallback.
   final String? limitText;
-
-  /// Text builder for the tooltip title.
-  ///
-  /// If not set explicitly, [defaultTitleBuilder] will be used.
-  final TooltipBuilder<double> titleBuilder;
-
-  /// Text builder for the tooltip subtitle.
-  ///
-  /// If not set explicitly, [defaultSubtitleBuilder] will be used.
-  final TooltipBuilder<double> subtitleBuilder;
 
   /// Grid type of the line chart.
   ///
