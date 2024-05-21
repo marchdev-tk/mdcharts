@@ -23,65 +23,65 @@ final _data = BehaviorSubject<CandlestickChartData>.seeded(CandlestickChartData(
     DateTime(2022, 7):
         const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
     DateTime(2022, 7, 02):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 0, high: 50, bid: 50, ask: 20),
     DateTime(2022, 7, 03):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 300, high: 450, bid: 350, ask: 320),
     DateTime(2022, 7, 04):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 200, high: 250, bid: 200, ask: 250),
     DateTime(2022, 7, 05):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 220, high: 250, bid: 230, ask: 230),
     DateTime(2022, 7, 06):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 250, high: 350, bid: 250, ask: 250),
     DateTime(2022, 7, 07):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 330, high: 450, bid: 350, ask: 400),
     DateTime(2022, 7, 08):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 400, high: 650, bid: 550, ask: 500),
     DateTime(2022, 7, 09):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 500, high: 750, bid: 520, ask: 700),
     DateTime(2022, 7, 10):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 700, high: 950, bid: 850, ask: 800),
     DateTime(2022, 7, 11):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 600, high: 750, bid: 630, ask: 700),
     DateTime(2022, 7, 12):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 550, high: 900, bid: 650, ask: 800),
     DateTime(2022, 7, 13):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 430, high: 650, bid: 450, ask: 430),
     DateTime(2022, 7, 14):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 370, high: 400, bid: 400, ask: 380),
     DateTime(2022, 7, 15):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 310, high: 750, bid: 710, ask: 500),
     DateTime(2022, 7, 16):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 250, high: 600, bid: 450, ask: 460),
     DateTime(2022, 7, 17):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 200, high: 500, bid: 400, ask: 200),
     DateTime(2022, 7, 18):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 500, high: 850, bid: 500, ask: 850),
     DateTime(2022, 7, 19):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 800, high: 1250, bid: 1250, ask: 800),
     DateTime(2022, 7, 20):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 900, high: 1250, bid: 1050, ask: 1200),
     DateTime(2022, 7, 21):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 1000, high: 1650, bid: 1550, ask: 1200),
     DateTime(2022, 7, 22):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 1300, high: 1950, bid: 1800, ask: 1400),
     DateTime(2022, 7, 23):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 1700, high: 2200, bid: 2050, ask: 1800),
     DateTime(2022, 7, 24):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 1900, high: 3020, bid: 2850, ask: 2000),
     DateTime(2022, 7, 25):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 2300, high: 4050, bid: 3800, ask: 2500),
     DateTime(2022, 7, 26):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 2700, high: 3500, bid: 3400, ask: 3000),
     DateTime(2022, 7, 27):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 3100, high: 4100, bid: 4100, ask: 3200),
     DateTime(2022, 7, 28):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 3800, high: 6050, bid: 5800, ask: 4000),
     DateTime(2022, 7, 29):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 4500, high: 8000, bid: 7500, ask: 5200),
     DateTime(2022, 7, 30):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 3000, high: 7000, bid: 4000, ask: 6200),
     DateTime(2022, 7, 31):
-        const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+        const CandlestickData(low: 1500, high: 2250, bid: 1700, ask: 2000),
   },
 ));
 
@@ -342,6 +342,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                 _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
               },
               title: const Text('yAxisLabelSpacing'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showTooltip,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showTooltip: value == true)),
+              title: const Text('showTooltip'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
