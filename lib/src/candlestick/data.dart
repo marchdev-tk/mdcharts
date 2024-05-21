@@ -46,11 +46,6 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     super.subtitleBuilder = GridAxisData.defaultSubtitleBuilder,
   });
 
-  static String defaultTitleBuilder(DateTime key, double value) =>
-      '${key.year}-${key.month}-${key.day}';
-  static String defaultSubtitleBuilder(DateTime key, double value) =>
-      value.toString();
-
   @override
   double maxValuePredicate(CandlestickData value) => value.high;
   @override

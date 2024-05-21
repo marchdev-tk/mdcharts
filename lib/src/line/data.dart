@@ -87,11 +87,6 @@ class LineChartData extends GridAxisData<double> {
     this.dataType = LineChartDataType.bidirectional,
   });
 
-  static String defaultTitleBuilder(DateTime key, double value) =>
-      '${key.year}-${key.month}-${key.day}';
-  static String defaultSubtitleBuilder(DateTime key, double value) =>
-      value.toString();
-
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.
   final double? limit;
