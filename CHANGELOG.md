@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.0.2 - 21.05.2024
+
+* Changes of the `CandlestickChart`:
+  * Fixed tooltip title/subtitle builders
+* Changes of the `LineChart`:
+  * Fixed tooltip title/subtitle builders
+
 ## 6.0.1 - 21.05.2024
 
 * Documentation cleanup.
