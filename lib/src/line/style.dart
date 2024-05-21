@@ -16,7 +16,7 @@ class LineChartStyle extends GridAxisStyle {
     this.lineStyle = const LineChartLineStyle(),
     this.limitStyle = const LineChartLimitStyle(),
     this.pointStyle = const LineChartPointStyle(),
-    this.tooltipStyle = const TooltipStyle(),
+    super.tooltipStyle = const TooltipStyle(),
   });
 
   /// Style of the line.
@@ -32,9 +32,6 @@ class LineChartStyle extends GridAxisStyle {
   ///
   /// It contains customizaiton for the drop line and point itself.
   final LineChartPointStyle pointStyle;
-
-  /// Style of the tooltip.
-  final TooltipStyle tooltipStyle;
 
   /// Creates a copy of the current object with new values specified in
   /// arguments.

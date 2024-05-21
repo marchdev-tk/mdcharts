@@ -89,19 +89,6 @@ class LineChartPainter extends CustomPainter {
       data.dataType == LineChartDataType.unidirectional &&
       data.dataDirection == LineChartDataDirection.descending;
 
-  int? _getSelectedIndex(Size size) {
-    if (selectedXPosition == null) {
-      return null;
-    }
-
-    final widthFraction = size.width / data.xAxisDivisions;
-
-    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, _typedData.length - 1);
-
-    return index;
-  }
-
   Map<DateTime, double> _adjustMap(
     Map<DateTime, double> sourceMap,
     Map<DateTime, double>? mapToAdjust,
@@ -131,6 +118,19 @@ class LineChartPainter extends CustomPainter {
   double _getZeroHeight(Size size) => data.hasNegativeMinValue
       ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
       : size.height;
+
+  int? _getSelectedIndex(Size size) {
+    if (selectedXPosition == null) {
+      return null;
+    }
+
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
+    index = math.min(index, _typedData.length - 1);
+
+    return index;
+  }
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
     if (!data.canDraw) {
@@ -403,6 +403,7 @@ class LineChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant LineChartPainter oldDelegate) =>
+      cache != oldDelegate.cache ||
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||
@@ -627,6 +628,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant LineChartXAxisLabelPainter oldDelegate) =>
+      cache != oldDelegate.cache ||
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||

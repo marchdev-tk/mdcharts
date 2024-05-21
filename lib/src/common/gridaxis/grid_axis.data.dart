@@ -21,9 +21,9 @@ abstract class GridAxisData<T> extends ChartData<T> {
   static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
       TextSpan(text: '${key.month}-${key.day}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
-  static String defaultTitleBuilder(DateTime key, double value) =>
+  static String defaultTitleBuilder(DateTime key, dynamic value) =>
       '${key.year}-${key.month}-${key.day}';
-  static String defaultSubtitleBuilder(DateTime key, double value) =>
+  static String defaultSubtitleBuilder(DateTime key, dynamic value) =>
       value.toString();
 
   /// Text builder for the X axis label.
@@ -39,10 +39,10 @@ abstract class GridAxisData<T> extends ChartData<T> {
   /// Text builder for the tooltip title.
   ///
   /// If not set explicitly, [defaultTitleBuilder] will be used.
-  final TooltipBuilder<double> titleBuilder;
+  final TooltipBuilder<T> titleBuilder;
 
   /// Text builder for the tooltip subtitle.
   ///
   /// If not set explicitly, [defaultSubtitleBuilder] will be used.
-  final TooltipBuilder<double> subtitleBuilder;
+  final TooltipBuilder<T> subtitleBuilder;
 }

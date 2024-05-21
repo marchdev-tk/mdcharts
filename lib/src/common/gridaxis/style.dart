@@ -11,6 +11,7 @@ class GridAxisStyle {
   const GridAxisStyle({
     this.gridStyle = const GridStyle(),
     this.axisStyle = const AxisStyle(),
+    this.tooltipStyle = const TooltipStyle(),
   });
 
   /// Style of the grid lines.
@@ -19,25 +20,32 @@ class GridAxisStyle {
   /// Style of the axis lines.
   final AxisStyle axisStyle;
 
+  /// Style of the tooltip.
+  final TooltipStyle tooltipStyle;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GridAxisStyle copyWith({
     GridStyle? gridStyle,
     AxisStyle? axisStyle,
+    TooltipStyle? tooltipStyle,
   }) =>
       GridAxisStyle(
         gridStyle: gridStyle ?? this.gridStyle,
         axisStyle: axisStyle ?? this.axisStyle,
+        tooltipStyle: tooltipStyle ?? this.tooltipStyle,
       );
 
   @override
-  int get hashCode => gridStyle.hashCode ^ axisStyle.hashCode;
+  int get hashCode =>
+      gridStyle.hashCode ^ axisStyle.hashCode ^ tooltipStyle.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is GridAxisStyle &&
       gridStyle == other.gridStyle &&
-      axisStyle == other.axisStyle;
+      axisStyle == other.axisStyle &&
+      tooltipStyle == other.tooltipStyle;
 }
 
 /// Contains various customization options for the grid lines of the chart.

@@ -28,6 +28,9 @@ class CandlestickData {
 
   bool get isDescending => ask > bid;
   bool get isAscending => ask <= bid;
+
+  @override
+  String toString() => '{high:$high,low:$low,bid:$bid,ask:$ask}';
 }
 
 /// Data for the [CandlestickChart].

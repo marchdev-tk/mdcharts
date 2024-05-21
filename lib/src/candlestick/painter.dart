@@ -73,19 +73,6 @@ class CandlestickChartPainter extends CustomPainter {
   double get roundedMaxValue =>
       GridAxisUtils().getRoundedMaxValue(cache, data, settings);
 
-  // int? _getSelectedIndex(Size size) {
-  //   if (selectedXPosition == null) {
-  //     return null;
-  //   }
-
-  //   final widthFraction = size.width / data.lastDivisionIndex;
-
-  //   int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-  //   index = math.min(index, _typedData.length - 1);
-
-  //   return index;
-  // }
-
   Map<DateTime, CandlestickData> _adjustMap(
     Map<DateTime, CandlestickData> sourceMap,
     Map<DateTime, CandlestickData>? mapToAdjust,
@@ -111,12 +98,37 @@ class CandlestickChartPainter extends CustomPainter {
     return adjustedMap;
   }
 
-  /// Height of the X axis.
-  // double _getZeroHeight(Size size) => data.hasNegativeMinValue
-  //     ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
-  //     : size.height;
+  int? _getSelectedIndex(Size size) {
+    if (selectedXPosition == null) {
+      return null;
+    }
 
-  // bool get _showDetails => selectedXPosition != null && settings.showTooltip;
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
+    index = math.min(index, data.xAxisDivisions);
+
+    return index;
+  }
+
+  Offset _getPoint(Size size, int selectedIndex) {
+    if (!data.canDraw) {
+      return Offset(0, size.height);
+    }
+
+    final entry = data.data.entries.elementAt(selectedIndex);
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    final x = widthFraction * selectedIndex;
+    final y =
+        normalizeInverted(entry.value.high + roundedMinValue, roundedMaxValue) *
+            size.height;
+    final point = Offset(x, y);
+
+    return point;
+  }
+
+  bool get _showDetails => selectedXPosition != null && settings.showTooltip;
 
   /// Candlestick painter.
   void paintCandlesticks(Canvas canvas, Size size) {
@@ -137,11 +149,9 @@ class CandlestickChartPainter extends CustomPainter {
       return animatedY;
     }
 
-    // final selectedIndex = _getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = data.data;
     final oldMap = _adjustMap(data.data, oldData.data);
-    // final zeroHeight = _getZeroHeight(size);
 
     double x = 0;
     double yLow = 0;
@@ -176,10 +186,25 @@ class CandlestickChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     paintCandlesticks(canvas, size);
+
+    if (_showDetails) {
+      final selectedIndex = _getSelectedIndex(size)!;
+      final entry = data.data.entries.elementAt(selectedIndex);
+      final point = _getPoint(size, selectedIndex);
+      paintTooltip(
+        canvas,
+        size,
+        data,
+        style.tooltipStyle,
+        entry,
+        point,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant CandlestickChartPainter oldDelegate) =>
+      cache != oldDelegate.cache ||
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||

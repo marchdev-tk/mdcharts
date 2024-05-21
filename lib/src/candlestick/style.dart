@@ -12,6 +12,7 @@ class CandlestickChartStyle extends GridAxisStyle {
     super.gridStyle = const GridStyle(),
     super.axisStyle = const AxisStyle(),
     this.candleStickStyle = const CandlestickChartCandleStickStyle(),
+    super.tooltipStyle = const TooltipStyle(),
   });
 
   /// Style of the candle and stick.
@@ -24,23 +25,29 @@ class CandlestickChartStyle extends GridAxisStyle {
     GridStyle? gridStyle,
     AxisStyle? axisStyle,
     CandlestickChartCandleStickStyle? candleStickStyle,
+    TooltipStyle? tooltipStyle,
   }) =>
       CandlestickChartStyle(
         gridStyle: gridStyle ?? this.gridStyle,
         axisStyle: axisStyle ?? this.axisStyle,
         candleStickStyle: candleStickStyle ?? this.candleStickStyle,
+        tooltipStyle: tooltipStyle ?? this.tooltipStyle,
       );
 
   @override
   int get hashCode =>
-      gridStyle.hashCode ^ axisStyle.hashCode ^ candleStickStyle.hashCode;
+      gridStyle.hashCode ^
+      axisStyle.hashCode ^
+      candleStickStyle.hashCode ^
+      tooltipStyle.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is CandlestickChartStyle &&
       gridStyle == other.gridStyle &&
       axisStyle == other.axisStyle &&
-      candleStickStyle == other.candleStickStyle;
+      candleStickStyle == other.candleStickStyle &&
+      tooltipStyle == other.tooltipStyle;
 }
 
 /// Contains various customization options for the line of the chart itself.

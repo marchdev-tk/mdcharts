@@ -154,6 +154,7 @@ class GridAxisPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant GridAxisPainter oldDelegate) =>
+      cache != oldDelegate.cache ||
       data != oldDelegate.data ||
       style != oldDelegate.style ||
       settings != oldDelegate.settings;
@@ -165,7 +166,7 @@ void paintTooltip<T>(
   Size size,
   GridAxisData data,
   TooltipStyle tooltipStyle,
-  MapEntry<DateTime, double> entry,
+  MapEntry<DateTime, T> entry,
   Offset point,
 ) {
   if (!data.canDraw) {
