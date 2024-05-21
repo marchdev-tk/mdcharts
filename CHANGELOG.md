@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.0.0 - 21.05.2024
+
+* Added `CandlestickChart`.
+* Changes of the `LineChart`:
+  * Excluded from `LineChartPointStyle` into separate styles `DropLineStyle` and `TooltipStyle`. 
+  * Extended example.
+  * Huge refactoring with BREAKING CHANGES.
+
 ## 5.0.7 - 13.02.2024
 
 * Changes of the `LineChart`:
