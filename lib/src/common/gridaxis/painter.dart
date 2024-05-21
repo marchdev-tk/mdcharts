@@ -213,7 +213,7 @@ void paintDropLine(
 void paintTooltip<T>(
   Canvas canvas,
   Size size,
-  GridAxisData data,
+  GridAxisData<T> data,
   TooltipStyle tooltipStyle,
   MapEntry<DateTime, T> entry,
   Offset point,

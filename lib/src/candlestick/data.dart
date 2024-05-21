@@ -42,8 +42,8 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
     super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
-    super.titleBuilder = GridAxisData.defaultTitleBuilder,
-    super.subtitleBuilder = GridAxisData.defaultSubtitleBuilder,
+    super.titleBuilder,
+    super.subtitleBuilder,
   });
 
   @override

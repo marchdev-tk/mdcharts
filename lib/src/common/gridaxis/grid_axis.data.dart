@@ -14,16 +14,17 @@ abstract class GridAxisData<T> extends ChartData<T> {
     super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
-    this.titleBuilder = defaultTitleBuilder,
-    this.subtitleBuilder = defaultSubtitleBuilder,
-  });
+    TooltipBuilder<T>? titleBuilder,
+    TooltipBuilder<T>? subtitleBuilder,
+  })  : titleBuilder = titleBuilder ?? defaultTitleBuilder<T>,
+        subtitleBuilder = subtitleBuilder ?? defaultSubtitleBuilder<T>;
 
   static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
       TextSpan(text: '${key.month}-${key.day}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
-  static String defaultTitleBuilder(DateTime key, dynamic value) =>
+  static String defaultTitleBuilder<T>(DateTime key, T value) =>
       '${key.year}-${key.month}-${key.day}';
-  static String defaultSubtitleBuilder(DateTime key, dynamic value) =>
+  static String defaultSubtitleBuilder<T>(DateTime key, T value) =>
       value.toString();
 
   /// Text builder for the X axis label.
