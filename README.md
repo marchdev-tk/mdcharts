@@ -11,23 +11,23 @@ march.dev charts library. Provides highly customizable and configurable charts.
 
 ### LineChart
 
-For details please refer to the [LineChart documentation file](docs/line.chart.md).
+For details please refer to the [LineChart documentation file](doc/line.chart.md).
 
 ### BarChart
 
-For details please refer to the [BarChart documentation file](docs/bar.chart.md).
+For details please refer to the [BarChart documentation file](doc/bar.chart.md).
 
 ### GaugeChart
 
-For details please refer to the [GaugeChart documentation file](docs/gauge.chart.md).
+For details please refer to the [GaugeChart documentation file](doc/gauge.chart.md).
 
 ### DonutChart
 
-For details please refer to the [DonutChart documentation file](docs/donut.chart.md).
+For details please refer to the [DonutChart documentation file](doc/donut.chart.md).
 
 ### CandlestickChart
 
-For details please refer to the [CandlestickChart documentation file](docs/candlestick.chart.md).
+For details please refer to the [CandlestickChart documentation file](doc/candlestick.chart.md).
 
 ## Examples
 
