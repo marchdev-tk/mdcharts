@@ -33,7 +33,7 @@ class CandlestickChart extends StatefulWidget {
 
   /// Padding around the chart.
   ///
-  /// If not set, will be used [LineChartPointStyle.defaultChartPadding].
+  /// If not set, will be used [TooltipStyle.defaultChartPadding].
   final EdgeInsets? padding;
 
   @override
@@ -211,14 +211,7 @@ class _CandlestickChartState extends State<CandlestickChart>
             widget.style.candleStickStyle.candleStroke);
 
     return Padding(
-      padding: widget.padding ??
-          EdgeInsets.fromLTRB(
-            widget.style.candleStickStyle.candleStroke / 2,
-            0,
-            widget.style.candleStickStyle.candleStroke / 2,
-            0,
-          ),
-      //  ?? widget.style.pointStyle.defaultChartPadding,
+      padding: widget.padding ?? widget.style.tooltipStyle.defaultChartPadding,
       child: _buildChart(maxContentWidth),
     );
   }

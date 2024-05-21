@@ -34,7 +34,7 @@ class LineChart extends StatefulWidget {
 
   /// Padding around the chart.
   ///
-  /// If not set, will be used [LineChartPointStyle.defaultChartPadding].
+  /// If not set, will be used [TooltipStyle.defaultChartPadding].
   final EdgeInsets? padding;
 
   @override
