@@ -187,6 +187,27 @@ DonutChart(
 
 For more info about how to use `DonutChart` please refer to the example app.
 
+## `CandlestickChart` Usage
+
+```dart
+CandlestickChart(
+  settings: const CandlestickChartSettings(),
+  style: const CandlestickChartStyle(),
+  data: CandlestickChartData(
+    data: {
+      DateTime(2022, 7):     const CandlestickData(low: 100, high: 250, bid: 150, ask: 200),
+      DateTime(2022, 7, 02): const CandlestickData(low: 0  , high: 50 , bid: 50 , ask: 20 ),
+      DateTime(2022, 7, 03): const CandlestickData(low: 300, high: 450, bid: 350, ask: 320),
+      DateTime(2022, 7, 04): const CandlestickData(low: 200, high: 250, bid: 200, ask: 250),
+      DateTime(2022, 7, 05): const CandlestickData(low: 220, high: 250, bid: 230, ask: 230),
+      DateTime(2022, 7, 06): const CandlestickData(low: 250, high: 350, bid: 250, ask: 250),
+    },
+  ),
+)
+```
+
+For more info about how to use `CandlestickChart` please refer to the example app.
+
 ## Getting Started
 
 For help getting started with Flutter, view
