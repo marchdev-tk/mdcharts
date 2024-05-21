@@ -79,6 +79,14 @@ class LineChartExample extends StatelessWidget {
         _GridStyleSetupGroup(),
         SetupDivider(),
         _AxisStyleSetupGroup(),
+        // SetupDivider(),
+        // lineStyle
+        // SetupDivider(),
+        // limitStyle
+        SetupDivider(),
+        _DropLineStyleSetupGroup(),
+        // SetupDivider(),
+        // pointStyle
         SetupDivider(),
         _TooltipStyleSetupGroup(),
       ],
@@ -269,10 +277,12 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                       stops: const [0.0604, 0.3353, 0.6102, 1],
                     ),
                   ),
+                  dropLineStyle: DropLineStyle(
+                    color: materialColor.withOpacity(0.5),
+                  ),
                   pointStyle: LineChartPointStyle(
                     innerColor: materialColor,
                     outerColor: chartColor,
-                    dropLineColor: materialColor.withOpacity(0.5),
                   ),
                   tooltipStyle: const TooltipStyle(
                     color: materialColor,
@@ -454,27 +464,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
-              value: data.lineFilling,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(lineFilling: value == true)),
-              title: const Text('lineFilling'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.lineShadow,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(lineShadow: value == true)),
-              title: const Text('lineShadow'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
-              value: data.altitudeLine,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(altitudeLine: value == true)),
-              title: const Text('altitudeLine'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisXLabels,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showAxisXLabels: value == true)),
@@ -504,10 +493,10 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showPoint,
+              value: data.showDropLine,
               onChanged: (value) =>
-                  _settings.add(data.copyWith(showPoint: value == true)),
-              title: const Text('showPoint'),
+                  _settings.add(data.copyWith(showDropLine: value == true)),
+              title: const Text('showDropLine'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
@@ -515,6 +504,34 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               onChanged: (value) =>
                   _settings.add(data.copyWith(showTooltip: value == true)),
               title: const Text('showTooltip'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.lineFilling,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(lineFilling: value == true)),
+              title: const Text('lineFilling'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.lineShadow,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(lineShadow: value == true)),
+              title: const Text('lineShadow'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.altitudeLine,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(altitudeLine: value == true)),
+              title: const Text('altitudeLine'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showPoint,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showPoint: value == true)),
+              title: const Text('showPoint'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
@@ -774,6 +791,79 @@ class _AxisStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('xAxisSelectedLabelBorderRadius'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DropLineStyleSetupGroup extends StatelessWidget {
+  const _DropLineStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Drop Line Style',
+          children: [
+            ColorListTile(
+              value: data.dropLineStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.dashSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      dashSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('dashSize'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.gapSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      gapSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('gapSize'),
             ),
           ],
         );

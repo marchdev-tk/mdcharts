@@ -15,6 +15,7 @@ class LineChartStyle extends GridAxisStyle {
     super.axisStyle = const AxisStyle(),
     this.lineStyle = const LineChartLineStyle(),
     this.limitStyle = const LineChartLimitStyle(),
+    super.dropLineStyle = const DropLineStyle(),
     this.pointStyle = const LineChartPointStyle(),
     super.tooltipStyle = const TooltipStyle(),
   });
@@ -41,6 +42,7 @@ class LineChartStyle extends GridAxisStyle {
     AxisStyle? axisStyle,
     LineChartLineStyle? lineStyle,
     LineChartLimitStyle? limitStyle,
+    DropLineStyle? dropLineStyle,
     LineChartPointStyle? pointStyle,
     TooltipStyle? tooltipStyle,
   }) =>
@@ -49,6 +51,7 @@ class LineChartStyle extends GridAxisStyle {
         axisStyle: axisStyle ?? this.axisStyle,
         lineStyle: lineStyle ?? this.lineStyle,
         limitStyle: limitStyle ?? this.limitStyle,
+        dropLineStyle: dropLineStyle ?? this.dropLineStyle,
         pointStyle: pointStyle ?? this.pointStyle,
         tooltipStyle: tooltipStyle ?? this.tooltipStyle,
       );
@@ -60,6 +63,7 @@ class LineChartStyle extends GridAxisStyle {
       lineStyle.hashCode ^
       limitStyle.hashCode ^
       pointStyle.hashCode ^
+      dropLineStyle.hashCode ^
       tooltipStyle.hashCode;
 
   @override
@@ -70,6 +74,7 @@ class LineChartStyle extends GridAxisStyle {
       lineStyle == other.lineStyle &&
       limitStyle == other.limitStyle &&
       pointStyle == other.pointStyle &&
+      dropLineStyle == other.dropLineStyle &&
       tooltipStyle == other.tooltipStyle;
 }
 
@@ -381,10 +386,6 @@ class LineChartPointStyle {
     this.shadowColor = const Color(0x33000000),
     this.shadowOffset = const Offset(0, 2),
     this.shadowBlurRadius = 4,
-    this.dropLineColor = const Color(0xFFFFFFFF),
-    this.dropLineStroke = 1,
-    this.dropLineDashSize = 2,
-    this.dropLineGapSize = 2,
   });
 
   /// Color of the inner circle.
@@ -422,26 +423,6 @@ class LineChartPointStyle {
   /// Defaults to `4`.
   final double shadowBlurRadius;
 
-  /// Color of the drop line.
-  ///
-  /// Defaults to `0xFFFFFFFF`.
-  final Color dropLineColor;
-
-  /// Stroke of the drop line.
-  ///
-  /// Defaults to `1`.
-  final double dropLineStroke;
-
-  /// Dash size of the drop line.
-  ///
-  /// Defaults to `2`.
-  final double dropLineDashSize;
-
-  /// Gap size of the drop line.
-  ///
-  /// Defaults to `2`.
-  final double dropLineGapSize;
-
   /// Gets a [Paint] for the drawing of the inner circle of the point.
   Paint get innerPaint => Paint()
     ..isAntiAlias = true
@@ -468,15 +449,6 @@ class LineChartPointStyle {
       tileMode: TileMode.decal,
     );
 
-  /// Gets a [Paint] for the drop line drawing.
-  Paint get dropLinePaint => Paint()
-    ..isAntiAlias = true
-    ..filterQuality = FilterQuality.medium
-    ..style = PaintingStyle.stroke
-    ..strokeCap = StrokeCap.butt
-    ..strokeWidth = dropLineStroke
-    ..color = dropLineColor;
-
   @override
   int get hashCode =>
       innerColor.hashCode ^
@@ -485,10 +457,7 @@ class LineChartPointStyle {
       outerSize.hashCode ^
       shadowColor.hashCode ^
       shadowOffset.hashCode ^
-      shadowBlurRadius.hashCode ^
-      dropLineColor.hashCode ^
-      dropLineDashSize.hashCode ^
-      dropLineGapSize.hashCode;
+      shadowBlurRadius.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -499,8 +468,5 @@ class LineChartPointStyle {
       outerSize == other.outerSize &&
       shadowColor == other.shadowColor &&
       shadowOffset == other.shadowOffset &&
-      shadowBlurRadius == other.shadowBlurRadius &&
-      dropLineColor == other.dropLineColor &&
-      dropLineDashSize == other.dropLineDashSize &&
-      dropLineGapSize == other.dropLineGapSize;
+      shadowBlurRadius == other.shadowBlurRadius;
 }

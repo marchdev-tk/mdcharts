@@ -150,14 +150,12 @@ class LineChartPainter extends CustomPainter {
             size.height;
     final point = Offset(x, y);
 
-    if (!_showDetails) {
+    if (selectedXPosition == null) {
       cache.saveDefaultPointOffset(data.hashCode, point);
     }
 
     return point;
   }
-
-  bool get _showDetails => selectedXPosition != null && settings.showTooltip;
 
   /// Line painter.
   void paintLine(Canvas canvas, Size size) {
@@ -310,38 +308,24 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Drop line painter.
-  void paintDropLine(Canvas canvas, Size size) {
-    if (!data.canDraw || !_showDetails) {
+  void _paintDropLine(Canvas canvas, Size size) {
+    final showDropLine = selectedXPosition != null && settings.showDropLine;
+
+    if (!data.canDraw || !showDropLine) {
       return;
     }
 
     final zeroHeight = _getZeroHeight(size);
     final point = _getPoint(size);
-    final dashWidth = style.pointStyle.dropLineDashSize;
-    final gapWidth = style.pointStyle.dropLineGapSize;
 
-    final pathX = Path();
-    final pathY = Path();
-
-    pathX.moveTo(0, point.dy);
-    pathY.moveTo(point.dx, zeroHeight);
-
-    final countX = (point.dx / (dashWidth + gapWidth)).round();
-    for (var i = 1; i <= countX; i++) {
-      pathX.relativeLineTo(dashWidth, 0);
-      pathX.relativeMoveTo(gapWidth, 0);
-    }
-
-    final isNegativeValue = point.dy > zeroHeight;
-    final countY =
-        ((zeroHeight - point.dy) / (dashWidth + gapWidth)).round().abs();
-    for (var i = 1; i <= countY; i++) {
-      pathY.relativeLineTo(0, isNegativeValue ? dashWidth : -dashWidth);
-      pathY.relativeMoveTo(0, isNegativeValue ? gapWidth : -gapWidth);
-    }
-
-    canvas.drawPath(pathX, style.pointStyle.dropLinePaint);
-    canvas.drawPath(pathY, style.pointStyle.dropLinePaint);
+    paintDropLine(
+      canvas,
+      size,
+      data,
+      style.dropLineStyle,
+      zeroHeight,
+      point,
+    );
   }
 
   /// Point painter.
@@ -352,8 +336,8 @@ class LineChartPainter extends CustomPainter {
 
     var point = _getPoint(size);
 
-    // if cannot show details (default point position) - animation is needed
-    if (!_showDetails) {
+    // if there is no selected point (default point position) - animation is needed
+    if (selectedXPosition == null) {
       final oldPoint = cache.getDefaultPointOffset(oldDataHashCode) ??
           Offset(point.dx, size.height);
       final pointDiff = point - oldPoint;
@@ -378,27 +362,36 @@ class LineChartPainter extends CustomPainter {
     );
   }
 
+  /// Tooltip painter.
+  void _paintTooltip(Canvas canvas, Size size) {
+    final showTooltip = selectedXPosition != null && settings.showTooltip;
+
+    if (!data.canDraw || !showTooltip) {
+      return;
+    }
+
+    final selectedIndex = _getSelectedIndex(size)!;
+    final entry = _typedData.entries.elementAt(selectedIndex);
+    final point = _getPoint(size, selectedIndex);
+
+    paintTooltip(
+      canvas,
+      size,
+      data,
+      style.tooltipStyle,
+      entry,
+      point,
+    );
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     paintLine(canvas, size);
     paintLimitLine(canvas, size);
     paintLimitLabel(canvas, size);
-    paintDropLine(canvas, size);
+    _paintDropLine(canvas, size);
     paintPoint(canvas, size);
-
-    if (_showDetails) {
-      final selectedIndex = _getSelectedIndex(size)!;
-      final entry = _typedData.entries.elementAt(selectedIndex);
-      final point = _getPoint(size, selectedIndex);
-      paintTooltip(
-        canvas,
-        size,
-        data,
-        style.tooltipStyle,
-        entry,
-        point,
-      );
-    }
+    _paintTooltip(canvas, size);
   }
 
   @override

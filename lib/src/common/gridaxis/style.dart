@@ -11,6 +11,7 @@ class GridAxisStyle {
   const GridAxisStyle({
     this.gridStyle = const GridStyle(),
     this.axisStyle = const AxisStyle(),
+    this.dropLineStyle = const DropLineStyle(),
     this.tooltipStyle = const TooltipStyle(),
   });
 
@@ -19,6 +20,9 @@ class GridAxisStyle {
 
   /// Style of the axis lines.
   final AxisStyle axisStyle;
+
+  /// Style of the drop line.
+  final DropLineStyle dropLineStyle;
 
   /// Style of the tooltip.
   final TooltipStyle tooltipStyle;
@@ -291,6 +295,73 @@ class AxisStyle {
       xAxisSelectedLabelBorderRadius == other.xAxisSelectedLabelBorderRadius;
 }
 
+/// Contains various customization options for the drop line.
+class DropLineStyle {
+  /// Constructs an instance of [DropLineStyle].
+  const DropLineStyle({
+    this.color = const Color(0xFFFFFFFF),
+    this.stroke = 1,
+    this.dashSize = 2,
+    this.gapSize = 2,
+  });
+
+  /// Color of the drop line.
+  ///
+  /// Defaults to `0xFFFFFFFF`.
+  final Color color;
+
+  /// Stroke of the drop line.
+  ///
+  /// Defaults to `1`.
+  final double stroke;
+
+  /// Dash size of the drop line.
+  ///
+  /// Defaults to `2`.
+  final double dashSize;
+
+  /// Gap size of the drop line.
+  ///
+  /// Defaults to `2`.
+  final double gapSize;
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  DropLineStyle copyWith({
+    Color? color,
+    double? stroke,
+    double? dashSize,
+    double? gapSize,
+  }) =>
+      DropLineStyle(
+        color: color ?? this.color,
+        stroke: stroke ?? this.stroke,
+        dashSize: dashSize ?? this.dashSize,
+        gapSize: gapSize ?? this.gapSize,
+      );
+
+  /// Gets a [Paint] for the drop line drawing.
+  Paint get paint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = stroke
+    ..color = color;
+
+  @override
+  int get hashCode =>
+      color.hashCode ^ stroke.hashCode ^ dashSize.hashCode ^ gapSize.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is DropLineStyle &&
+      color == other.color &&
+      stroke == other.stroke &&
+      dashSize == other.dashSize &&
+      gapSize == other.gapSize;
+}
+
 /// Contains various customization options for the tooltip.
 class TooltipStyle {
   /// Constructs an instance of [TooltipStyle].
@@ -421,7 +492,7 @@ class TooltipStyle {
   }
 
   /// Gets a [Paint] for the tooltip drawing.
-  Paint get tooltipPaint => Paint()
+  Paint get paint => Paint()
     ..isAntiAlias = true
     ..filterQuality = FilterQuality.medium
     ..style = PaintingStyle.fill

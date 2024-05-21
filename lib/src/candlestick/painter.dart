@@ -98,6 +98,11 @@ class CandlestickChartPainter extends CustomPainter {
     return adjustedMap;
   }
 
+  /// Height of the X axis.
+  double _getZeroHeight(Size size) => data.hasNegativeMinValue
+      ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
+      : size.height;
+
   int? _getSelectedIndex(Size size) {
     if (selectedXPosition == null) {
       return null;
@@ -128,7 +133,27 @@ class CandlestickChartPainter extends CustomPainter {
     return point;
   }
 
-  bool get _showDetails => selectedXPosition != null && settings.showTooltip;
+  /// Drop line painter.
+  void _paintDropLine(Canvas canvas, Size size) {
+    final showDropLine = selectedXPosition != null && settings.showDropLine;
+
+    if (!data.canDraw || !showDropLine) {
+      return;
+    }
+
+    final selectedIndex = _getSelectedIndex(size)!;
+    final zeroHeight = _getZeroHeight(size);
+    final point = _getPoint(size, selectedIndex);
+
+    paintDropLine(
+      canvas,
+      size,
+      data,
+      style.dropLineStyle,
+      zeroHeight,
+      point,
+    );
+  }
 
   /// Candlestick painter.
   void paintCandlesticks(Canvas canvas, Size size) {
@@ -183,23 +208,33 @@ class CandlestickChartPainter extends CustomPainter {
     }
   }
 
+  /// Tooltip painter.
+  void _paintTooltip(Canvas canvas, Size size) {
+    final showTooltip = selectedXPosition != null && settings.showTooltip;
+
+    if (!data.canDraw || !showTooltip) {
+      return;
+    }
+
+    final selectedIndex = _getSelectedIndex(size)!;
+    final entry = data.data.entries.elementAt(selectedIndex);
+    final point = _getPoint(size, selectedIndex);
+
+    paintTooltip(
+      canvas,
+      size,
+      data,
+      style.tooltipStyle,
+      entry,
+      point,
+    );
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    _paintDropLine(canvas, size);
     paintCandlesticks(canvas, size);
-
-    if (_showDetails) {
-      final selectedIndex = _getSelectedIndex(size)!;
-      final entry = data.data.entries.elementAt(selectedIndex);
-      final point = _getPoint(size, selectedIndex);
-      paintTooltip(
-        canvas,
-        size,
-        data,
-        style.tooltipStyle,
-        entry,
-        point,
-      );
-    }
+    _paintTooltip(canvas, size);
   }
 
   @override

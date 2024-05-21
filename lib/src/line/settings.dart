@@ -31,6 +31,7 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showDropLine = true,
     super.showTooltip = true,
     this.lineFilling = true,
     this.lineShadow = true,
@@ -51,6 +52,7 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXLabelSelection = false,
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisLabelSpacing = 0,
+    super.showDropLine = true,
     super.showTooltip = true,
     this.lineFilling = true,
     this.lineShadow = true,
@@ -108,6 +110,7 @@ class LineChartSettings extends GridAxisSettings {
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
+    bool? showDropLine,
     bool? showTooltip,
     bool? lineFilling,
     bool? lineShadow,
@@ -133,6 +136,7 @@ class LineChartSettings extends GridAxisSettings {
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
         lineFilling: lineFilling ?? this.lineFilling,
         lineShadow: lineShadow ?? this.lineShadow,
@@ -157,12 +161,13 @@ class LineChartSettings extends GridAxisSettings {
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showDropLine.hashCode ^
+      showTooltip.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
       showPoint.hashCode ^
-      showTooltip.hashCode ^
       selectionEnabled.hashCode;
 
   @override
@@ -181,11 +186,12 @@ class LineChartSettings extends GridAxisSettings {
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showDropLine == other.showDropLine &&
+      showTooltip == other.showTooltip &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
       showPoint == other.showPoint &&
-      showTooltip == other.showTooltip &&
       selectionEnabled == other.selectionEnabled;
 }

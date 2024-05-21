@@ -742,7 +742,7 @@ class BarChartBarPainter extends CustomPainter {
       style.tooltipStyle.shadowElevation,
       false,
     );
-    canvas.drawPath(path, style.tooltipStyle.tooltipPaint);
+    canvas.drawPath(path, style.tooltipStyle.paint);
 
     titlePainter.paint(canvas, titleOffset);
     subtitlePainter.paint(canvas, subtitleOffset);

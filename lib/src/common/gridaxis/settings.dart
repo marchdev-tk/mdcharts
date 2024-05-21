@@ -20,6 +20,7 @@ class GridAxisSettings {
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
+    this.showDropLine = true,
     this.showTooltip = true,
   });
 
@@ -34,6 +35,7 @@ class GridAxisSettings {
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisLabelSpacing = 0,
+    this.showDropLine = true,
     this.showTooltip = true,
   })  : xAxisDivisions = 0,
         yAxisDivisions = 0,
@@ -124,7 +126,12 @@ class GridAxisSettings {
   /// Defaults to `0`.
   final double yAxisLabelSpacing;
 
-  /// Whether to show tooltip over the selected point or not.
+  /// Whether to show drop lines beneath the selected item or not.
+  ///
+  /// Defaults to `true`.
+  final bool showDropLine;
+
+  /// Whether to show tooltip over the selected item or not.
   ///
   /// Defaults to `true`.
   final bool showTooltip;
@@ -145,6 +152,7 @@ class GridAxisSettings {
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     double? yAxisLabelSpacing,
+    bool? showDropLine,
     bool? showTooltip,
   }) =>
       GridAxisSettings(
@@ -164,6 +172,7 @@ class GridAxisSettings {
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
       );
 
@@ -181,6 +190,7 @@ class GridAxisSettings {
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showDropLine.hashCode ^
       showTooltip.hashCode;
 
   @override
@@ -199,5 +209,6 @@ class GridAxisSettings {
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showDropLine == other.showDropLine &&
       showTooltip == other.showTooltip;
 }

@@ -160,6 +160,55 @@ class GridAxisPainter extends CustomPainter {
       settings != oldDelegate.settings;
 }
 
+/// Drop line painter.
+void paintDropLine(
+  Canvas canvas,
+  Size size,
+  GridAxisData data,
+  DropLineStyle dropLineStyle,
+  double zeroHeight,
+  Offset point,
+) {
+  if (!data.canDraw) {
+    return;
+  }
+
+  final dashWidth = dropLineStyle.dashSize;
+  final gapWidth = dropLineStyle.gapSize;
+
+  final pathX = Path();
+  final pathY = Path();
+
+  pathX.moveTo(0, point.dy);
+  pathY.moveTo(point.dx, zeroHeight);
+  // ! uncomment if needed
+  // pathY.moveTo(point.dx, size.height);
+
+  final countX = (point.dx / (dashWidth + gapWidth)).round();
+  for (var i = 1; i <= countX; i++) {
+    pathX.relativeLineTo(dashWidth, 0);
+    pathX.relativeMoveTo(gapWidth, 0);
+  }
+
+  final isNegativeValue = point.dy > zeroHeight;
+  final countY =
+      ((zeroHeight - point.dy) / (dashWidth + gapWidth)).round().abs();
+  for (var i = 1; i <= countY; i++) {
+    pathY.relativeLineTo(0, isNegativeValue ? dashWidth : -dashWidth);
+    pathY.relativeMoveTo(0, isNegativeValue ? gapWidth : -gapWidth);
+  }
+  // ! uncomment if needed
+  // final countY =
+  //     ((size.height - point.dy) / (dashWidth + gapWidth)).round().abs();
+  // for (var i = 1; i <= countY; i++) {
+  //   pathY.relativeLineTo(0, -dashWidth);
+  //   pathY.relativeMoveTo(0, -gapWidth);
+  // }
+
+  canvas.drawPath(pathX, dropLineStyle.paint);
+  canvas.drawPath(pathY, dropLineStyle.paint);
+}
+
 /// Tooltip painter.
 void paintTooltip<T>(
   Canvas canvas,
@@ -240,7 +289,7 @@ void paintTooltip<T>(
     tooltipStyle.shadowElevation,
     false,
   );
-  canvas.drawPath(path, tooltipStyle.tooltipPaint);
+  canvas.drawPath(path, tooltipStyle.paint);
 
   titlePainter.paint(canvas, titleOffset);
   subtitlePainter.paint(canvas, subtitleOffset);

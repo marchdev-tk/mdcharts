@@ -105,7 +105,11 @@ class CandlestickChartExample extends StatelessWidget {
         SetupDivider(),
         _AxisStyleSetupGroup(),
         SetupDivider(),
+        _DropLineStyleSetupGroup(),
+        SetupDivider(),
         _CandleStickStyleSetupGroup(),
+        SetupDivider(),
+        _TooltipStyleSetupGroup(),
       ],
     );
   }
@@ -342,6 +346,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                 _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
               },
               title: const Text('yAxisLabelSpacing'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showDropLine,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showDropLine: value == true)),
+              title: const Text('showDropLine'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
@@ -651,6 +662,204 @@ class _CandleStickStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('candleStroke'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DropLineStyleSetupGroup extends StatelessWidget {
+  const _DropLineStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<CandlestickChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Drop Line Style',
+          children: [
+            ColorListTile(
+              value: data.dropLineStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.dashSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      dashSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('dashSize'),
+            ),
+            IntListTile(
+              value: data.dropLineStyle.gapSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      gapSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('gapSize'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _TooltipStyleSetupGroup extends StatelessWidget {
+  const _TooltipStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<CandlestickChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Tooltip Style',
+          children: [
+            ColorListTile(
+              value: data.tooltipStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.spacing.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      spacing: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('spacing'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.radius.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      radius: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('radius'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.triangleWidth.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      triangleWidth: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('triangleWidth'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.triangleHeight.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      triangleHeight: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('triangleHeight'),
+            ),
+            ColorListTile(
+              value: data.tooltipStyle.shadowColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      shadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowColor'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.shadowElevation.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      shadowElevation: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowElevation'),
+            ),
+            IntListTile(
+              value: data.tooltipStyle.bottomMargin.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    tooltipStyle: data.tooltipStyle.copyWith(
+                      bottomMargin: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('bottomMargin'),
             ),
           ],
         );
