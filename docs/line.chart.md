@@ -57,13 +57,14 @@
 * `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
-* `showTooltip` - wether to show tooltip or not, defaults to `true`.
+* `showDropLine` - whether to show drop line or not, defaults to `true`.
+* `showTooltip` - whether to show tooltip or not, defaults to `true`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
 * `lineShadow` - whether to draw shadow beneath the line or not, defaults to `true`.
 * `altitudeLine` - whether to draw the altitude line or not, defaults to `true`.
 * `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
-* `showPoint` - wether to show point or not, defaults to `true`.
-* `selectionEnabled` - wether selection enabled or not, defaults to `true`.
+* `showPoint` - whether to show point or not, defaults to `true`.
+* `selectionEnabled` - whether selection enabled or not, defaults to `true`.
 
 #### Styles
 
@@ -71,5 +72,6 @@
 * `axisStyle` - styling options for axis, for more details please refer to the source code of the `AxisStyle`.
 * `lineStyle` - styling options for chart line, for more details please refer to the source code of the `LineChartLineStyle`.
 * `limitStyle` - styling options for limit, for more details please refer to the source code of the `LineChartLimitStyle`.
-* `pointStyle` - styling options for drop line and point, for more details please refer to the source code of the `LineChartPointStyle`.
+* `dropLineStyle` - styling options for drop line, for more details please refer to the source code of the `DropLineStyle`.
+* `pointStyle` - styling options for point, for more details please refer to the source code of the `LineChartPointStyle`.
 * `tooltipStyle` - styling options for tooltip, for more details please refer to the source code of the `TooltipStyle`.
