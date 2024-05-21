@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.1 - 21.05.2024
+
+* Documentation cleanup.
+
 ## 6.0.0 - 21.05.2024
 
 * Added `CandlestickChart`.
