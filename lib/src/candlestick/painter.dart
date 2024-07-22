@@ -18,7 +18,6 @@ class CandlestickChartPainter extends CustomPainter {
     this.settings,
     this.oldData,
     this.oldDataHashCode,
-    this.padding,
     this.selectedXPosition,
     this.valueCoef,
   );
@@ -41,14 +40,6 @@ class CandlestickChartPainter extends CustomPainter {
 
   /// Hash code of the `old data` to perform animation of the chart.
   final int oldDataHashCode;
-
-  /// Padding around the chart.
-  ///
-  /// If not set, will be used default one:
-  /// - left/right/bottom: `0`;
-  /// - top: dynamic value that depends on the style of the tooltip, more info
-  /// at [LineChartPointStyle.tooltipHeight].
-  final EdgeInsets? padding;
 
   /// Selected position on the X axis.
   ///

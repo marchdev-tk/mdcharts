@@ -118,7 +118,9 @@ class _CandlestickChartState extends State<CandlestickChart>
     super.didUpdateWidget(oldWidget);
   }
 
-  Widget _buildChart(double maxWidth) {
+  Widget _buildChart(BoxConstraints constraints) {
+    final maxWidth = constraints.maxWidth;
+
     return StreamBuilder<double>(
       stream: _yAxisLabelWidth.distinct(),
       initialData: _yAxisLabelWidth.value,
@@ -143,7 +145,6 @@ class _CandlestickChartState extends State<CandlestickChart>
                 widget.settings,
                 oldData!,
                 oldDataHashCode!,
-                widget.padding,
                 xPosition,
                 _valueAnimation.value,
               ),
@@ -205,43 +206,35 @@ class _CandlestickChartState extends State<CandlestickChart>
     );
   }
 
-  Widget _buildContent(BoxConstraints constraints) {
-    final maxContentWidth = constraints.maxWidth -
-        (widget.padding?.horizontal ??
-            widget.style.candleStickStyle.candleStroke);
-
-    return Padding(
-      padding: widget.padding ?? widget.style.tooltipStyle.defaultChartPadding,
-      child: _buildChart(maxContentWidth),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final chart = Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned.fill(
-                child: GridAxis(
-                  cache: _cache,
-                  data: data,
-                  style: widget.style,
-                  settings: widget.settings,
-                  padding: widget.padding,
-                  yAxisLabelWidth: _yAxisLabelWidth,
+      child: Padding(
+        padding:
+            widget.padding ?? widget.style.tooltipStyle.defaultChartPadding,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final chart = Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: GridAxis(
+                    cache: _cache,
+                    data: data,
+                    style: widget.style,
+                    settings: widget.settings,
+                    yAxisLabelWidth: _yAxisLabelWidth,
+                  ),
                 ),
-              ),
-              Positioned.fill(
-                child: _buildContent(constraints),
-              ),
-            ],
-          );
+                Positioned.fill(
+                  child: _buildChart(constraints),
+                ),
+              ],
+            );
 
-          return chart;
-        },
+            return chart;
+          },
+        ),
       ),
     );
   }

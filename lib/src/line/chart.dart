@@ -218,7 +218,6 @@ class _LineChartState extends State<LineChart>
                     data: data,
                     style: widget.style,
                     settings: widget.settings,
-                    padding: widget.padding,
                     yAxisLabelWidth: _yAxisLabelWidth,
                   ),
                 ),

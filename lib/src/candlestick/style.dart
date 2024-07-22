@@ -63,7 +63,7 @@ class CandlestickChartCandleStickStyle {
     this.bearishColor = const Color(0xFFFF0000),
     this.stickStroke = 1,
     this.candleStroke = 5,
-  });
+  }) : assert(stickStroke < candleStroke);
 
   /// Bullish or ascending color of the candle and the stick.
   ///
