@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.0.3 - 22.07.2024
+
+* Changes of the `CandlestickChart`:
+  * Fixed gridaxis redundant paddings
+* Changes of the `LineChart`:
+  * Fixed gridaxis redundant paddings
+
 ## 6.0.2 - 21.05.2024
 
 * Changes of the `CandlestickChart`:
