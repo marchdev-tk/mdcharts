@@ -2,6 +2,8 @@
 
 ## 6.1.0 - 23.07.2024
 
+* Changes of the `CandlestickChart`:
+  * Added doji painting.
 * Changes of the `LineChart`:
   * Added ability to set starting point of the `LineChart`.
 * Changes of the `GridAxis` based charts (`LineChart`/`BarChart`/`CandlestickChart`):
