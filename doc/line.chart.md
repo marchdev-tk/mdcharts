@@ -65,6 +65,7 @@
 * `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
 * `showPoint` - whether to show point or not, defaults to `true`.
 * `selectionEnabled` - whether selection enabled or not, defaults to `true`.
+* `startLineFromZero` - whether to start the line from zero point or not, defaults to `true`.
 
 #### Styles
 

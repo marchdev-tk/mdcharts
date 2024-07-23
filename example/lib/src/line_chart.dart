@@ -540,6 +540,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
                   _settings.add(data.copyWith(selectionEnabled: value == true)),
               title: const Text('selectionEnabled'),
             ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.startLineFromZero,
+              onChanged: (value) => _settings
+                  .add(data.copyWith(startLineFromZero: value == true)),
+              title: const Text('startLineFromZero'),
+            ),
           ],
         );
       },

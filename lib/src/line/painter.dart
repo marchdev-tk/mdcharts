@@ -172,10 +172,7 @@ class LineChartPainter extends CustomPainter {
 
     Path? pathSelected;
 
-    if (!_isDescendingChart) {
-      path.moveTo(0, zeroHeight);
-    }
-
+    double initialY = zeroHeight;
     double x = 0;
     double y = 0;
     for (var i = 0; i < map.length; i++) {
@@ -195,6 +192,13 @@ class LineChartPainter extends CustomPainter {
       x = widthFraction * i;
       y = animatedY * size.height;
 
+      if (i == 0) {
+        if (!settings.startLineFromZero) {
+          initialY = y;
+        }
+        path.moveTo(x, initialY);
+      }
+
       path.lineTo(x, y);
 
       if (i == map.length - 1) {
@@ -207,13 +211,13 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.lineFilling) {
-      final firstY = _isDescendingChart ? 0 : zeroHeight;
+      final firstY = _isDescendingChart ? 0 : initialY;
       final dy = style.lineStyle.stroke / 2;
       final gradientPath = path.shift(Offset(0, -dy));
 
       // finishing path to create valid gradient/color fill
-      gradientPath.lineTo(x, zeroHeight);
-      gradientPath.lineTo(0, zeroHeight);
+      gradientPath.lineTo(x, initialY);
+      gradientPath.lineTo(0, initialY);
       gradientPath.lineTo(0, firstY - dy);
 
       canvas.drawPath(

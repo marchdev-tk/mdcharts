@@ -39,6 +39,7 @@ class LineChartSettings extends GridAxisSettings {
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showPoint = true,
     this.selectionEnabled = true,
+    this.startLineFromZero = true,
   });
 
   /// Constructs an instance of [LineChartSettings] without grids.
@@ -60,6 +61,7 @@ class LineChartSettings extends GridAxisSettings {
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
     this.showPoint = true,
     this.selectionEnabled = true,
+    this.startLineFromZero = true,
   });
 
   /// Whether to fill the space between the line and the X axis with
@@ -93,6 +95,11 @@ class LineChartSettings extends GridAxisSettings {
   /// Defaults to `true`.
   final bool selectionEnabled;
 
+  /// Whether to start the line from zero point or not.
+  ///
+  /// Defaults to `true`.
+  final bool startLineFromZero;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   @override
@@ -118,6 +125,7 @@ class LineChartSettings extends GridAxisSettings {
     LimitLabelSnapPosition? limitLabelSnapPosition,
     bool? showPoint,
     bool? selectionEnabled,
+    bool? startLineFromZero,
   }) =>
       LineChartSettings(
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
@@ -145,6 +153,7 @@ class LineChartSettings extends GridAxisSettings {
             limitLabelSnapPosition ?? this.limitLabelSnapPosition,
         showPoint: showPoint ?? this.showPoint,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
+        startLineFromZero: startLineFromZero ?? this.startLineFromZero,
       );
 
   @override
@@ -168,7 +177,8 @@ class LineChartSettings extends GridAxisSettings {
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
       showPoint.hashCode ^
-      selectionEnabled.hashCode;
+      selectionEnabled.hashCode ^
+      startLineFromZero.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -193,5 +203,6 @@ class LineChartSettings extends GridAxisSettings {
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
       showPoint == other.showPoint &&
-      selectionEnabled == other.selectionEnabled;
+      selectionEnabled == other.selectionEnabled &&
+      startLineFromZero == other.startLineFromZero;
 }
