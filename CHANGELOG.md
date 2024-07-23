@@ -1,18 +1,23 @@
 # Changelog
 
+## 6.0.4 - 23.07.2024
+
+* Changes of the `CandlestickChart`:
+* Changes of the `LineChart`:
+* Changes of the `BarChart`:
+  * Implemented data below 1 calculations for rounding util.
+
 ## 6.0.3 - 22.07.2024
 
 * Changes of the `CandlestickChart`:
-  * Fixed gridaxis redundant paddings
 * Changes of the `LineChart`:
-  * Fixed gridaxis redundant paddings
+  * Fixed gridaxis redundant paddings.
 
 ## 6.0.2 - 21.05.2024
 
 * Changes of the `CandlestickChart`:
-  * Fixed tooltip title/subtitle builders
 * Changes of the `LineChart`:
-  * Fixed tooltip title/subtitle builders
+  * Fixed tooltip title/subtitle builders.
 
 ## 6.0.1 - 21.05.2024
 
