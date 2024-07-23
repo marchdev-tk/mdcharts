@@ -99,7 +99,7 @@ class LineChartPainter extends CustomPainter {
     } else {
       adjustedMap = {
         for (var i = 0; i < sourceMap.length; i++)
-          sourceMap.keys.elementAt(i): 0,
+          sourceMap.keys.elementAt(i): sourceMap.values.last,
       };
     }
 
@@ -107,7 +107,7 @@ class LineChartPainter extends CustomPainter {
       adjustedMap = Map.fromEntries([
         ...adjustedMap.entries,
         for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(sourceMap.keys.elementAt(i), 0),
+          MapEntry(sourceMap.keys.elementAt(i), adjustedMap.values.last),
       ]);
     }
 
@@ -177,8 +177,7 @@ class LineChartPainter extends CustomPainter {
     double y = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
-      final oldValue = // TODO: figure out why it is needed (case: from 7 dots to 30 dots)
-          i >= oldMap.entries.length ? 0 : oldMap.entries.elementAt(i).value;
+      final oldValue = oldMap.entries.elementAt(i).value;
 
       final normalizedOldY = normalizeInverted(
         oldValue + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),

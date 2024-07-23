@@ -74,7 +74,7 @@ class CandlestickChartPainter extends CustomPainter {
     } else {
       adjustedMap = {
         for (var i = 0; i < sourceMap.length; i++)
-          sourceMap.keys.elementAt(i): const CandlestickData.zero(),
+          sourceMap.keys.elementAt(i): sourceMap.values.last,
       };
     }
 
@@ -82,7 +82,7 @@ class CandlestickChartPainter extends CustomPainter {
       adjustedMap = Map.fromEntries([
         ...adjustedMap.entries,
         for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(sourceMap.keys.elementAt(i), const CandlestickData.zero()),
+          MapEntry(sourceMap.keys.elementAt(i), sourceMap.values.last),
       ]);
     }
 
@@ -176,10 +176,7 @@ class CandlestickChartPainter extends CustomPainter {
     double yAsk = 0;
     for (var i = 0; i < map.length; i++) {
       final value = map.entries.elementAt(i).value;
-      final oldValue = // TODO: figure out why it is needed (case: from 7 dots to 30 dots)
-          i >= oldMap.entries.length
-              ? const CandlestickData.zero()
-              : oldMap.entries.elementAt(i).value;
+      final oldValue = oldMap.entries.elementAt(i).value;
 
       x = widthFraction * i;
       yLow = getYValue(value.low, oldValue.low) * size.height;
@@ -195,7 +192,16 @@ class CandlestickChartPainter extends CustomPainter {
           : style.candleStickStyle.bearishCandlePaint;
 
       canvas.drawLine(Offset(x, yLow), Offset(x, yHigh), stickStyle);
-      canvas.drawLine(Offset(x, yBid), Offset(x, yAsk), candleStyle);
+      if (yBid == yAsk) {
+        // painting doji
+        canvas.drawLine(
+          Offset(x, yBid - stickStyle.strokeWidth / 2),
+          Offset(x, yAsk + stickStyle.strokeWidth / 2),
+          candleStyle,
+        );
+      } else {
+        canvas.drawLine(Offset(x, yBid), Offset(x, yAsk), candleStyle);
+      }
     }
   }
 

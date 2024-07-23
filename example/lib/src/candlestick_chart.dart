@@ -158,8 +158,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
         : -Random().nextInt(_maxValue).toDouble();
     final highBias = Random().nextInt(_maxValue).toDouble();
     final maxBidAskBias = highBias.abs().round();
-    final bidBias = Random().nextInt(maxBidAskBias).toDouble();
-    final askBias = Random().nextInt(maxBidAskBias).toDouble();
+    final bidBias =
+        maxBidAskBias == 0 ? 0 : Random().nextInt(maxBidAskBias).toDouble();
+    final askBias =
+        maxBidAskBias == 0 ? 0 : Random().nextInt(maxBidAskBias).toDouble();
 
     return CandlestickData(
       low: low,
