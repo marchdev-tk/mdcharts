@@ -1,10 +1,10 @@
 # Changelog
 
-## 6.0.4 - 23.07.2024
+## 6.1.0 - 23.07.2024
 
-* Changes of the `CandlestickChart`:
 * Changes of the `LineChart`:
-* Changes of the `BarChart`:
+  * Added ability to set starting point of the `LineChart`.
+* Changes of the `GridAxis` based charts (`LineChart`/`BarChart`/`CandlestickChart`):
   * Implemented data below 1 calculations for rounding util.
 
 ## 6.0.3 - 22.07.2024
