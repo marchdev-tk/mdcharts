@@ -15,7 +15,8 @@ import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
 final _settings = BehaviorSubject<CandlestickChartSettings>.seeded(
-    const CandlestickChartSettings());
+    const CandlestickChartSettings(
+        axisDivisionEdges: AxisDivisionEdges.vertical));
 final _style = BehaviorSubject<CandlestickChartStyle>.seeded(
     const CandlestickChartStyle());
 final _data = BehaviorSubject<CandlestickChartData>.seeded(CandlestickChartData(
@@ -206,6 +207,28 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     return randomizedData;
   }
 
+  Map<DateTime, CandlestickData> getLowData() {
+    final year = DateTime.now().year;
+    final month = Random().nextInt(12) + 1;
+    final randomizedData = <DateTime, CandlestickData>{};
+
+    for (var i = 1; i <= 5; i++) {
+      final low = Random().nextDouble() / 100;
+      final high = (low + Random().nextDouble() / 100);
+      final bid = Random().nextDouble().clamp(low, high);
+      final ask = Random().nextDouble().clamp(low, high);
+
+      randomizedData[DateTime(year, month, i)] = CandlestickData(
+        low: low,
+        high: high,
+        bid: bid,
+        ask: ask,
+      );
+    }
+
+    return randomizedData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<CandlestickChartData>(
@@ -235,6 +258,13 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Mixed Data'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getLowData();
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Low Data'),
             ),
             DialogListTile(
               keyboardType:

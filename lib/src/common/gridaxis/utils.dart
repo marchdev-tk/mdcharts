@@ -37,9 +37,9 @@ class GridAxisUtils {
     } else if (yDivisions == 2) {
       divisionSize = math.max(data.maxValue, data.minValue.abs());
     } else if (data.minValue == 0 || data.maxValue == 0) {
-      divisionSize = data.totalValue / yDivisions;
+      divisionSize = div(data.totalValue, yDivisions);
     } else {
-      var size = data.totalValue / yDivisions;
+      var size = div(data.totalValue, yDivisions);
       var maxDivisions = (data.maxValue / size).ceil();
       var minDivisions = (data.minValue.abs() / size).ceil();
 

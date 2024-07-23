@@ -15,7 +15,7 @@ class BarChartData {
     this.initialSelectedPeriod,
     this.onSelectedPeriodChanged,
     this.predefinedMaxValue,
-    this.maxValueRoundingMap = defaultMaxValueRoundingMap,
+    this.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
@@ -29,13 +29,6 @@ class BarChartData {
   static TextSpan defaultXAxisLabelBuilder(DateTime key, TextStyle style) =>
       TextSpan(text: '${key.month}-${key.year}', style: style);
   static String defaultYAxisLabelBuilder(double value) => '$value';
-  static const Map<num, num> defaultMaxValueRoundingMap = {
-    100: 5,
-    1000: 10,
-    10000: 100,
-    100000: 1000,
-    1000000: 10000,
-  };
 
   /// Map of the values that corresponds to the dates.
   ///
@@ -80,8 +73,8 @@ class BarChartData {
   ///
   /// **Please note**: it is preferred to provide ascending keys for this map,
   /// omitting this simple rule may cause malfunctioning of rounding function.
-  /// As a sample of correctly formed map [defaultMaxValueRoundingMap] could be
-  /// used.
+  /// As a sample of correctly formed map [ChartData.defaultMaxValueRoundingMap]
+  /// could be used.
   final Map<num, num> maxValueRoundingMap;
 
   /// Text builder for the tooltip title.

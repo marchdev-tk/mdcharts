@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'decimal.utils.dart';
+
 /// Rounding method that rounds [initalMaxValue] so, it could be divided by
 /// [yAxisDivisions] with "beautiful" integer chunks.
 ///
@@ -22,6 +24,25 @@ double getRoundedMaxValue(
         orElse: () => roundingMap.entries.last,
       )
       .value;
+
+  if (initalMaxValue < 1) {
+    var rounded = initalMaxValue;
+    var multiplier = 1.0;
+
+    while (mult(complement, multiplier).remainder(1) != 0) {
+      rounded = mult(rounded, 10);
+      multiplier = mult(multiplier, 10);
+    }
+
+    rounded = rounded.ceilToDouble();
+
+    while (rounded % yDivisions != 0) {
+      rounded += mult(complement, multiplier);
+    }
+
+    return div(rounded, multiplier);
+  }
+
   var rounded = initalMaxValue + complement - initalMaxValue % complement;
 
   while (rounded % yDivisions != 0) {

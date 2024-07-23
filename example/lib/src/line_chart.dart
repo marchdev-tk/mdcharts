@@ -14,8 +14,8 @@ import 'widgets/color_list_tile.dart';
 import 'widgets/dialog_list_tile.dart';
 import 'widgets/number_list_tile.dart';
 
-final _settings =
-    BehaviorSubject<LineChartSettings>.seeded(const LineChartSettings());
+final _settings = BehaviorSubject<LineChartSettings>.seeded(
+    const LineChartSettings(axisDivisionEdges: AxisDivisionEdges.vertical));
 final _style = BehaviorSubject<LineChartStyle>.seeded(const LineChartStyle());
 final _data = BehaviorSubject<LineChartData>.seeded(LineChartData(
   gridType: LineChartGridType.undefined,

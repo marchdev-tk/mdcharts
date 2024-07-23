@@ -96,7 +96,8 @@ class GridAxisPainter extends CustomPainter {
       }
 
       final labelValue =
-          roundedMaxValue * (yDivisions - i) / yDivisions - roundedMinValue;
+          div(mult(roundedMaxValue, yDivisions - i), yDivisions) -
+              roundedMinValue;
       final textPainter = MDTextPainter(
         TextSpan(
           text: data.yAxisLabelBuilder(labelValue),

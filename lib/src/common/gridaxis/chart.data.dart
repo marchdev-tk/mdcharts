@@ -17,6 +17,8 @@ abstract class ChartData<T> {
   });
 
   static const Map<num, num> defaultMaxValueRoundingMap = {
+    1: 0.001,
+    10: 0.01,
     100: 5,
     1000: 10,
     10000: 100,
