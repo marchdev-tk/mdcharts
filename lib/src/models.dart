@@ -4,4 +4,5 @@
 
 export 'models/arc_painter_data.model.dart';
 export 'models/axis_division_edges.enum.dart';
+export 'models/y_axis_basis.enum.dart';
 export 'models/y_axis_layout.enum.dart';

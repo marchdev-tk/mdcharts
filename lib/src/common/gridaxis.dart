@@ -3,9 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 export 'gridaxis/cache.dart';
-export 'gridaxis/chart.data.dart';
-export 'gridaxis/grid_axis.data.dart';
-export 'gridaxis/painter.dart' show paintTooltip, paintDropLine;
+export 'gridaxis/data.dart';
+export 'gridaxis/painter.dart';
 export 'gridaxis/settings.dart';
 export 'gridaxis/style.dart';
 export 'gridaxis/utils.dart';

@@ -39,6 +39,7 @@
 * `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
 * `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
+* `yAxisBaseline` - baseline of the Y axis label values, defaults to `YAxisBaseline.zero`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
 * `showDropLine` - whether to show drop line or not, defaults to `true`.
 * `showTooltip` - whether to show tooltip or not, defaults to `true`.

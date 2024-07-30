@@ -15,7 +15,7 @@ class BarChartData {
     this.initialSelectedPeriod,
     this.onSelectedPeriodChanged,
     this.predefinedMaxValue,
-    this.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
+    this.roundingMap = ChartData.defaultRoundingMap,
     this.titleBuilder = defaultTitleBuilder,
     this.subtitleBuilder = defaultSubtitleBuilder,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
@@ -73,9 +73,9 @@ class BarChartData {
   ///
   /// **Please note**: it is preferred to provide ascending keys for this map,
   /// omitting this simple rule may cause malfunctioning of rounding function.
-  /// As a sample of correctly formed map [ChartData.defaultMaxValueRoundingMap]
+  /// As a sample of correctly formed map [ChartData.defaultRoundingMap]
   /// could be used.
-  final Map<num, num> maxValueRoundingMap;
+  final Map<num, num> roundingMap;
 
   /// Text builder for the tooltip title.
   ///
@@ -146,7 +146,7 @@ class BarChartData {
     Map<DateTime, List<double>>? data,
     DateTime? initialSelectedPeriod,
     double? predefinedMaxValue,
-    Map<num, num>? maxValueRoundingMap,
+    Map<num, num>? roundingMap,
     TooltipBuilder<List<double>>? titleBuilder,
     TooltipBuilder<List<double>>? subtitleBuilder,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,
@@ -158,7 +158,7 @@ class BarChartData {
         predefinedMaxValue: allowNullPredefinedMaxValue
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
-        maxValueRoundingMap: maxValueRoundingMap ?? this.maxValueRoundingMap,
+        roundingMap: roundingMap ?? this.roundingMap,
         titleBuilder: titleBuilder ?? this.titleBuilder,
         subtitleBuilder: subtitleBuilder ?? this.subtitleBuilder,
         xAxisLabelBuilder: xAxisLabelBuilder ?? this.xAxisLabelBuilder,
@@ -170,7 +170,7 @@ class BarChartData {
       data.hashCode ^
       initialSelectedPeriod.hashCode ^
       predefinedMaxValue.hashCode ^
-      maxValueRoundingMap.hashCode ^
+      roundingMap.hashCode ^
       titleBuilder.hashCode ^
       subtitleBuilder.hashCode ^
       xAxisLabelBuilder.hashCode ^
@@ -182,7 +182,7 @@ class BarChartData {
       mapEquals(data, other.data) &&
       initialSelectedPeriod == other.initialSelectedPeriod &&
       predefinedMaxValue == other.predefinedMaxValue &&
-      mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
+      mapEquals(roundingMap, other.roundingMap) &&
       titleBuilder == other.titleBuilder &&
       subtitleBuilder == other.subtitleBuilder &&
       xAxisLabelBuilder == other.xAxisLabelBuilder &&

@@ -95,9 +95,14 @@ class GridAxisPainter extends CustomPainter {
         continue;
       }
 
-      final labelValue =
-          div(mult(roundedMaxValue, yDivisions - i), yDivisions) -
-              roundedMinValue;
+      double labelValue;
+      if (data.isNegative) {
+        labelValue = sub(roundedMaxValue, mult(roundedDivisionSize, i));
+      } else {
+        labelValue =
+            add(roundedMinValue, mult(roundedDivisionSize, yEnd - i - 1));
+      }
+
       final textPainter = MDTextPainter(
         TextSpan(
           text: data.yAxisLabelBuilder(labelValue),
@@ -133,18 +138,136 @@ class GridAxisPainter extends CustomPainter {
 
     // x axis
     if (settings.showAxisX) {
-      if (data.hasNegativeMinValue) {
-        final y =
-            normalizeInverted(roundedMinValue, roundedMaxValue) * size.height;
-        canvas.drawLine(Offset(0, y), Offset(size.width, y), axisPaint);
-      } else {
-        canvas.drawLine(bottomLeft, bottomRight, axisPaint);
-      }
+      canvas.drawLine(bottomLeft, bottomRight, axisPaint);
     }
     // y axis
     if (settings.showAxisY) {
       canvas.drawLine(topLeft, bottomLeft, axisPaint);
     }
+  }
+
+  /// Drop line painter.
+  static void paintDropLine(
+    Canvas canvas,
+    Size size,
+    GridAxisData data,
+    DropLineStyle dropLineStyle,
+    Offset point,
+  ) {
+    if (!data.canDraw) {
+      return;
+    }
+
+    final dashWidth = dropLineStyle.dashSize;
+    final gapWidth = dropLineStyle.gapSize;
+
+    final pathX = Path();
+    final pathY = Path();
+
+    pathX.moveTo(0, point.dy);
+    pathY.moveTo(point.dx, size.height);
+
+    final countX = (point.dx / (dashWidth + gapWidth)).round();
+    for (var i = 1; i <= countX; i++) {
+      pathX.relativeLineTo(dashWidth, 0);
+      pathX.relativeMoveTo(gapWidth, 0);
+    }
+
+    final countY =
+        ((size.height - point.dy) / (dashWidth + gapWidth)).round().abs();
+    for (var i = 1; i <= countY; i++) {
+      pathY.relativeLineTo(0, -dashWidth);
+      pathY.relativeMoveTo(0, -gapWidth);
+    }
+
+    canvas.drawPath(pathX, dropLineStyle.paint);
+    canvas.drawPath(pathY, dropLineStyle.paint);
+  }
+
+  /// Tooltip painter.
+  static void paintTooltip<T>(
+    Canvas canvas,
+    Size size,
+    GridAxisData<T> data,
+    TooltipStyle tooltipStyle,
+    MapEntry<DateTime, T> entry,
+    Offset point,
+  ) {
+    if (!data.canDraw) {
+      return;
+    }
+
+    final titlePainter = MDTextPainter(TextSpan(
+      text: data.titleBuilder(entry.key, entry.value),
+      style: tooltipStyle.titleStyle,
+    ));
+    final subtitlePainter = MDTextPainter(TextSpan(
+      text: data.subtitleBuilder(entry.key, entry.value),
+      style: tooltipStyle.subtitleStyle,
+    ));
+    final triangleWidth = tooltipStyle.triangleWidth;
+    final triangleHeight = tooltipStyle.triangleHeight;
+    final bottomMargin = tooltipStyle.bottomMargin + triangleHeight;
+    final titleSize = titlePainter.size;
+    final subtitleSize = subtitlePainter.size;
+    final spacing = tooltipStyle.spacing;
+    final padding = tooltipStyle.padding;
+    final contentWidth = math.max(titleSize.width, subtitleSize.width);
+    final tooltipSize = Size(
+      contentWidth + padding.horizontal,
+      titleSize.height + spacing + subtitleSize.height + padding.vertical,
+    );
+    final radius = Radius.circular(tooltipStyle.radius);
+    final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
+    final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
+    final xBias = isSelectedIndexFirst
+        ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
+        : isSelectedIndexLast
+            ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
+            : 0;
+    final titleOffset = Offset(
+      point.dx - titleSize.width / 2 + xBias,
+      point.dy -
+          bottomMargin -
+          padding.bottom -
+          subtitleSize.height -
+          spacing -
+          titleSize.height,
+    );
+    final subtitleOffset = Offset(
+      point.dx - subtitleSize.width / 2 + xBias,
+      point.dy - bottomMargin - padding.bottom - subtitleSize.height,
+    );
+    final rrect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(
+          point.dx + xBias,
+          point.dy - bottomMargin - tooltipSize.height / 2,
+        ),
+        width: tooltipSize.width,
+        height: tooltipSize.height,
+      ),
+      radius,
+    );
+
+    final path = Path();
+    path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
+    path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
+    path.relativeLineTo(triangleWidth, 0);
+    path.relativeLineTo(-triangleWidth / 2, triangleHeight);
+    path.close();
+    path.addRRect(rrect);
+
+    canvas.drawShadow(
+      path,
+      tooltipStyle.shadowColor,
+      tooltipStyle.shadowElevation,
+      false,
+    );
+    canvas.drawPath(path, tooltipStyle.paint);
+
+    titlePainter.paint(canvas, titleOffset);
+    subtitlePainter.paint(canvas, subtitleOffset);
   }
 
   @override
@@ -161,137 +284,4 @@ class GridAxisPainter extends CustomPainter {
       settings != oldDelegate.settings;
 }
 
-/// Drop line painter.
-void paintDropLine(
-  Canvas canvas,
-  Size size,
-  GridAxisData data,
-  DropLineStyle dropLineStyle,
-  double zeroHeight,
-  Offset point,
-) {
-  if (!data.canDraw) {
-    return;
-  }
-
-  final dashWidth = dropLineStyle.dashSize;
-  final gapWidth = dropLineStyle.gapSize;
-
-  final pathX = Path();
-  final pathY = Path();
-
-  pathX.moveTo(0, point.dy);
-  pathY.moveTo(point.dx, zeroHeight);
-  // ! uncomment if needed
-  // pathY.moveTo(point.dx, size.height);
-
-  final countX = (point.dx / (dashWidth + gapWidth)).round();
-  for (var i = 1; i <= countX; i++) {
-    pathX.relativeLineTo(dashWidth, 0);
-    pathX.relativeMoveTo(gapWidth, 0);
-  }
-
-  final isNegativeValue = point.dy > zeroHeight;
-  final countY =
-      ((zeroHeight - point.dy) / (dashWidth + gapWidth)).round().abs();
-  for (var i = 1; i <= countY; i++) {
-    pathY.relativeLineTo(0, isNegativeValue ? dashWidth : -dashWidth);
-    pathY.relativeMoveTo(0, isNegativeValue ? gapWidth : -gapWidth);
-  }
-  // ! uncomment if needed
-  // final countY =
-  //     ((size.height - point.dy) / (dashWidth + gapWidth)).round().abs();
-  // for (var i = 1; i <= countY; i++) {
-  //   pathY.relativeLineTo(0, -dashWidth);
-  //   pathY.relativeMoveTo(0, -gapWidth);
-  // }
-
-  canvas.drawPath(pathX, dropLineStyle.paint);
-  canvas.drawPath(pathY, dropLineStyle.paint);
-}
-
-/// Tooltip painter.
-void paintTooltip<T>(
-  Canvas canvas,
-  Size size,
-  GridAxisData<T> data,
-  TooltipStyle tooltipStyle,
-  MapEntry<DateTime, T> entry,
-  Offset point,
-) {
-  if (!data.canDraw) {
-    return;
-  }
-
-  final titlePainter = MDTextPainter(TextSpan(
-    text: data.titleBuilder(entry.key, entry.value),
-    style: tooltipStyle.titleStyle,
-  ));
-  final subtitlePainter = MDTextPainter(TextSpan(
-    text: data.subtitleBuilder(entry.key, entry.value),
-    style: tooltipStyle.subtitleStyle,
-  ));
-  final triangleWidth = tooltipStyle.triangleWidth;
-  final triangleHeight = tooltipStyle.triangleHeight;
-  final bottomMargin = tooltipStyle.bottomMargin + triangleHeight;
-  final titleSize = titlePainter.size;
-  final subtitleSize = subtitlePainter.size;
-  final spacing = tooltipStyle.spacing;
-  final padding = tooltipStyle.padding;
-  final contentWidth = math.max(titleSize.width, subtitleSize.width);
-  final tooltipSize = Size(
-    contentWidth + padding.horizontal,
-    titleSize.height + spacing + subtitleSize.height + padding.vertical,
-  );
-  final radius = Radius.circular(tooltipStyle.radius);
-  final isSelectedIndexFirst = point.dx - tooltipSize.width / 2 < 0;
-  final isSelectedIndexLast = point.dx + tooltipSize.width / 2 > size.width;
-  final xBias = isSelectedIndexFirst
-      ? tooltipSize.width / 2 - triangleWidth / 2 - radius.x
-      : isSelectedIndexLast
-          ? -tooltipSize.width / 2 + triangleWidth / 2 + radius.x
-          : 0;
-  final titleOffset = Offset(
-    point.dx - titleSize.width / 2 + xBias,
-    point.dy -
-        bottomMargin -
-        padding.bottom -
-        subtitleSize.height -
-        spacing -
-        titleSize.height,
-  );
-  final subtitleOffset = Offset(
-    point.dx - subtitleSize.width / 2 + xBias,
-    point.dy - bottomMargin - padding.bottom - subtitleSize.height,
-  );
-  final rrect = RRect.fromRectAndRadius(
-    Rect.fromCenter(
-      center: Offset(
-        point.dx + xBias,
-        point.dy - bottomMargin - tooltipSize.height / 2,
-      ),
-      width: tooltipSize.width,
-      height: tooltipSize.height,
-    ),
-    radius,
-  );
-
-  final path = Path();
-  path.moveTo(point.dx, point.dy - bottomMargin + triangleHeight);
-  path.relativeLineTo(-triangleWidth / 2, -triangleHeight);
-  path.relativeLineTo(triangleWidth, 0);
-  path.relativeLineTo(-triangleWidth / 2, triangleHeight);
-  path.close();
-  path.addRRect(rrect);
-
-  canvas.drawShadow(
-    path,
-    tooltipStyle.shadowColor,
-    tooltipStyle.shadowElevation,
-    false,
-  );
-  canvas.drawPath(path, tooltipStyle.paint);
-
-  titlePainter.paint(canvas, titleOffset);
-  subtitlePainter.paint(canvas, subtitleOffset);
-}
+// TODO: add conditional painting of zero line

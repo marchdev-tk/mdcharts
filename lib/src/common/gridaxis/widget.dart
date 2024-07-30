@@ -5,8 +5,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mdcharts/src/_internal.dart';
 
-import 'painter.dart';
-
 /// Charts Grid and Axis.
 class GridAxis extends StatelessWidget {
   /// Constructs an instance of [GridAxis].

@@ -13,10 +13,10 @@ abstract class ChartData<T> {
   const ChartData({
     required this.data,
     this.predefinedMaxValue,
-    this.maxValueRoundingMap = defaultMaxValueRoundingMap,
+    this.roundingMap = defaultRoundingMap,
   });
 
-  static const Map<num, num> defaultMaxValueRoundingMap = {
+  static const Map<num, num> defaultRoundingMap = {
     1: 0.001,
     10: 0.01,
     100: 5,
@@ -36,7 +36,7 @@ abstract class ChartData<T> {
   /// By default it will be calculated based on the logic of [maxValue].
   final double? predefinedMaxValue;
 
-  /// Rounding map of the [maxValue].
+  /// Rounding map of the [maxValue] or/and [minValueAxisBased].
   ///
   /// Logic of rounding is following:
   ///
@@ -59,14 +59,18 @@ abstract class ChartData<T> {
   ///
   /// **Please note**: it is preferred to provide ascending keys for this map,
   /// omitting this simple rule may cause malfunctioning of rounding function.
-  /// As a sample of correctly formed map [defaultMaxValueRoundingMap] could be
+  /// As a sample of correctly formed map [defaultRoundingMap] could be
   /// used.
-  final Map<num, num> maxValueRoundingMap;
+  final Map<num, num> roundingMap;
 
   /// Checks whether chart and point could be drawned or not.
   ///
   /// It checks for [data] length to be greater than or equal to 1.
   bool get canDraw => data.isNotEmpty;
+
+  /// Checks whether every data entry is less than or equal to `0` or not.
+  bool get isNegative => data.entries.every((e) =>
+      minValuePredicate(e.value) <= 0 && maxValuePredicate(e.value) <= 0);
 
   /// Predicate that must be resolved with max value of the provided data type [T].
   double maxValuePredicate(T value);
@@ -95,20 +99,27 @@ abstract class ChartData<T> {
   /// Predicate that must be resolved with min value of the provided data type [T].
   double minValuePredicate(T value);
 
-  /// Determines min value for chart to draw.
-  double get minValue {
+  /// Determines axis based min value for chart to draw.
+  double get minValueAxisBased {
     if (!canDraw) {
       return 0;
     }
 
-    return math.min(data.values.map(minValuePredicate).min, .0);
+    return data.values.map(minValuePredicate).min;
   }
 
-  /// Whether [minValue] is less than `0`.
-  bool get hasNegativeMinValue => minValue < 0;
+  /// Determines sum of the [maxValue] and absolute value of
+  /// [minValueAxisBased].
+  double get totalValueAxisBased => maxValue - minValueAxisBased;
 
-  /// Determines sum of the [maxValue] and absolute value of [minValue].
-  double get totalValue => maxValue - minValue;
+  /// Determines zero based min value for chart to draw.
+  double get minValueZeroBased => math.min(minValueAxisBased, .0);
+
+  /// Whether [minValueZeroBased] is less than `0`.
+  bool get hasNegativeMinValueZeroBased => minValueZeroBased < 0;
+
+  /// Determines total value via [maxValue] and [minValueZeroBased].
+  double get totalValueZeroBased => maxValue - minValueZeroBased;
 
   /// Gets divisions of the X axis.
   int get xAxisDivisions {
@@ -127,14 +138,12 @@ abstract class ChartData<T> {
 
   @override
   int get hashCode =>
-      data.hashCode ^
-      predefinedMaxValue.hashCode ^
-      maxValueRoundingMap.hashCode;
+      data.hashCode ^ predefinedMaxValue.hashCode ^ roundingMap.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is ChartData &&
       mapEquals(data, other.data) &&
       predefinedMaxValue == other.predefinedMaxValue &&
-      mapEquals(maxValueRoundingMap, other.maxValueRoundingMap);
+      mapEquals(roundingMap, other.roundingMap);
 }

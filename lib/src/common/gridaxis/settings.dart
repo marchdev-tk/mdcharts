@@ -19,6 +19,7 @@ class GridAxisSettings {
     this.showAxisYLabels = true,
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
+    this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
     this.showDropLine = true,
     this.showTooltip = true,
@@ -34,6 +35,7 @@ class GridAxisSettings {
     this.showAxisYLabels = true,
     this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
+    this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
     this.showDropLine = true,
     this.showTooltip = true,
@@ -118,6 +120,11 @@ class GridAxisSettings {
   /// Defaults to [YAxisLayout.overlay].
   final YAxisLayout yAxisLayout;
 
+  /// Baseline of the Y axis label values.
+  ///
+  /// Defaults to [YAxisBaseline.zero].
+  final YAxisBaseline yAxisBaseline;
+
   /// Spacing between the Y axis labels and chart itself.
   ///
   /// **Please note**, that this setting affects spacing only in case of
@@ -151,6 +158,7 @@ class GridAxisSettings {
     bool? showAxisYLabels,
     bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
+    YAxisBaseline? yAxisBaseline,
     double? yAxisLabelSpacing,
     bool? showDropLine,
     bool? showTooltip,
@@ -171,6 +179,7 @@ class GridAxisSettings {
         showAxisXLabelSelection:
             showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
+        yAxisBaseline: yAxisBaseline ?? this.yAxisBaseline,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
         showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
@@ -189,6 +198,7 @@ class GridAxisSettings {
       showAxisYLabels.hashCode ^
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
+      yAxisBaseline.hashCode ^
       yAxisLabelSpacing.hashCode ^
       showDropLine.hashCode ^
       showTooltip.hashCode;
@@ -208,6 +218,7 @@ class GridAxisSettings {
       showAxisYLabels == other.showAxisYLabels &&
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
+      yAxisBaseline == other.yAxisBaseline &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
       showDropLine == other.showDropLine &&
       showTooltip == other.showTooltip;

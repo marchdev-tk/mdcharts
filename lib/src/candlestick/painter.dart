@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:math' as math;
-
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
@@ -64,48 +62,37 @@ class CandlestickChartPainter extends CustomPainter {
   double get roundedMaxValue =>
       GridAxisUtils().getRoundedMaxValue(cache, data, settings);
 
-  Map<DateTime, CandlestickData> _adjustMap(
+  /// Normalization method.
+  ///
+  /// For more info refer to [GridAxisUtils.normalize].
+  double normalize(double value) =>
+      GridAxisUtils().normalize(value, cache, data, settings);
+
+  /// Normalization method for old data.
+  ///
+  /// For more info refer to [GridAxisUtils.normalizeOld].
+  double normalizeOld(double oldValue) => GridAxisUtils()
+      .normalizeOld(oldValue, oldDataHashCode, cache, data, settings);
+
+  /// Map adjustment method.
+  ///
+  /// For more info refer to [GridAxisUtils.adjustMap].
+  Map<DateTime, CandlestickData> adjustMap(
     Map<DateTime, CandlestickData> sourceMap,
     Map<DateTime, CandlestickData>? mapToAdjust,
   ) {
-    Map<DateTime, CandlestickData> adjustedMap;
-    if (mapToAdjust != null) {
-      adjustedMap = Map.of(mapToAdjust);
-    } else {
-      adjustedMap = {
-        for (var i = 0; i < sourceMap.length; i++)
-          sourceMap.keys.elementAt(i): sourceMap.values.last,
-      };
-    }
-
-    if (adjustedMap.length <= sourceMap.length) {
-      adjustedMap = Map.fromEntries([
-        ...adjustedMap.entries,
-        for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(sourceMap.keys.elementAt(i), sourceMap.values.last),
-      ]);
-    }
-
-    return adjustedMap;
+    return GridAxisUtils().adjustMap(
+      sourceMap,
+      mapToAdjust,
+      const CandlestickData.zero(),
+    );
   }
 
-  /// Height of the X axis.
-  double _getZeroHeight(Size size) => data.hasNegativeMinValue
-      ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
-      : size.height;
-
-  int? _getSelectedIndex(Size size) {
-    if (selectedXPosition == null) {
-      return null;
-    }
-
-    final widthFraction = size.width / data.xAxisDivisions;
-
-    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, data.xAxisDivisions);
-
-    return index;
-  }
+  /// Retrieves data entry index.
+  ///
+  /// For more info refer to [GridAxisUtils.getSelectedIndex].
+  int? getSelectedIndex(Size size) =>
+      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
 
   Offset _getPoint(Size size, int selectedIndex) {
     if (!data.canDraw) {
@@ -116,32 +103,28 @@ class CandlestickChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * selectedIndex;
-    final y =
-        normalizeInverted(entry.value.high + roundedMinValue, roundedMaxValue) *
-            size.height;
+    final y = normalize(entry.value.high) * size.height;
     final point = Offset(x, y);
 
     return point;
   }
 
   /// Drop line painter.
-  void _paintDropLine(Canvas canvas, Size size) {
+  void paintDropLine(Canvas canvas, Size size) {
     final showDropLine = selectedXPosition != null && settings.showDropLine;
 
     if (!data.canDraw || !showDropLine) {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size)!;
-    final zeroHeight = _getZeroHeight(size);
+    final selectedIndex = getSelectedIndex(size)!;
     final point = _getPoint(size, selectedIndex);
 
-    paintDropLine(
+    GridAxisPainter.paintDropLine(
       canvas,
       size,
       data,
       style.dropLineStyle,
-      zeroHeight,
       point,
     );
   }
@@ -153,12 +136,8 @@ class CandlestickChartPainter extends CustomPainter {
     }
 
     double getYValue(double y, double oldY) {
-      final normalizedOldY = normalizeInverted(
-        oldY + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
-        cache.getRoundedMaxValue(oldDataHashCode) ?? 1,
-      );
-      final normalizedY =
-          normalizeInverted(y + roundedMinValue, roundedMaxValue);
+      final normalizedOldY = normalizeOld(oldY);
+      final normalizedY = normalize(y);
       final animatedY =
           normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
 
@@ -167,7 +146,7 @@ class CandlestickChartPainter extends CustomPainter {
 
     final widthFraction = size.width / data.xAxisDivisions;
     final map = data.data;
-    final oldMap = _adjustMap(data.data, oldData.data);
+    final oldMap = adjustMap(data.data, oldData.data);
 
     double x = 0;
     double yLow = 0;
@@ -206,18 +185,18 @@ class CandlestickChartPainter extends CustomPainter {
   }
 
   /// Tooltip painter.
-  void _paintTooltip(Canvas canvas, Size size) {
+  void paintTooltip(Canvas canvas, Size size) {
     final showTooltip = selectedXPosition != null && settings.showTooltip;
 
     if (!data.canDraw || !showTooltip) {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size)!;
+    final selectedIndex = getSelectedIndex(size)!;
     final entry = data.data.entries.elementAt(selectedIndex);
     final point = _getPoint(size, selectedIndex);
 
-    paintTooltip(
+    GridAxisPainter.paintTooltip(
       canvas,
       size,
       data,
@@ -229,9 +208,9 @@ class CandlestickChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _paintDropLine(canvas, size);
+    paintDropLine(canvas, size);
     paintCandlesticks(canvas, size);
-    _paintTooltip(canvas, size);
+    paintTooltip(canvas, size);
   }
 
   @override
@@ -271,18 +250,11 @@ class CandlestickChartXAxisLabelPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
-  int? _getSelectedIndex(Size size) {
-    if (selectedXPosition == null) {
-      return null;
-    }
-
-    final widthFraction = size.width / data.xAxisDivisions;
-
-    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, data.xAxisDivisions);
-
-    return index;
-  }
+  /// Retrieves data entry index.
+  ///
+  /// For more info refer to [GridAxisUtils.getSelectedIndex].
+  int? getSelectedIndex(Size size) =>
+      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
 
   List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
     final length = data.data.length;
@@ -311,7 +283,7 @@ class CandlestickChartXAxisLabelPainter extends CustomPainter {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size);
+    final selectedIndex = getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
 
     Offset point;
@@ -356,7 +328,7 @@ class CandlestickChartXAxisLabelPainter extends CustomPainter {
     final dates = data.data.keys.toList();
     final steps = _getXAxisLabelIndexesToPaint(settings.xAxisLabelQuantity);
     final painters = <MDTextPainter, bool>{};
-    final selectedIndex = _getSelectedIndex(size);
+    final selectedIndex = getSelectedIndex(size);
 
     MDTextPainter? selectedPainter;
     for (var i = 0; i < dates.length; i++) {

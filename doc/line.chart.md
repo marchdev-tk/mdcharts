@@ -9,17 +9,10 @@
 * ### There are 2 general types of the `LineChart`:
 
   * **`Periodical` grid type (only `monthly` available for now):**
-
-    Periodical means that if there's not enough data to draw full chart (there's gaps between dates) chart will automatically fulfill lacking data based on `LineChartDataType`.
-
-      * For `LineChartDataType.bidirectional` data type lacking data will be set to `0`.
-      * For `LineChartDataType.unidirectional` data type lacking data will calculated from previous values so, that charts will be looking like ascending (e.g. Progress) or descending (e.g. Burndown) chart.
+    Periodical means that if there's not enough data to draw full chart (there's gaps between dates) chart will automatically fulfill lacking data.
 
   * **`Undefined` grid type:**
-
     Undefined means that the chart will be drawned using only provided data.
-
-    Note that `LineChartDataType` is omitted with this type of grid.
 
 * ### Max Value 
 
@@ -56,6 +49,7 @@
 * `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
 * `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
+* `yAxisBaseline` - baseline of the Y axis label values, defaults to `YAxisBaseline.zero`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
 * `showDropLine` - whether to show drop line or not, defaults to `true`.
 * `showTooltip` - whether to show tooltip or not, defaults to `true`.

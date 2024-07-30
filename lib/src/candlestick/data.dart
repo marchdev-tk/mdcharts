@@ -39,7 +39,7 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
   const CandlestickChartData({
     required super.data,
     super.predefinedMaxValue,
-    super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
+    super.roundingMap = ChartData.defaultRoundingMap,
     super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
     super.titleBuilder,
@@ -57,7 +57,7 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     bool allowNullPredefinedMaxValue = false,
     Map<DateTime, CandlestickData>? data,
     double? predefinedMaxValue,
-    Map<num, num>? maxValueRoundingMap,
+    Map<num, num>? roundingMap,
     TooltipBuilder? titleBuilder,
     TooltipBuilder? subtitleBuilder,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,
@@ -68,7 +68,7 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
         predefinedMaxValue: allowNullPredefinedMaxValue
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
-        maxValueRoundingMap: maxValueRoundingMap ?? this.maxValueRoundingMap,
+        roundingMap: roundingMap ?? this.roundingMap,
         titleBuilder: titleBuilder ?? this.titleBuilder,
         subtitleBuilder: subtitleBuilder ?? this.subtitleBuilder,
         xAxisLabelBuilder: xAxisLabelBuilder ?? this.xAxisLabelBuilder,
@@ -77,14 +77,12 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
 
   @override
   int get hashCode =>
-      data.hashCode ^
-      predefinedMaxValue.hashCode ^
-      maxValueRoundingMap.hashCode;
+      data.hashCode ^ predefinedMaxValue.hashCode ^ roundingMap.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is CandlestickChartData &&
       mapEquals(data, other.data) &&
       predefinedMaxValue == other.predefinedMaxValue &&
-      mapEquals(maxValueRoundingMap, other.maxValueRoundingMap);
+      mapEquals(roundingMap, other.roundingMap);
 }

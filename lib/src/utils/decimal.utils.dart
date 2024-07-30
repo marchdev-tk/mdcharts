@@ -13,3 +13,13 @@ double div(num a, num b) {
   final quotient = Decimal.parse(a.toString()) / Decimal.parse(b.toString());
   return quotient.toDouble();
 }
+
+double sub(num a, num b) {
+  final difference = Decimal.parse(a.toString()) - Decimal.parse(b.toString());
+  return difference.toDouble();
+}
+
+double add(num a, num b) {
+  final sum = Decimal.parse(a.toString()) + Decimal.parse(b.toString());
+  return sum.toDouble();
+}

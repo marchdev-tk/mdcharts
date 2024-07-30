@@ -137,6 +137,7 @@ class _LineChartState extends State<LineChart>
                 widget.data,
                 widget.style,
                 widget.settings,
+                oldData!,
                 oldDataHashCode!,
                 widget.padding,
                 xPosition,

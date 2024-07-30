@@ -4,5 +4,6 @@
 
 export 'common/arc.builder.dart';
 export 'common/cache_holder.dart';
+export 'common/chart.data.dart';
 export 'common/gridaxis.dart';
 export 'common/text.painter.dart';

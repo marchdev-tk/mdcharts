@@ -8,46 +8,6 @@ import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mdcharts/src/_internal.dart';
 
-/// Defines how values of the [LineChartData.data] must be represented.
-///
-/// Main usage of this type comes in periodical types of [LineChartGridType],
-/// e.g. [LineChartGridType.monthly]. Map [LineChartData.data] might not be
-/// fulfilled with all required periodical values, so it will be fulfilled with
-/// values that will satisfy the selected rule.
-///
-/// For mode details on rules - see values of this enum.
-///
-/// **Please note**, if [unidirectional] is set, then [LineChartData.data]
-/// will be validated to satisfy the [unidirectional] rule.
-///
-/// **Also please note**, if [LineChartGridType.undefined] is set, then this
-/// value will be omitted.
-enum LineChartDataType {
-  /// No restrictions on values.
-  ///
-  /// Default value for fulfillment of gaps in [LineChartData.data] is `0`.
-  bidirectional,
-
-  /// All value of the [LineChartData.data] are either ascending or descending.
-  ///
-  /// Default value for fulfillment of gaps in [LineChartData.data] is
-  /// `previous` value. If there is no `previous` value - default value will be
-  /// acquired based on [LineChartDataDirection].
-  unidirectional,
-}
-
-/// Data directionality of line chart.
-///
-/// **Note**, it works only in conjunction with
-/// [LineChartDataType.unidirectional] data type.
-enum LineChartDataDirection {
-  /// Each subsequent value is greater than or equal to previous.
-  ascending,
-
-  /// Each subsequent value is less than or equal to previous.
-  descending,
-}
-
 /// Type of the line chart.
 ///
 /// If [LineChartGridType.undefined] is set, then:
@@ -76,7 +36,7 @@ class LineChartData extends GridAxisData<double> {
   const LineChartData({
     required super.data,
     super.predefinedMaxValue,
-    super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
+    super.roundingMap = ChartData.defaultRoundingMap,
     super.xAxisLabelBuilder = GridAxisData.defaultXAxisLabelBuilder,
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
     super.titleBuilder,
@@ -84,7 +44,6 @@ class LineChartData extends GridAxisData<double> {
     this.limit,
     this.limitText,
     this.gridType = LineChartGridType.monthly,
-    this.dataType = LineChartDataType.bidirectional,
   });
 
   /// Optional limit, corresponds to the limit line on the chart. It is
@@ -101,62 +60,6 @@ class LineChartData extends GridAxisData<double> {
   ///
   /// More info at [LineChartGridType].
   final LineChartGridType gridType;
-
-  /// Data type of the line chart.
-  ///
-  /// This argument if omitted if [gridType] is set to
-  /// [LineChartGridType.undefined].
-  ///
-  /// More info at [LineChartDataType].
-  final LineChartDataType dataType;
-
-  /// Determines direction of the [LineChartDataType.unidirectional] data type.
-  ///
-  /// If [LineChartDataType.unidirectional] is set, but [data] is
-  /// [LineChartDataType.bidirectional] - throws an exception.
-  ///
-  /// If [LineChartDataType.unidirectional] is set, but all values of [data] are
-  /// same - throws an exception. Consider using
-  /// [LineChartDataType.bidirectional] data type.
-  ///
-  /// **Note**: must be used only for [LineChartDataType.unidirectional] data
-  /// type, otherwise will throw an exception.
-  LineChartDataDirection get dataDirection {
-    assert(dataType == LineChartDataType.unidirectional);
-
-    int ascCount = 0;
-    int descCount = 0;
-
-    for (var i = 1; i < data.length; i++) {
-      final prev = data.entries.elementAt(i - 1).value;
-      final curr = data.entries.elementAt(i).value;
-
-      if (curr > prev) {
-        ascCount++;
-      }
-      if (curr < prev) {
-        descCount++;
-      }
-
-      if (ascCount > 0 && descCount > 0) {
-        throw ArgumentError.value(
-          dataType,
-          'dataType',
-          '[dataType] was set to unidirectional but [data] is bidirectional!',
-        );
-      }
-    }
-
-    if (ascCount > 0) {
-      return LineChartDataDirection.ascending;
-    }
-    if (descCount > 0) {
-      return LineChartDataDirection.descending;
-    }
-
-    // by default assume that chart is ascending
-    return LineChartDataDirection.ascending;
-  }
 
   @override
   double maxValuePredicate(double value) => value;
@@ -306,28 +209,11 @@ class LineChartData extends GridAxisData<double> {
         break;
       }
 
-      final value = data[date] ?? _getDefaultValue(map, date);
+      final value = data[date] ?? .0;
       map[date] = value;
     }
 
     return map;
-  }
-
-  double _getDefaultValue(Map<DateTime, double> map, DateTime current) {
-    if (dataType == LineChartDataType.bidirectional) {
-      return 0;
-    }
-
-    if (current.isStartOfMonth) {
-      switch (dataDirection) {
-        case LineChartDataDirection.ascending:
-          return 0;
-        case LineChartDataDirection.descending:
-          return _maxValue;
-      }
-    }
-
-    return map[current.previousDay]!;
   }
 
   /// Creates a copy of the current object with new values specified in
@@ -338,7 +224,7 @@ class LineChartData extends GridAxisData<double> {
     bool allowNullLimitText = false,
     Map<DateTime, double>? data,
     double? predefinedMaxValue,
-    Map<num, num>? maxValueRoundingMap,
+    Map<num, num>? roundingMap,
     double? limit,
     String? limitText,
     TooltipBuilder? titleBuilder,
@@ -346,14 +232,13 @@ class LineChartData extends GridAxisData<double> {
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,
     LabelBuilder<double>? yAxisLabelBuilder,
     LineChartGridType? gridType,
-    LineChartDataType? dataType,
   }) =>
       LineChartData(
         data: data ?? this.data,
         predefinedMaxValue: allowNullPredefinedMaxValue
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
-        maxValueRoundingMap: maxValueRoundingMap ?? this.maxValueRoundingMap,
+        roundingMap: roundingMap ?? this.roundingMap,
         limit: allowNullLimit ? limit : limit ?? this.limit,
         limitText: allowNullLimitText ? limitText : limitText ?? this.limitText,
         titleBuilder: titleBuilder ?? this.titleBuilder,
@@ -361,27 +246,24 @@ class LineChartData extends GridAxisData<double> {
         xAxisLabelBuilder: xAxisLabelBuilder ?? this.xAxisLabelBuilder,
         yAxisLabelBuilder: yAxisLabelBuilder ?? this.yAxisLabelBuilder,
         gridType: gridType ?? this.gridType,
-        dataType: dataType ?? this.dataType,
       );
 
   @override
   int get hashCode =>
       data.hashCode ^
       predefinedMaxValue.hashCode ^
-      maxValueRoundingMap.hashCode ^
+      roundingMap.hashCode ^
       limit.hashCode ^
       limitText.hashCode ^
-      gridType.hashCode ^
-      dataType.hashCode;
+      gridType.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is LineChartData &&
       mapEquals(data, other.data) &&
       predefinedMaxValue == other.predefinedMaxValue &&
-      mapEquals(maxValueRoundingMap, other.maxValueRoundingMap) &&
+      mapEquals(roundingMap, other.roundingMap) &&
       limit == other.limit &&
       limitText == other.limitText &&
-      gridType == other.gridType &&
-      dataType == other.dataType;
+      gridType == other.gridType;
 }

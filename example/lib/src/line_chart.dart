@@ -66,11 +66,11 @@ class LineChartExample extends StatelessWidget {
         SetupDivider(),
         _GridTypeSetupGroup(),
         SetupDivider(),
-        _DataTypeSetupGroup(),
-        SetupDivider(),
         _GeneralSettingsSetupGroup(),
         SetupDivider(),
         _YAxisLayoutSetupGroup(),
+        SetupDivider(),
+        _YAxisBasisSetupGroup(),
         SetupDivider(),
         _AxisDivisionsEdgesSetupGroup(),
         SetupDivider(),
@@ -175,6 +175,19 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     return randomizedData;
   }
 
+  Map<DateTime, double> getIotaData() {
+    final year = DateTime.now().year;
+    final month = Random().nextInt(12) + 1;
+    final randomizedData = <DateTime, double>{};
+
+    for (var i = 1; i <= 5; i++) {
+      randomizedData[DateTime(year, month, i)] =
+          Random().nextDouble() / 100 * (Random().nextBool() ? 1 : -1);
+    }
+
+    return randomizedData;
+  }
+
   Map<DateTime, double> getTestData() {
     return {
       DateTime(2023): Random().nextInt(6700).toDouble(),
@@ -221,6 +234,13 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Mixed Data'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getIotaData();
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Iota Data'),
             ),
             Button(
               onPressed: () {
@@ -370,34 +390,6 @@ class _GridTypeSetupGroup extends StatelessWidget {
                 onChanged: (value) =>
                     _data.add(data.requireData.copyWith(gridType: value)),
                 title: Text(LineChartGridType.values[i].name),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _DataTypeSetupGroup extends StatelessWidget {
-  const _DataTypeSetupGroup();
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<LineChartData>(
-      stream: _data,
-      initialData: _data.value,
-      builder: (context, data) {
-        return SetupGroup(
-          title: '└─ Data Type',
-          children: [
-            for (var i = 0; i < LineChartDataType.values.length; i++)
-              RadioListTile<LineChartDataType>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.requireData.dataType,
-                value: LineChartDataType.values[i],
-                onChanged: (value) =>
-                    _data.add(data.requireData.copyWith(dataType: value)),
-                title: Text(LineChartDataType.values[i].name),
               ),
           ],
         );
@@ -576,6 +568,36 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
                 onChanged: (value) =>
                     _settings.add(data.copyWith(yAxisLayout: value)),
                 title: Text(YAxisLayout.values[i].name),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _YAxisBasisSetupGroup extends StatelessWidget {
+  const _YAxisBasisSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Y Axis Baseline',
+          children: [
+            for (var i = 0; i < YAxisBaseline.values.length; i++)
+              RadioListTile<YAxisBaseline>(
+                controlAffinity: ListTileControlAffinity.trailing,
+                groupValue: data.yAxisBaseline,
+                value: YAxisBaseline.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(yAxisBaseline: value)),
+                title: Text(YAxisBaseline.values[i].name),
               ),
           ],
         );

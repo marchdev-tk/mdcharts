@@ -4,13 +4,119 @@
 
 import 'dart:math' as math;
 
+import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
-import 'package:mdcharts/src/_internal.dart' as utils show getRoundedMaxValue;
+import 'package:mdcharts/src/_internal.dart' as utils
+    show getRoundedMaxValue, getRoundedMinValue, normalize, normalizeInverted;
 
 class GridAxisUtils {
   const GridAxisUtils._();
   factory GridAxisUtils() => _instance;
   static const _instance = GridAxisUtils._();
+
+  /// Normalization method.
+  ///
+  /// Converts provided [value] based on [cache], [data] and [settings] into a
+  /// percentage proportion with valid values in inclusive range [0..1].
+  double normalize(
+    double value,
+    GridAxisCacheHolder cache,
+    GridAxisData data,
+    GridAxisSettings settings,
+  ) {
+    final roundedDivisionSize = getRoundedDivisionSize(cache, data, settings);
+
+    if (data.isNegative) {
+      return utils.normalize(
+        (value - getRoundedMaxValue(cache, data, settings)).abs(),
+        roundedDivisionSize * (settings.yAxisDivisions + 1),
+      );
+    }
+
+    return utils.normalizeInverted(
+      value - getRoundedMinValue(cache, data, settings),
+      roundedDivisionSize * (settings.yAxisDivisions + 1),
+    );
+  }
+
+  /// Normalization method for old data.
+  ///
+  /// Converts provided [value] based on [oldDataHashCode] alongside with
+  /// [cache], [data] and [settings] into a percentage proportion with valid
+  /// values in inclusive range [0..1].
+  double normalizeOld(
+    double oldValue,
+    int oldDataHashCode,
+    GridAxisCacheHolder cache,
+    GridAxisData data,
+    GridAxisSettings settings,
+  ) {
+    final oldRoundedMinValue = cache.getRoundedMinValue(oldDataHashCode) ?? 0;
+    final oldRoundedMaxValue = cache.getRoundedMaxValue(oldDataHashCode) ?? 0;
+    final oldRoundedDivisionSize =
+        cache.getRoundedDivisionSize(oldDataHashCode) ?? 1;
+
+    if (data.isNegative) {
+      return utils.normalize(
+        (oldValue - oldRoundedMaxValue).abs(),
+        oldRoundedDivisionSize * (settings.yAxisDivisions + 1),
+      );
+    }
+
+    return utils.normalizeInverted(
+      oldValue - oldRoundedMinValue,
+      oldRoundedDivisionSize * (settings.yAxisDivisions + 1),
+    );
+  }
+
+  /// Map adjustment method.
+  ///
+  /// Adjusts or creates [mapToAdjust] based on [sourceMap].
+  ///
+  /// It is needed for animation smoothness.
+  Map<DateTime, T> adjustMap<T>(
+    Map<DateTime, T> sourceMap,
+    Map<DateTime, T>? mapToAdjust,
+    T defaultValue,
+  ) {
+    Map<DateTime, T> adjustedMap;
+    if (mapToAdjust != null) {
+      adjustedMap = Map.of(mapToAdjust);
+    } else {
+      adjustedMap = {
+        for (var i = 0; i < sourceMap.length; i++)
+          sourceMap.keys.elementAt(i): defaultValue,
+      };
+    }
+
+    if (adjustedMap.length <= sourceMap.length) {
+      adjustedMap = Map.fromEntries([
+        ...adjustedMap.entries,
+        for (var i = adjustedMap.length; i < sourceMap.length; i++)
+          MapEntry(sourceMap.keys.elementAt(i), adjustedMap.values.last),
+      ]);
+    }
+
+    return adjustedMap;
+  }
+
+  /// Retrieves data entry index based on the [selectedXPosition] and [data].
+  int? getSelectedIndex(
+    Size size,
+    double? selectedXPosition,
+    GridAxisData data,
+  ) {
+    if (selectedXPosition == null) {
+      return null;
+    }
+
+    final widthFraction = size.width / data.xAxisDivisions;
+
+    int index = math.max((selectedXPosition / widthFraction).round(), 0);
+    index = math.min(index, data.xAxisDivisions);
+
+    return index;
+  }
 
   /// {@template GridAxisUtils.getRoundedDivisionSize}
   /// Rounding method that calculates and rounds Y axis division size.
@@ -27,34 +133,42 @@ class GridAxisUtils {
       return cachedRoundedSize;
     }
 
-    final yDivisions = settings.yAxisDivisions + 1;
-    double divisionSize;
+    late double divisionSize;
 
-    if (yDivisions == 1) {
-      divisionSize = data.totalValue;
-    } else if (yDivisions == 2 && data.maxValue == 0) {
-      divisionSize = data.minValue.abs() / 2;
-    } else if (yDivisions == 2) {
-      divisionSize = math.max(data.maxValue, data.minValue.abs());
-    } else if (data.minValue == 0 || data.maxValue == 0) {
-      divisionSize = div(data.totalValue, yDivisions);
-    } else {
-      var size = div(data.totalValue, yDivisions);
-      var maxDivisions = (data.maxValue / size).ceil();
-      var minDivisions = (data.minValue.abs() / size).ceil();
-
-      // TODO: find a better way to calculate size of the division.
-      while (maxDivisions + minDivisions > yDivisions) {
-        size = size + 1;
-        maxDivisions = (data.maxValue / size).ceil();
-        minDivisions = (data.minValue.abs() / size).ceil();
-      }
-
+    if (settings.yAxisBaseline == YAxisBaseline.axis) {
+      var size = div(data.totalValueAxisBased, settings.yAxisDivisions);
       divisionSize = size;
     }
 
+    if (settings.yAxisBaseline == YAxisBaseline.zero) {
+      // TODO: fix for values less than 1
+
+      final yDivisions = settings.yAxisDivisions + 1;
+
+      if (yDivisions == 1 ||
+          data.minValueZeroBased == 0 ||
+          data.maxValue == 0) {
+        divisionSize = div(data.totalValueZeroBased, yDivisions);
+      } else if (yDivisions == 2 && data.hasNegativeMinValueZeroBased) {
+        divisionSize = math.max(data.maxValue, data.minValueZeroBased.abs());
+      } else {
+        var size = div(data.totalValueZeroBased, yDivisions);
+        var maxDivisions = (data.maxValue / size).ceil();
+        var minDivisions = (data.minValueZeroBased.abs() / size).ceil();
+
+        // TODO: find a better way to calculate size of the division.
+        while (maxDivisions + minDivisions > yDivisions) {
+          size = size + 1;
+          maxDivisions = (data.maxValue / size).ceil();
+          minDivisions = (data.minValueZeroBased.abs() / size).ceil();
+        }
+
+        divisionSize = size;
+      }
+    }
+
     final roundedSize =
-        utils.getRoundedMaxValue(data.maxValueRoundingMap, divisionSize, 1);
+        utils.getRoundedMaxValue(data.roundingMap, divisionSize, 0);
     cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
 
     return roundedSize;
@@ -77,10 +191,18 @@ class GridAxisUtils {
     }
 
     double minValue = 0;
-    if (data.hasNegativeMinValue) {
+    if (settings.yAxisBaseline == YAxisBaseline.zero &&
+        data.hasNegativeMinValueZeroBased) {
       final size = getRoundedDivisionSize(cache, data, settings);
-      final divisions = (data.minValue.abs() / size).ceil();
-      minValue = size * divisions;
+      final divisions = (data.minValueZeroBased.abs() / size).ceil();
+      minValue = -size * divisions;
+    }
+    if (settings.yAxisBaseline == YAxisBaseline.axis) {
+      minValue = utils.getRoundedMinValue(
+        data.roundingMap,
+        data.minValueAxisBased,
+        0,
+      );
     }
     cache.saveRoundedMinValue(data.hashCode, minValue);
 
@@ -108,12 +230,14 @@ class GridAxisUtils {
     }
 
     double maxValue;
-    if (data.hasNegativeMinValue) {
-      final yDivisions = settings.yAxisDivisions + 1;
-      maxValue = getRoundedDivisionSize(cache, data, settings) * yDivisions;
+    if (settings.yAxisBaseline == YAxisBaseline.zero &&
+        data.hasNegativeMinValueZeroBased) {
+      final size = getRoundedDivisionSize(cache, data, settings);
+      final divisions = (data.maxValue.abs() / size).ceil();
+      maxValue = size * divisions;
     } else {
       maxValue = utils.getRoundedMaxValue(
-        data.maxValueRoundingMap,
+        data.roundingMap,
         data.maxValue,
         settings.yAxisDivisions,
       );

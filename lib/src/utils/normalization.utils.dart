@@ -8,7 +8,7 @@
 /// proportion with valid values in inclusive range [0..1].
 double normalize(double value, double total) {
   final normalizedValue = value / total;
-  return normalizedValue.isNaN ? 0 : normalizedValue;
+  return normalizedValue.isNaN ? 0 : normalizedValue.clamp(.0, 1.0);
 }
 
 /// {@template normalizeInverted}
@@ -22,5 +22,5 @@ double normalize(double value, double total) {
 /// {@endtemplate}
 double normalizeInverted(double value, double maxValue) {
   final normalizedValue = 1 - value / maxValue;
-  return normalizedValue.isNaN ? 0 : normalizedValue;
+  return normalizedValue.isNaN ? 0 : normalizedValue.clamp(.0, 1.0);
 }

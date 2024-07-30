@@ -100,6 +100,8 @@ class CandlestickChartExample extends StatelessWidget {
         SetupDivider(),
         _YAxisLayoutSetupGroup(),
         SetupDivider(),
+        _YAxisBasisSetupGroup(),
+        SetupDivider(),
         _AxisDivisionsEdgesSetupGroup(),
         SetupDivider(),
         _GridStyleSetupGroup(),
@@ -190,26 +192,15 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     final days = Random().nextInt(5) * 4 + 8;
     final randomizedData = <DateTime, CandlestickData>{};
 
-    for (var i = 1; i <= days / 4; i++) {
-      randomizedData[DateTime(year, month, i)] = _generateData(positive: false);
-    }
-    for (var i = 1; i <= days / 4; i++) {
-      randomizedData[DateTime(year, month, i + days ~/ 4)] =
-          _generateData(positive: false);
-    }
-    for (var i = 1; i <= days / 4; i++) {
-      randomizedData[DateTime(year, month, i + (days * 2) ~/ 4)] =
-          _generateData(positive: true);
-    }
-    for (var i = 1; i <= days / 4; i++) {
-      randomizedData[DateTime(year, month, i + (days * 3) ~/ 4)] =
-          _generateData(positive: true);
+    for (var i = 1; i <= days; i++) {
+      randomizedData[DateTime(year, month, i)] =
+          _generateData(positive: Random().nextBool());
     }
 
     return randomizedData;
   }
 
-  Map<DateTime, CandlestickData> getLowData() {
+  Map<DateTime, CandlestickData> getIotaData() {
     final year = DateTime.now().year;
     final month = Random().nextInt(12) + 1;
     final randomizedData = <DateTime, CandlestickData>{};
@@ -217,8 +208,8 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     for (var i = 1; i <= 5; i++) {
       final low = Random().nextDouble() / 100;
       final high = (low + Random().nextDouble() / 100);
-      final bid = Random().nextDouble().clamp(low, high);
-      final ask = Random().nextDouble().clamp(low, high);
+      final bid = (high * Random().nextDouble()).clamp(low, high);
+      final ask = (high * Random().nextDouble()).clamp(low, high);
 
       randomizedData[DateTime(year, month, i)] = CandlestickData(
         low: low,
@@ -263,10 +254,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
             ),
             Button(
               onPressed: () {
-                final randomizedData = getLowData();
+                final randomizedData = getIotaData();
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
-              title: const Text('Randomize with Low Data'),
+              title: const Text('Randomize with Iota Data'),
             ),
             DialogListTile(
               keyboardType:
@@ -429,6 +420,36 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
                 onChanged: (value) =>
                     _settings.add(data.copyWith(yAxisLayout: value)),
                 title: Text(YAxisLayout.values[i].name),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _YAxisBasisSetupGroup extends StatelessWidget {
+  const _YAxisBasisSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<CandlestickChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Y Axis Baseline',
+          children: [
+            for (var i = 0; i < YAxisBaseline.values.length; i++)
+              RadioListTile<YAxisBaseline>(
+                controlAffinity: ListTileControlAffinity.trailing,
+                groupValue: data.yAxisBaseline,
+                value: YAxisBaseline.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(yAxisBaseline: value)),
+                title: Text(YAxisBaseline.values[i].name),
               ),
           ],
         );

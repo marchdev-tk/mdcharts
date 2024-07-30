@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:math' as math;
-
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
@@ -18,6 +16,7 @@ class LineChartPainter extends CustomPainter {
     this.data,
     this.style,
     this.settings,
+    this.oldData,
     this.oldDataHashCode,
     this.padding,
     this.selectedXPosition,
@@ -35,6 +34,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Provides various settings for the line chart.
   final LineChartSettings settings;
+
+  /// Set of required (and optional) `BUT OLD` data to perform an animtion of
+  /// the chart.
+  final LineChartData oldData;
 
   /// Hash code of the `old data` to perform animation of the chart.
   final int oldDataHashCode;
@@ -85,59 +88,60 @@ class LineChartPainter extends CustomPainter {
   double get roundedMaxValue =>
       GridAxisUtils().getRoundedMaxValue(cache, data, settings);
 
-  bool get _isDescendingChart =>
-      data.dataType == LineChartDataType.unidirectional &&
-      data.dataDirection == LineChartDataDirection.descending;
+  /// Normalization method.
+  ///
+  /// For more info refer to [GridAxisUtils.normalize].
+  double normalize(double value) =>
+      GridAxisUtils().normalize(value, cache, data, settings);
 
-  Map<DateTime, double> _adjustMap(
+  /// Normalization method for old data.
+  ///
+  /// For more info refer to [GridAxisUtils.normalizeOld].
+  double normalizeOld(double oldValue) => GridAxisUtils()
+      .normalizeOld(oldValue, oldDataHashCode, cache, data, settings);
+
+  /// Map adjustment method.
+  ///
+  /// For more info refer to [GridAxisUtils.adjustMap].
+  Map<DateTime, double> adjustMap(
     Map<DateTime, double> sourceMap,
     Map<DateTime, double>? mapToAdjust,
   ) {
-    Map<DateTime, double> adjustedMap;
-    if (mapToAdjust != null) {
-      adjustedMap = Map.of(mapToAdjust);
-    } else {
-      adjustedMap = {
-        for (var i = 0; i < sourceMap.length; i++)
-          sourceMap.keys.elementAt(i): sourceMap.values.last,
-      };
-    }
-
-    if (adjustedMap.length <= sourceMap.length) {
-      adjustedMap = Map.fromEntries([
-        ...adjustedMap.entries,
-        for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(sourceMap.keys.elementAt(i), adjustedMap.values.last),
-      ]);
-    }
-
-    return adjustedMap;
+    return GridAxisUtils().adjustMap(
+      sourceMap,
+      mapToAdjust,
+      .0,
+    );
   }
 
-  /// Height of the X axis.
-  double _getZeroHeight(Size size) => data.hasNegativeMinValue
-      ? normalizeInverted(roundedMinValue, roundedMaxValue) * size.height
-      : size.height;
-
-  int? _getSelectedIndex(Size size) {
-    if (selectedXPosition == null) {
-      return null;
+  /// Height of the zero point on y axis.
+  double _getZeroHeight(Size size) {
+    if (settings.yAxisBaseline == YAxisBaseline.zero &&
+        data.hasNegativeMinValueZeroBased) {
+      return normalize(0) * size.height;
     }
 
-    final widthFraction = size.width / data.xAxisDivisions;
+    if (settings.yAxisBaseline == YAxisBaseline.axis &&
+        data.minValueAxisBased <= 0 &&
+        data.maxValue >= 0) {
+      return normalize(0) * size.height;
+    }
 
-    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, _typedData.length - 1);
-
-    return index;
+    return size.height;
   }
+
+  /// Retrieves data entry index.
+  ///
+  /// For more info refer to [GridAxisUtils.getSelectedIndex].
+  int? getSelectedIndex(Size size) =>
+      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
     if (!data.canDraw) {
       return Offset(0, size.height);
     }
 
-    final selectedIndex = precalculatedSelectedIndex ?? _getSelectedIndex(size);
+    final selectedIndex = precalculatedSelectedIndex ?? getSelectedIndex(size);
     final index = selectedIndex ?? data.lastDivisionIndex;
     final entry = selectedIndex == null
         ? data.data.entries.last
@@ -145,9 +149,7 @@ class LineChartPainter extends CustomPainter {
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * index;
-    final y =
-        normalizeInverted(entry.value + roundedMinValue, roundedMaxValue) *
-            size.height;
+    final y = normalize(entry.value) * size.height;
     final point = Offset(x, y);
 
     if (selectedXPosition == null) {
@@ -163,10 +165,10 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size);
+    final selectedIndex = getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = _typedData;
-    final oldMap = _adjustMap(map, cache.getTypedData(oldDataHashCode));
+    final oldMap = adjustMap(map, cache.getTypedData(oldDataHashCode));
     final zeroHeight = _getZeroHeight(size);
     final path = Path();
 
@@ -179,12 +181,8 @@ class LineChartPainter extends CustomPainter {
       final value = map.entries.elementAt(i).value;
       final oldValue = oldMap.entries.elementAt(i).value;
 
-      final normalizedOldY = normalizeInverted(
-        oldValue + (cache.getRoundedMinValue(oldDataHashCode) ?? 0),
-        cache.getRoundedMaxValue(oldDataHashCode) ?? 1,
-      );
-      final normalizedY =
-          normalizeInverted(value + roundedMinValue, roundedMaxValue);
+      final normalizedOldY = normalizeOld(oldValue);
+      final normalizedY = normalize(value);
       final animatedY =
           normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
 
@@ -210,14 +208,18 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.lineFilling) {
-      final firstY = _isDescendingChart ? 0 : initialY;
       final dy = style.lineStyle.stroke / 2;
       final gradientPath = path.shift(Offset(0, -dy));
 
       // finishing path to create valid gradient/color fill
-      gradientPath.lineTo(x, initialY);
-      gradientPath.lineTo(0, initialY);
-      gradientPath.lineTo(0, firstY - dy);
+      if (data.isNegative) {
+        gradientPath.lineTo(x, 0);
+        gradientPath.lineTo(0, 0);
+      } else {
+        gradientPath.lineTo(x, size.height);
+        gradientPath.lineTo(0, size.height);
+      }
+      gradientPath.lineTo(0, initialY - dy);
 
       canvas.drawPath(
         gradientPath,
@@ -228,7 +230,7 @@ class LineChartPainter extends CustomPainter {
     if (settings.altitudeLine) {
       canvas.drawLine(
         Offset(x, y),
-        Offset(x, _getZeroHeight(size)),
+        Offset(x, size.height),
         style.lineStyle.altitudeLinePaint,
       );
     }
@@ -253,8 +255,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     final path = Path();
-    final y =
-        normalizeInverted(data.limit!, roundedMaxValue) * _getZeroHeight(size);
+    final y = normalize(data.limit!) * size.height;
 
     path.moveTo(0, y);
 
@@ -279,8 +280,7 @@ class LineChartPainter extends CustomPainter {
             LimitLabelSnapPosition.chartBoundary
         ? (padding?.left ?? style.tooltipStyle.tooltipHorizontalOverflowWidth)
         : .0;
-    final yCenter =
-        normalizeInverted(data.limit!, roundedMaxValue) * _getZeroHeight(size);
+    final yCenter = normalize(data.limit!) * size.height;
     final textSpan = TextSpan(
       text: data.limitText ?? data.limit.toString(),
       style: data.limitOverused
@@ -311,22 +311,20 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Drop line painter.
-  void _paintDropLine(Canvas canvas, Size size) {
+  void paintDropLine(Canvas canvas, Size size) {
     final showDropLine = selectedXPosition != null && settings.showDropLine;
 
     if (!data.canDraw || !showDropLine) {
       return;
     }
 
-    final zeroHeight = _getZeroHeight(size);
     final point = _getPoint(size);
 
-    paintDropLine(
+    GridAxisPainter.paintDropLine(
       canvas,
       size,
       data,
       style.dropLineStyle,
-      zeroHeight,
       point,
     );
   }
@@ -366,18 +364,18 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Tooltip painter.
-  void _paintTooltip(Canvas canvas, Size size) {
+  void paintTooltip(Canvas canvas, Size size) {
     final showTooltip = selectedXPosition != null && settings.showTooltip;
 
     if (!data.canDraw || !showTooltip) {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size)!;
+    final selectedIndex = getSelectedIndex(size)!;
     final entry = _typedData.entries.elementAt(selectedIndex);
     final point = _getPoint(size, selectedIndex);
 
-    paintTooltip(
+    GridAxisPainter.paintTooltip(
       canvas,
       size,
       data,
@@ -392,9 +390,9 @@ class LineChartPainter extends CustomPainter {
     paintLine(canvas, size);
     paintLimitLine(canvas, size);
     paintLimitLabel(canvas, size);
-    _paintDropLine(canvas, size);
+    paintDropLine(canvas, size);
     paintPoint(canvas, size);
-    _paintTooltip(canvas, size);
+    paintTooltip(canvas, size);
   }
 
   @override
@@ -438,33 +436,11 @@ class LineChartXAxisLabelPainter extends CustomPainter {
   /// painted, but without drop line and tooltip.
   final double? selectedXPosition;
 
-  /// Smart getter of the [data.typedData].
+  /// Retrieves data entry index.
   ///
-  /// If there's cache - it will be used instead of basic [data.typedData].
-  Map<DateTime, double> get _typedData {
-    final cachedTypedData = cache.getTypedData(data.hashCode);
-    if (cachedTypedData != null) {
-      return cachedTypedData;
-    }
-
-    final typedData = data.typedData;
-    cache.saveTypedData(data.hashCode, typedData);
-
-    return typedData;
-  }
-
-  int? _getSelectedIndex(Size size) {
-    if (selectedXPosition == null) {
-      return null;
-    }
-
-    final widthFraction = size.width / data.xAxisDivisions;
-
-    int index = math.max((selectedXPosition! / widthFraction).round(), 0);
-    index = math.min(index, _typedData.length - 1);
-
-    return index;
-  }
+  /// For more info refer to [GridAxisUtils.getSelectedIndex].
+  int? getSelectedIndex(Size size) =>
+      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
 
   List<int> _getXAxisLabelIndexesToPaint(int? labelQuantity) {
     final length = data.xAxisDates.length;
@@ -493,7 +469,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
       return;
     }
 
-    final selectedIndex = _getSelectedIndex(size);
+    final selectedIndex = getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
 
     Offset point;
@@ -538,7 +514,7 @@ class LineChartXAxisLabelPainter extends CustomPainter {
     final dates = data.xAxisDates;
     final steps = _getXAxisLabelIndexesToPaint(settings.xAxisLabelQuantity);
     final painters = <MDTextPainter, bool>{};
-    final selectedIndex = _getSelectedIndex(size);
+    final selectedIndex = getSelectedIndex(size);
 
     MDTextPainter? selectedPainter;
     for (var i = 0; i < dates.length; i++) {

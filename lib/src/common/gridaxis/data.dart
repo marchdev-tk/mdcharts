@@ -11,7 +11,7 @@ abstract class GridAxisData<T> extends ChartData<T> {
   const GridAxisData({
     required super.data,
     super.predefinedMaxValue,
-    super.maxValueRoundingMap = ChartData.defaultMaxValueRoundingMap,
+    super.roundingMap = ChartData.defaultRoundingMap,
     this.xAxisLabelBuilder = defaultXAxisLabelBuilder,
     this.yAxisLabelBuilder = defaultYAxisLabelBuilder,
     TooltipBuilder<T>? titleBuilder,
