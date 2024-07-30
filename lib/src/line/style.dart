@@ -241,6 +241,39 @@ class LineChartLineStyle {
     return paint;
   }
 
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartLineStyle copyWith({
+    bool allowNullFillGradient = false,
+    bool allowNullFillColor = false,
+    Color? color,
+    Color? colorInactive,
+    double? stroke,
+    Color? shadowColor,
+    double? shadowStroke,
+    Offset? shadowOffset,
+    double? shadowBlurRadius,
+    Gradient? fillGradient,
+    Color? fillColor,
+    double? altitudeLineStroke,
+    Color? altitudeLineColor,
+  }) =>
+      LineChartLineStyle(
+        color: color ?? this.color,
+        colorInactive: colorInactive ?? this.colorInactive,
+        stroke: stroke ?? this.stroke,
+        shadowColor: shadowColor ?? this.shadowColor,
+        shadowStroke: shadowStroke ?? this.shadowStroke,
+        shadowOffset: shadowOffset ?? this.shadowOffset,
+        shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
+        fillGradient: allowNullFillGradient
+            ? fillGradient
+            : fillGradient ?? this.fillGradient,
+        fillColor: allowNullFillColor ? fillColor : fillColor ?? this.fillColor,
+        altitudeLineStroke: altitudeLineStroke ?? this.altitudeLineStroke,
+        altitudeLineColor: altitudeLineColor ?? this.altitudeLineColor,
+      );
+
   @override
   int get hashCode =>
       color.hashCode ^
@@ -355,6 +388,29 @@ class LineChartLimitStyle {
     ..style = PaintingStyle.fill
     ..color = labelColor;
 
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartLimitStyle copyWith({
+    TextStyle? labelStyle,
+    TextStyle? labelOveruseStyle,
+    EdgeInsets? labelTextPadding,
+    Color? labelColor,
+    Color? dashColor,
+    double? stroke,
+    double? dashSize,
+    double? gapSize,
+  }) =>
+      LineChartLimitStyle(
+        labelStyle: labelStyle ?? this.labelStyle,
+        labelOveruseStyle: labelOveruseStyle ?? this.labelOveruseStyle,
+        labelTextPadding: labelTextPadding ?? this.labelTextPadding,
+        labelColor: labelColor ?? this.labelColor,
+        dashColor: dashColor ?? this.dashColor,
+        stroke: stroke ?? this.stroke,
+        dashSize: dashSize ?? this.dashSize,
+        gapSize: gapSize ?? this.gapSize,
+      );
+
   @override
   int get hashCode =>
       labelStyle.hashCode ^
@@ -453,6 +509,27 @@ class LineChartPointStyle {
       sigmaY: shadowBlurRadius,
       tileMode: TileMode.decal,
     );
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  LineChartPointStyle copyWith({
+    Color? innerColor,
+    double? innerSize,
+    Color? outerColor,
+    double? outerSize,
+    Color? shadowColor,
+    Offset? shadowOffset,
+    double? shadowBlurRadius,
+  }) =>
+      LineChartPointStyle(
+        innerColor: innerColor ?? this.innerColor,
+        innerSize: innerSize ?? this.innerSize,
+        outerColor: outerColor ?? this.outerColor,
+        outerSize: outerSize ?? this.outerSize,
+        shadowColor: shadowColor ?? this.shadowColor,
+        shadowOffset: shadowOffset ?? this.shadowOffset,
+        shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
+      );
 
   @override
   int get hashCode =>

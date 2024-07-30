@@ -10,6 +10,7 @@
   * Altitude line is painting to the X axis instead of zero line.
   * Line filling path is closed thru either the bottom part of the grid or the top part instead of the starting point.
     (Generally it means that line filling is beautified)
+  * Adjusted `LineChart` example.
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
   * Implemented data below 1 calculations for rounding util.
   * Added `yAxisBaseline` to settings.

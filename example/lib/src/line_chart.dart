@@ -81,14 +81,14 @@ class LineChartExample extends StatelessWidget {
         _AxisStyleSetupGroup(),
         SetupDivider(),
         _ZeroLineStyleSetupGroup(),
-        // SetupDivider(),
-        // lineStyle
-        // SetupDivider(),
-        // limitStyle
+        SetupDivider(),
+        _LineStyleSetupGroup(),
+        SetupDivider(),
+        _LimitStyleSetupGroup(),
         SetupDivider(),
         _DropLineStyleSetupGroup(),
-        // SetupDivider(),
-        // pointStyle
+        SetupDivider(),
+        _PointStyleSetupGroup(),
         SetupDivider(),
         _TooltipStyleSetupGroup(),
       ],
@@ -884,6 +884,334 @@ class _ZeroLineStyleSetupGroup extends StatelessWidget {
   }
 }
 
+class _LineStyleSetupGroup extends StatelessWidget {
+  const _LineStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Line Style',
+          children: [
+            ColorListTile(
+              value: data.lineStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.colorInactive,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      colorInactive: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('colorInactive'),
+            ),
+            IntListTile(
+              value: data.lineStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.shadowColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      shadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowColor'),
+            ),
+            IntListTile(
+              value: data.lineStyle.shadowStroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      shadowStroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowStroke'),
+            ),
+            IntListTile(
+              value: data.lineStyle.shadowOffset.dx.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      shadowOffset: Offset(
+                          value.toDouble(), data.lineStyle.shadowOffset.dy),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowOffset X'),
+            ),
+            IntListTile(
+              value: data.lineStyle.shadowOffset.dy.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      shadowOffset: Offset(
+                          data.lineStyle.shadowOffset.dx, value.toDouble()),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowOffset Y'),
+            ),
+            IntListTile(
+              value: data.lineStyle.shadowBlurRadius.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      shadowBlurRadius: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowBlurRadius'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.fillGradient?.colors.first ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      allowNullFillColor: true,
+                      fillColor: null,
+                      fillGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          value,
+                          data.lineStyle.fillGradient?.colors.last ??
+                              Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('fillGradient first color'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.fillGradient?.colors.last ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      allowNullFillColor: true,
+                      fillColor: null,
+                      fillGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          data.lineStyle.fillGradient?.colors.first ??
+                              Colors.transparent,
+                          value,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('fillGradient last color'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      allowNullFillGradient: true,
+                      fillGradient: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear fillGradient'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.fillColor ?? Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      allowNullFillGradient: true,
+                      fillGradient: null,
+                      fillColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('fillColor'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      allowNullFillColor: true,
+                      fillColor: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear fillColor'),
+            ),
+            ColorListTile(
+              value: data.lineStyle.altitudeLineColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      altitudeLineColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('altitudeLineColor'),
+            ),
+            IntListTile(
+              value: data.lineStyle.altitudeLineStroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    lineStyle: data.lineStyle.copyWith(
+                      altitudeLineStroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('altitudeLineStroke'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _LimitStyleSetupGroup extends StatelessWidget {
+  const _LimitStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Limit Style',
+          children: [
+            ColorListTile(
+              value: data.limitStyle.labelColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    limitStyle: data.limitStyle.copyWith(
+                      labelColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('labelColor'),
+            ),
+            ColorListTile(
+              value: data.limitStyle.dashColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    limitStyle: data.limitStyle.copyWith(
+                      dashColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('dashColor'),
+            ),
+            IntListTile(
+              value: data.limitStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    limitStyle: data.limitStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            IntListTile(
+              value: data.limitStyle.dashSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    limitStyle: data.limitStyle.copyWith(
+                      dashSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('dashSize'),
+            ),
+            IntListTile(
+              value: data.limitStyle.gapSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    limitStyle: data.limitStyle.copyWith(
+                      gapSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('gapSize'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _DropLineStyleSetupGroup extends StatelessWidget {
   const _DropLineStyleSetupGroup();
 
@@ -949,6 +1277,133 @@ class _DropLineStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('gapSize'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PointStyleSetupGroup extends StatelessWidget {
+  const _PointStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Point Style',
+          children: [
+            ColorListTile(
+              value: data.pointStyle.innerColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      innerColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('innerColor'),
+            ),
+            IntListTile(
+              value: data.pointStyle.innerSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      innerSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('innerSize'),
+            ),
+            ColorListTile(
+              value: data.pointStyle.outerColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      outerColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('outerColor'),
+            ),
+            IntListTile(
+              value: data.pointStyle.outerSize.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      outerSize: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('outerSize'),
+            ),
+            ColorListTile(
+              value: data.pointStyle.shadowColor,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      shadowColor: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowColor'),
+            ),
+            IntListTile(
+              value: data.pointStyle.shadowOffset.dx.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      shadowOffset: Offset(
+                          value.toDouble(), data.pointStyle.shadowOffset.dy),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowOffset X'),
+            ),
+            IntListTile(
+              value: data.pointStyle.shadowOffset.dy.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      shadowOffset: Offset(
+                          data.pointStyle.shadowOffset.dx, value.toDouble()),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowOffset Y'),
+            ),
+            IntListTile(
+              value: data.pointStyle.shadowBlurRadius.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    pointStyle: data.pointStyle.copyWith(
+                      shadowBlurRadius: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('shadowBlurRadius'),
             ),
           ],
         );
