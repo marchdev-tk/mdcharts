@@ -21,6 +21,7 @@ class GridAxisSettings {
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
+    this.showZeroLine = false,
     this.showDropLine = true,
     this.showTooltip = true,
   });
@@ -37,6 +38,7 @@ class GridAxisSettings {
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
+    this.showZeroLine = false,
     this.showDropLine = true,
     this.showTooltip = true,
   })  : xAxisDivisions = 0,
@@ -133,6 +135,11 @@ class GridAxisSettings {
   /// Defaults to `0`.
   final double yAxisLabelSpacing;
 
+  /// Wether to show zero line or not.
+  ///
+  /// Defaults to `false`.
+  final bool showZeroLine;
+
   /// Whether to show drop lines beneath the selected item or not.
   ///
   /// Defaults to `true`.
@@ -160,6 +167,7 @@ class GridAxisSettings {
     YAxisLayout? yAxisLayout,
     YAxisBaseline? yAxisBaseline,
     double? yAxisLabelSpacing,
+    bool? showZeroLine,
     bool? showDropLine,
     bool? showTooltip,
   }) =>
@@ -181,6 +189,7 @@ class GridAxisSettings {
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisBaseline: yAxisBaseline ?? this.yAxisBaseline,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showZeroLine: showZeroLine ?? this.showZeroLine,
         showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
       );
@@ -200,6 +209,7 @@ class GridAxisSettings {
       yAxisLayout.hashCode ^
       yAxisBaseline.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showZeroLine.hashCode ^
       showDropLine.hashCode ^
       showTooltip.hashCode;
 
@@ -220,6 +230,7 @@ class GridAxisSettings {
       yAxisLayout == other.yAxisLayout &&
       yAxisBaseline == other.yAxisBaseline &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showZeroLine == other.showZeroLine &&
       showDropLine == other.showDropLine &&
       showTooltip == other.showTooltip;
 }

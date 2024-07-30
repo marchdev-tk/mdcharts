@@ -79,6 +79,8 @@ class LineChartExample extends StatelessWidget {
         _GridStyleSetupGroup(),
         SetupDivider(),
         _AxisStyleSetupGroup(),
+        SetupDivider(),
+        _ZeroLineStyleSetupGroup(),
         // SetupDivider(),
         // lineStyle
         // SetupDivider(),
@@ -485,6 +487,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showZeroLine,
+              onChanged: (value) =>
+                  _settings.add(data.copyWith(showZeroLine: value == true)),
+              title: const Text('showZeroLine'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showDropLine,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showDropLine: value == true)),
@@ -820,6 +829,53 @@ class _AxisStyleSetupGroup extends StatelessWidget {
                 );
               },
               title: const Text('xAxisSelectedLabelBorderRadius'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _ZeroLineStyleSetupGroup extends StatelessWidget {
+  const _ZeroLineStyleSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartStyle>(
+      stream: _style,
+      initialData: _style.value,
+      builder: (context, style) {
+        final data = style.requireData;
+
+        return SetupGroup(
+          title: 'Zero Line Style',
+          children: [
+            IntListTile(
+              value: data.zeroLineStyle.stroke.toInt(),
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    zeroLineStyle: data.zeroLineStyle.copyWith(
+                      stroke: value.toDouble(),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('stroke'),
+            ),
+            ColorListTile(
+              value: data.zeroLineStyle.color,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    zeroLineStyle: data.zeroLineStyle.copyWith(
+                      color: value,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('color'),
             ),
           ],
         );

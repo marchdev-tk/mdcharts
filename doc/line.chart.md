@@ -51,6 +51,7 @@
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
 * `yAxisBaseline` - baseline of the Y axis label values, defaults to `YAxisBaseline.zero`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
+* `showZeroLine` - whether to show zero line or not, defaults to `false`.
 * `showDropLine` - whether to show drop line or not, defaults to `true`.
 * `showTooltip` - whether to show tooltip or not, defaults to `true`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
@@ -65,6 +66,7 @@
 
 * `gridStyle` - styling options for grid, for more details please refer to the source code of the `GridStyle`.
 * `axisStyle` - styling options for axis, for more details please refer to the source code of the `AxisStyle`.
+* `zeroLineStyle` - styling options for zero line, for more details please refer to the source code of the `ZeroLineStyle`.
 * `lineStyle` - styling options for chart line, for more details please refer to the source code of the `LineChartLineStyle`.
 * `limitStyle` - styling options for limit, for more details please refer to the source code of the `LineChartLimitStyle`.
 * `dropLineStyle` - styling options for drop line, for more details please refer to the source code of the `DropLineStyle`.

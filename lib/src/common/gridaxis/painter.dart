@@ -147,6 +147,24 @@ class GridAxisPainter extends CustomPainter {
     }
   }
 
+  void paintZeroLine(Canvas canvas, Size size) {
+    if (!settings.showZeroLine ||
+        data.minValueAxisBased > 0 ||
+        data.maxValue < 0 ||
+        style.zeroLineStyle.stroke <= 0 ||
+        style.zeroLineStyle.color.alpha == 0) {
+      return;
+    }
+
+    final y = GridAxisUtils().normalize(0, cache, data, settings) * size.height;
+
+    canvas.drawLine(
+      Offset(0, y),
+      Offset(size.width, y),
+      style.zeroLineStyle.paint,
+    );
+  }
+
   /// Drop line painter.
   static void paintDropLine(
     Canvas canvas,
@@ -275,6 +293,7 @@ class GridAxisPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     paintGrid(canvas, size);
     paintAxis(canvas, size);
+    paintZeroLine(canvas, size);
   }
 
   @override

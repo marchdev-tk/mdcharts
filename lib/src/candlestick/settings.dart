@@ -21,6 +21,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisBaseline = YAxisBaseline.zero,
     super.yAxisLabelSpacing = 0,
+    super.showZeroLine = false,
     super.showDropLine = true,
     super.showTooltip = true,
     this.selectionEnabled = true,
@@ -38,6 +39,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisBaseline = YAxisBaseline.zero,
     super.yAxisLabelSpacing = 0,
+    super.showZeroLine = false,
     super.showDropLine = true,
     super.showTooltip = true,
     this.selectionEnabled = true,
@@ -66,6 +68,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     YAxisLayout? yAxisLayout,
     YAxisBaseline? yAxisBaseline,
     double? yAxisLabelSpacing,
+    bool? showZeroLine,
     bool? showDropLine,
     bool? showTooltip,
     bool? selectionEnabled,
@@ -88,6 +91,7 @@ class CandlestickChartSettings extends GridAxisSettings {
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisBaseline: yAxisBaseline ?? this.yAxisBaseline,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showZeroLine: showZeroLine ?? this.showZeroLine,
         showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
@@ -107,6 +111,7 @@ class CandlestickChartSettings extends GridAxisSettings {
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showZeroLine.hashCode ^
       showDropLine.hashCode ^
       showTooltip.hashCode ^
       selectionEnabled.hashCode;
@@ -127,6 +132,7 @@ class CandlestickChartSettings extends GridAxisSettings {
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showZeroLine == other.showZeroLine &&
       showDropLine == other.showDropLine &&
       showTooltip == other.showTooltip &&
       selectionEnabled == other.selectionEnabled;

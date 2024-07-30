@@ -32,6 +32,7 @@ class LineChartSettings extends GridAxisSettings {
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisBaseline = YAxisBaseline.zero,
     super.yAxisLabelSpacing = 0,
+    super.showZeroLine = false,
     super.showDropLine = true,
     super.showTooltip = true,
     this.lineFilling = true,
@@ -55,6 +56,7 @@ class LineChartSettings extends GridAxisSettings {
     super.yAxisLayout = YAxisLayout.overlay,
     super.yAxisBaseline = YAxisBaseline.zero,
     super.yAxisLabelSpacing = 0,
+    super.showZeroLine = false,
     super.showDropLine = true,
     super.showTooltip = true,
     this.lineFilling = true,
@@ -120,6 +122,7 @@ class LineChartSettings extends GridAxisSettings {
     YAxisLayout? yAxisLayout,
     YAxisBaseline? yAxisBaseline,
     double? yAxisLabelSpacing,
+    bool? showZeroLine,
     bool? showDropLine,
     bool? showTooltip,
     bool? lineFilling,
@@ -148,6 +151,7 @@ class LineChartSettings extends GridAxisSettings {
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisBaseline: yAxisBaseline ?? this.yAxisBaseline,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showZeroLine: showZeroLine ?? this.showZeroLine,
         showDropLine: showDropLine ?? this.showDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
         lineFilling: lineFilling ?? this.lineFilling,
@@ -174,6 +178,7 @@ class LineChartSettings extends GridAxisSettings {
       showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showZeroLine.hashCode ^
       showDropLine.hashCode ^
       showTooltip.hashCode ^
       lineFilling.hashCode ^
@@ -200,6 +205,7 @@ class LineChartSettings extends GridAxisSettings {
       showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showZeroLine == other.showZeroLine &&
       showDropLine == other.showDropLine &&
       showTooltip == other.showTooltip &&
       lineFilling == other.lineFilling &&

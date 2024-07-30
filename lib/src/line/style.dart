@@ -13,6 +13,7 @@ class LineChartStyle extends GridAxisStyle {
   const LineChartStyle({
     super.gridStyle = const GridStyle(),
     super.axisStyle = const AxisStyle(),
+    super.zeroLineStyle = const ZeroLineStyle(),
     this.lineStyle = const LineChartLineStyle(),
     this.limitStyle = const LineChartLimitStyle(),
     super.dropLineStyle = const DropLineStyle(),
@@ -40,6 +41,7 @@ class LineChartStyle extends GridAxisStyle {
   LineChartStyle copyWith({
     GridStyle? gridStyle,
     AxisStyle? axisStyle,
+    ZeroLineStyle? zeroLineStyle,
     LineChartLineStyle? lineStyle,
     LineChartLimitStyle? limitStyle,
     DropLineStyle? dropLineStyle,
@@ -49,6 +51,7 @@ class LineChartStyle extends GridAxisStyle {
       LineChartStyle(
         gridStyle: gridStyle ?? this.gridStyle,
         axisStyle: axisStyle ?? this.axisStyle,
+        zeroLineStyle: zeroLineStyle ?? this.zeroLineStyle,
         lineStyle: lineStyle ?? this.lineStyle,
         limitStyle: limitStyle ?? this.limitStyle,
         dropLineStyle: dropLineStyle ?? this.dropLineStyle,
@@ -60,6 +63,7 @@ class LineChartStyle extends GridAxisStyle {
   int get hashCode =>
       gridStyle.hashCode ^
       axisStyle.hashCode ^
+      zeroLineStyle.hashCode ^
       lineStyle.hashCode ^
       limitStyle.hashCode ^
       pointStyle.hashCode ^
@@ -71,6 +75,7 @@ class LineChartStyle extends GridAxisStyle {
       other is LineChartStyle &&
       gridStyle == other.gridStyle &&
       axisStyle == other.axisStyle &&
+      zeroLineStyle == other.zeroLineStyle &&
       lineStyle == other.lineStyle &&
       limitStyle == other.limitStyle &&
       pointStyle == other.pointStyle &&

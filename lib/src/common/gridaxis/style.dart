@@ -11,6 +11,7 @@ class GridAxisStyle {
   const GridAxisStyle({
     this.gridStyle = const GridStyle(),
     this.axisStyle = const AxisStyle(),
+    this.zeroLineStyle = const ZeroLineStyle(),
     this.dropLineStyle = const DropLineStyle(),
     this.tooltipStyle = const TooltipStyle(),
   });
@@ -20,6 +21,9 @@ class GridAxisStyle {
 
   /// Style of the axis lines.
   final AxisStyle axisStyle;
+
+  /// Style of the zero line.
+  final ZeroLineStyle zeroLineStyle;
 
   /// Style of the drop line.
   final DropLineStyle dropLineStyle;
@@ -293,6 +297,54 @@ class AxisStyle {
       xAxisSelectedLabelBackgroundColor ==
           other.xAxisSelectedLabelBackgroundColor &&
       xAxisSelectedLabelBorderRadius == other.xAxisSelectedLabelBorderRadius;
+}
+
+/// Contains various customization options for the zero line of the chart.
+class ZeroLineStyle {
+  /// Constructs an instance of [ZeroLineStyle].
+  const ZeroLineStyle({
+    this.color = const Color(0x33FFFFFF),
+    this.stroke = 1,
+  });
+
+  /// Color of the zero line.
+  ///
+  /// Defaults to `0x33FFFFFF`.
+  final Color color;
+
+  /// Stroke of the zero line.
+  ///
+  /// Defaults to `1`.
+  final double stroke;
+
+  /// Gets a [Paint] for the zero line drawing.
+  Paint get paint => Paint()
+    ..isAntiAlias = true
+    ..filterQuality = FilterQuality.medium
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = stroke
+    ..color = color;
+
+  /// Creates a copy of the current object with new values specified in
+  /// arguments.
+  ZeroLineStyle copyWith({
+    Color? color,
+    double? stroke,
+  }) =>
+      ZeroLineStyle(
+        color: color ?? this.color,
+        stroke: stroke ?? this.stroke,
+      );
+
+  @override
+  int get hashCode => color.hashCode ^ stroke.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is GridStyle &&
+      color == other.xAxisColor &&
+      stroke == other.xAxisStroke;
 }
 
 /// Contains various customization options for the drop line.

@@ -11,6 +11,7 @@ class CandlestickChartStyle extends GridAxisStyle {
   const CandlestickChartStyle({
     super.gridStyle = const GridStyle(),
     super.axisStyle = const AxisStyle(),
+    super.zeroLineStyle = const ZeroLineStyle(),
     super.dropLineStyle = const DropLineStyle(),
     this.candleStickStyle = const CandlestickChartCandleStickStyle(),
     super.tooltipStyle = const TooltipStyle(),
@@ -25,6 +26,7 @@ class CandlestickChartStyle extends GridAxisStyle {
   CandlestickChartStyle copyWith({
     GridStyle? gridStyle,
     AxisStyle? axisStyle,
+    ZeroLineStyle? zeroLineStyle,
     DropLineStyle? dropLineStyle,
     CandlestickChartCandleStickStyle? candleStickStyle,
     TooltipStyle? tooltipStyle,
@@ -32,6 +34,7 @@ class CandlestickChartStyle extends GridAxisStyle {
       CandlestickChartStyle(
         gridStyle: gridStyle ?? this.gridStyle,
         axisStyle: axisStyle ?? this.axisStyle,
+        zeroLineStyle: zeroLineStyle ?? this.zeroLineStyle,
         dropLineStyle: dropLineStyle ?? this.dropLineStyle,
         candleStickStyle: candleStickStyle ?? this.candleStickStyle,
         tooltipStyle: tooltipStyle ?? this.tooltipStyle,
@@ -41,6 +44,7 @@ class CandlestickChartStyle extends GridAxisStyle {
   int get hashCode =>
       gridStyle.hashCode ^
       axisStyle.hashCode ^
+      zeroLineStyle.hashCode ^
       dropLineStyle.hashCode ^
       candleStickStyle.hashCode ^
       tooltipStyle.hashCode;
@@ -50,6 +54,7 @@ class CandlestickChartStyle extends GridAxisStyle {
       other is CandlestickChartStyle &&
       gridStyle == other.gridStyle &&
       axisStyle == other.axisStyle &&
+      zeroLineStyle == other.zeroLineStyle &&
       dropLineStyle == other.dropLineStyle &&
       candleStickStyle == other.candleStickStyle &&
       tooltipStyle == other.tooltipStyle;

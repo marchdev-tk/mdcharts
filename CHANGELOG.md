@@ -10,11 +10,12 @@
   * Altitude line is painting to the X axis instead of zero line.
   * Line filling path is closed thru either the bottom part of the grid or the top part instead of the starting point.
     (Generally it means that line filling is beautified)
-* Changes of the `GridAxis` based charts (`LineChart`/`BarChart`/`CandlestickChart`):
+* Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
   * Implemented data below 1 calculations for rounding util.
   * Added `yAxisBaseline` to settings.
   * X axis fixed at the bottom and no more attached to zero line.
   * Drop line is painting to the X axis instead of zero line.
+  * Added zero line as a painting option.
 
 ## 6.0.3 - 22.07.2024
 
