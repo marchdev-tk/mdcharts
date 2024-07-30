@@ -63,7 +63,7 @@ abstract class ChartData<T> {
   /// used.
   final Map<num, num> roundingMap;
 
-  /// Checks whether chart and point could be drawned or not.
+  /// Checks whether chart could be drawned or not.
   ///
   /// It checks for [data] length to be greater than or equal to 1.
   bool get canDraw => data.isNotEmpty;
@@ -135,6 +135,9 @@ abstract class ChartData<T> {
     // minus 1 due to to the first point that lies on the Y axis.
     return data.length - 1;
   }
+
+  /// Gets list of [DateTime] that is used to build X axis labels.
+  List<DateTime> get xAxisDates => data.keys.toList();
 
   @override
   int get hashCode =>

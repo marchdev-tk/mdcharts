@@ -149,6 +149,7 @@ class LineChartData extends GridAxisData<double> {
   }
 
   /// Gets list of [DateTime] that is used to build X axis labels.
+  @override
   List<DateTime> get xAxisDates {
     switch (gridType) {
       case LineChartGridType.undefined:

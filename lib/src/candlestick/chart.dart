@@ -175,7 +175,7 @@ class _CandlestickChartState extends State<CandlestickChart>
         }
 
         final xAxisLabels = CustomPaint(
-          painter: CandlestickChartXAxisLabelPainter(
+          painter: XAxisLabelPainter(
             widget.data,
             widget.style,
             widget.settings,

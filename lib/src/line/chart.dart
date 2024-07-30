@@ -171,7 +171,6 @@ class _LineChartState extends State<LineChart>
 
         final xAxisLabels = CustomPaint(
           painter: LineChartXAxisLabelPainter(
-            _cache,
             widget.data,
             widget.style,
             widget.settings,
