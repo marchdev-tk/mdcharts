@@ -113,7 +113,8 @@ class GridAxisUtils {
     final widthFraction = size.width / data.xAxisDivisions;
 
     int index = math.max((selectedXPosition / widthFraction).round(), 0);
-    index = math.min(index, data.xAxisDivisions);
+    index =
+        math.min(math.min(index, data.xAxisDivisions), data.data.length - 1);
 
     return index;
   }
