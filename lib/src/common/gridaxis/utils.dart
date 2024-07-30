@@ -136,7 +136,7 @@ class GridAxisUtils {
     late double divisionSize;
 
     if (settings.yAxisBaseline == YAxisBaseline.axis) {
-      var size = div(data.totalValueAxisBased, settings.yAxisDivisions);
+      var size = div(data.totalValue, settings.yAxisDivisions);
       divisionSize = size;
     }
 
@@ -200,7 +200,7 @@ class GridAxisUtils {
     if (settings.yAxisBaseline == YAxisBaseline.axis) {
       minValue = utils.getRoundedMinValue(
         data.roundingMap,
-        data.minValueAxisBased,
+        data.minValue,
         0,
       );
     }

@@ -121,7 +121,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     if (settings.yAxisBaseline == YAxisBaseline.axis &&
-        data.minValueAxisBased <= 0 &&
+        data.minValue <= 0 &&
         data.maxValue >= 0) {
       return normalize(0) * size.height;
     }

@@ -36,7 +36,7 @@ abstract class ChartData<T> {
   /// By default it will be calculated based on the logic of [maxValue].
   final double? predefinedMaxValue;
 
-  /// Rounding map of the [maxValue] or/and [minValueAxisBased].
+  /// Rounding map of the [maxValue] or/and [minValue].
   ///
   /// Logic of rounding is following:
   ///
@@ -100,7 +100,7 @@ abstract class ChartData<T> {
   double minValuePredicate(T value);
 
   /// Determines axis based min value for chart to draw.
-  double get minValueAxisBased {
+  double get minValue {
     if (!canDraw) {
       return 0;
     }
@@ -108,18 +108,25 @@ abstract class ChartData<T> {
     return data.values.map(minValuePredicate).min;
   }
 
-  /// Determines sum of the [maxValue] and absolute value of
-  /// [minValueAxisBased].
-  double get totalValueAxisBased => maxValue - minValueAxisBased;
+  /// Determines sum of the [maxValue] and absolute value of [minValue].
+  double get totalValue => maxValue - minValue;
+
+  // !                               ! //
+  // ! START OF `zero based getters` ! //
+  // !                               ! //
 
   /// Determines zero based min value for chart to draw.
-  double get minValueZeroBased => math.min(minValueAxisBased, .0);
+  double get minValueZeroBased => math.min(minValue, .0);
 
   /// Whether [minValueZeroBased] is less than `0`.
   bool get hasNegativeMinValueZeroBased => minValueZeroBased < 0;
 
-  /// Determines total value via [maxValue] and [minValueZeroBased].
+  /// Determines sum of the [maxValue] and absolute value of [minValueZeroBased].
   double get totalValueZeroBased => maxValue - minValueZeroBased;
+
+  // !                               ! //
+  // !  END OF `zero based getters`  ! //
+  // !                               ! //
 
   /// Gets divisions of the X axis.
   int get xAxisDivisions {
