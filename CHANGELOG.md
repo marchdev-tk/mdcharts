@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.1.0 - 23.07.2024
+## 6.1.0 - 31.07.2024
 
 * Changes of the `CandlestickChart`:
   * Added doji painting.
