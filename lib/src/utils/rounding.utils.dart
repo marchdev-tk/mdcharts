@@ -4,10 +4,7 @@
 
 import 'decimal.utils.dart';
 
-// TODO: reconsider rounding map for min values
-// ! (test on positive data, with YAxisBasis.value, minValue must be less than 10)
-
-/// Rounding method that rounds [initalMaxValue] so, it could be divided by
+/// Rounding method that ceils [initalValue] so, it could be divided by
 /// [yAxisDivisions] with "beautiful" integer chunks.
 ///
 /// Example 1:
@@ -21,15 +18,19 @@ import 'decimal.utils.dart';
 /// - maxValue = -83 (from data).
 ///
 /// So, based on these values maxValue will be rounded to `-75`.
-double getRoundedMaxValue(
+double getCeilRoundedValue(
   Map<num, num> roundingMap,
-  double initalMaxValue,
+  double initalValue,
   int yAxisDivisions,
 ) {
-  if (initalMaxValue < 0) {
-    final roundedValue = getRoundedMinValue(
+  if (initalValue == 0) {
+    return 0;
+  }
+
+  if (initalValue < 0) {
+    final roundedValue = getFloorRoundedValue(
       roundingMap,
-      initalMaxValue.abs(),
+      initalValue.abs(),
       yAxisDivisions,
     );
     return -roundedValue;
@@ -38,13 +39,13 @@ double getRoundedMaxValue(
   final yDivisions = yAxisDivisions + 1;
   final complement = roundingMap.entries
       .firstWhere(
-        (entry) => initalMaxValue < entry.key,
+        (entry) => initalValue < entry.key,
         orElse: () => roundingMap.entries.last,
       )
       .value;
 
-  if (initalMaxValue < 1) {
-    var rounded = initalMaxValue;
+  if (initalValue < 1) {
+    var rounded = initalValue;
     var multiplier = 1.0;
 
     while (mult(complement, multiplier).remainder(1) != 0) {
@@ -61,8 +62,7 @@ double getRoundedMaxValue(
     return div(rounded, multiplier);
   }
 
-  var rounded =
-      sub(add(initalMaxValue, complement), initalMaxValue % complement);
+  var rounded = sub(add(initalValue, complement), initalValue % complement);
 
   while (rounded % yDivisions != 0) {
     rounded = add(rounded, complement);
@@ -71,7 +71,7 @@ double getRoundedMaxValue(
   return rounded;
 }
 
-/// Rounding method that rounds [initalMinValue] so, it could be divided by
+/// Rounding method that floors [initalValue] so, it could be divided by
 /// [yAxisDivisions] with "beautiful" integer chunks.
 ///
 /// Example:
@@ -85,15 +85,19 @@ double getRoundedMaxValue(
 /// - maxValue = -83 (from data).
 ///
 /// So, based on these values maxValue will be rounded to `-90`.
-double getRoundedMinValue(
+double getFloorRoundedValue(
   Map<num, num> roundingMap,
-  double initalMinValue,
+  double initalValue,
   int yAxisDivisions,
 ) {
-  if (initalMinValue < 0) {
-    final roundedValue = getRoundedMaxValue(
+  if (initalValue == 0) {
+    return 0;
+  }
+
+  if (initalValue < 0) {
+    final roundedValue = getCeilRoundedValue(
       roundingMap,
-      initalMinValue.abs(),
+      initalValue.abs(),
       yAxisDivisions,
     );
     return -roundedValue;
@@ -102,13 +106,13 @@ double getRoundedMinValue(
   final yDivisions = yAxisDivisions + 1;
   final complement = roundingMap.entries
       .firstWhere(
-        (entry) => initalMinValue < entry.key,
+        (entry) => initalValue < entry.key,
         orElse: () => roundingMap.entries.last,
       )
       .value;
 
-  if (initalMinValue < 1) {
-    var rounded = initalMinValue;
+  if (initalValue < 1) {
+    var rounded = initalValue;
     var multiplier = 1.0;
 
     while (mult(complement, multiplier).remainder(1) != 0) {
@@ -125,7 +129,7 @@ double getRoundedMinValue(
     return div(rounded, multiplier);
   }
 
-  var rounded = sub(initalMinValue, initalMinValue % complement);
+  var rounded = sub(initalValue, initalValue % complement);
 
   while (rounded % yDivisions != 0) {
     rounded = sub(rounded, complement);

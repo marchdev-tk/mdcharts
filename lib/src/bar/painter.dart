@@ -50,7 +50,7 @@ class BarChartBarPainter extends CustomPainter {
   /// - maxValue = 83 (from data).
   ///
   /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue => getRoundedMaxValue(
+  double get roundedMaxValue => getCeilRoundedValue(
         data.roundingMap,
         data.maxValue,
         settings.yAxisDivisions,
@@ -791,7 +791,7 @@ class BarChartGridPainter extends CustomPainter {
   /// - maxValue = 83 (from data).
   ///
   /// So, based on these values maxValue will be rounded to `90`.
-  double get roundedMaxValue => getRoundedMaxValue(
+  double get roundedMaxValue => getCeilRoundedValue(
         data.roundingMap,
         data.maxValue,
         settings.yAxisDivisions,

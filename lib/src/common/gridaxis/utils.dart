@@ -7,7 +7,11 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
 import 'package:mdcharts/src/_internal.dart' as utils
-    show getRoundedMaxValue, getRoundedMinValue, normalize, normalizeInverted;
+    show
+        getCeilRoundedValue,
+        getFloorRoundedValue,
+        normalize,
+        normalizeInverted;
 
 class GridAxisUtils {
   const GridAxisUtils._();
@@ -169,7 +173,7 @@ class GridAxisUtils {
     }
 
     final roundedSize =
-        utils.getRoundedMaxValue(data.roundingMap, divisionSize, 0);
+        utils.getCeilRoundedValue(data.roundingMap, divisionSize, 0);
     cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
 
     return roundedSize;
@@ -199,7 +203,7 @@ class GridAxisUtils {
       minValue = -size * divisions;
     }
     if (settings.yAxisBaseline == YAxisBaseline.axis) {
-      minValue = utils.getRoundedMinValue(
+      minValue = utils.getFloorRoundedValue(
         data.roundingMap,
         data.minValue,
         0,
@@ -237,7 +241,7 @@ class GridAxisUtils {
       final divisions = (data.maxValue.abs() / size).ceil();
       maxValue = size * divisions;
     } else {
-      maxValue = utils.getRoundedMaxValue(
+      maxValue = utils.getCeilRoundedValue(
         data.roundingMap,
         data.maxValue,
         settings.yAxisDivisions,
