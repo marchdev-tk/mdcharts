@@ -10,7 +10,6 @@ class MDTextPainter {
   MDTextPainter(TextSpan textSpan) {
     _textPainter = TextPainter(
       text: textSpan,
-      maxLines: 1,
       textDirection: TextDirection.ltr,
     );
   }

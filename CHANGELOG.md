@@ -17,6 +17,7 @@
   * X axis fixed at the bottom and no more attached to zero line.
   * Drop line is painting to the X axis instead of zero line.
   * Added zero line as a painting option.
+  * Added ability to use several lines in tooltips.
 
 ## 6.0.3 - 22.07.2024
 
