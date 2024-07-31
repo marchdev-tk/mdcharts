@@ -84,6 +84,10 @@ final _data = BehaviorSubject<CandlestickChartData>.seeded(CandlestickChartData(
     DateTime(2022, 7, 31):
         const CandlestickData(low: 1500, high: 2250, bid: 1700, ask: 2000),
   },
+  subtitleBuilder: (key, value) {
+    final doubleValue = CandlestickChartData.getSelectedValueFromData(value);
+    return doubleValue.toString();
+  },
 ));
 
 class CandlestickChartExample extends StatelessWidget {

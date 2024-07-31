@@ -8,14 +8,14 @@ import 'package:mdcharts/src/_internal.dart';
 /// Main painter of the [LineChart].
 class CandlestickChartPainter extends CustomPainter {
   /// Constructs an instance of [CandlestickChartPainter].
-  CandlestickChartPainter(
+  const CandlestickChartPainter(
     this.cache,
     this.data,
     this.style,
     this.settings,
     this.oldData,
     this.oldDataHashCode,
-    this.selectedXPosition,
+    this.selectedPosition,
     this.valueCoef,
   );
 
@@ -38,12 +38,12 @@ class CandlestickChartPainter extends CustomPainter {
   /// Hash code of the `old data` to perform animation of the chart.
   final int oldDataHashCode;
 
-  /// Selected position on the X axis.
+  /// Selected position.
   ///
   /// If provided, point with drop line and tooltip will be painted for the nearest point
-  /// of the selected position on the X axis. Otherwise, last point will be
+  /// of the selected position on the X and Y axis. Otherwise, last point will be
   /// painted, but without drop line and tooltip.
-  final double? selectedXPosition;
+  final Offset? selectedPosition;
 
   /// Multiplication coeficient of the value. It is used to create chart
   /// animation.
@@ -91,33 +91,64 @@ class CandlestickChartPainter extends CustomPainter {
   ///
   /// For more info refer to [GridAxisUtils.getSelectedIndex].
   int? getSelectedIndex(Size size) =>
-      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
+      GridAxisUtils().getSelectedIndex(size, selectedPosition?.dx, data);
 
-  Offset _getPoint(Size size, int selectedIndex) {
+  ({Offset point, double value}) _getPointData(Size size, int selectedIndex) {
+    var pointValue = double.nan;
+
     if (!data.canDraw) {
-      return Offset(0, size.height);
+      return (point: Offset(0, size.height), value: pointValue);
     }
 
     final entry = data.data.entries.elementAt(selectedIndex);
     final widthFraction = size.width / data.xAxisDivisions;
 
     final x = widthFraction * selectedIndex;
-    final y = normalize(entry.value.high) * size.height;
+    final yLow = normalize(entry.value.low) * size.height;
+    final yHigh = normalize(entry.value.high) * size.height;
+    final yBid = normalize(entry.value.bid) * size.height;
+    final yAsk = normalize(entry.value.ask) * size.height;
+    final selectedY = selectedPosition!.dy;
+    final list = [yLow, yHigh, yAsk, yBid, selectedY]..sort();
+    final indexOfSelected = list.indexOf(selectedY);
+    double y;
+    if (indexOfSelected == 0) {
+      y = yHigh;
+    } else if (indexOfSelected == 4) {
+      y = yLow;
+    } else {
+      final prev = list[indexOfSelected - 1];
+      final next = list[indexOfSelected + 1];
+      if ((selectedY - prev).abs() > (selectedY - next).abs()) {
+        y = next;
+      } else {
+        y = prev;
+      }
+    }
     final point = Offset(x, y);
+    if (y == yLow) {
+      pointValue = entry.value.low;
+    } else if (y == yHigh) {
+      pointValue = entry.value.high;
+    } else if (y == yBid) {
+      pointValue = entry.value.bid;
+    } else if (y == yAsk) {
+      pointValue = entry.value.ask;
+    }
 
-    return point;
+    return (point: point, value: pointValue);
   }
 
   /// Drop line painter.
   void paintDropLine(Canvas canvas, Size size) {
-    final showDropLine = selectedXPosition != null && settings.showDropLine;
+    final showDropLine = selectedPosition != null && settings.showDropLine;
 
     if (!data.canDraw || !showDropLine) {
       return;
     }
 
     final selectedIndex = getSelectedIndex(size)!;
-    final point = _getPoint(size, selectedIndex);
+    final point = _getPointData(size, selectedIndex).point;
 
     GridAxisPainter.paintDropLine(
       canvas,
@@ -162,10 +193,10 @@ class CandlestickChartPainter extends CustomPainter {
       yBid = getYValue(value.bid, oldValue.bid) * size.height;
       yAsk = getYValue(value.ask, oldValue.ask) * size.height;
 
-      final stickStyle = value.isAscending
+      final stickStyle = value.isBullish
           ? style.candleStickStyle.bullishStickPaint
           : style.candleStickStyle.bearishStickPaint;
-      final candleStyle = value.isAscending
+      final candleStyle = value.isBullish
           ? style.candleStickStyle.bullishCandlePaint
           : style.candleStickStyle.bearishCandlePaint;
 
@@ -185,7 +216,7 @@ class CandlestickChartPainter extends CustomPainter {
 
   /// Tooltip painter.
   void paintTooltip(Canvas canvas, Size size) {
-    final showTooltip = selectedXPosition != null && settings.showTooltip;
+    final showTooltip = selectedPosition != null && settings.showTooltip;
 
     if (!data.canDraw || !showTooltip) {
       return;
@@ -193,15 +224,19 @@ class CandlestickChartPainter extends CustomPainter {
 
     final selectedIndex = getSelectedIndex(size)!;
     final entry = data.data.entries.elementAt(selectedIndex);
-    final point = _getPoint(size, selectedIndex);
+    final pointData = _getPointData(size, selectedIndex);
+    final modifiedEntry = MapEntry(
+      entry.key,
+      ValueCandlestickData.of(entry.value, pointData.value),
+    );
 
     GridAxisPainter.paintTooltip(
       canvas,
       size,
       data,
       style.tooltipStyle,
-      entry,
-      point,
+      modifiedEntry,
+      pointData.point,
     );
   }
 
@@ -219,6 +254,6 @@ class CandlestickChartPainter extends CustomPainter {
       style != oldDelegate.style ||
       settings != oldDelegate.settings ||
       oldDataHashCode != oldDelegate.oldDataHashCode ||
-      selectedXPosition != oldDelegate.selectedXPosition ||
+      selectedPosition != oldDelegate.selectedPosition ||
       valueCoef != oldDelegate.valueCoef;
 }

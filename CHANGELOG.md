@@ -4,6 +4,7 @@
 
 * Changes of the `CandlestickChart`:
   * Added doji painting.
+  * Tooltip reacting on both X and Y axis instead of only on X axis.
 * Changes of the `LineChart`:
   * Added ability to set starting point of the `LineChart`.
   * Removed explicit configuration of `LineChartDataType`.

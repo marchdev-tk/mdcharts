@@ -52,7 +52,7 @@ class _CandlestickChartState extends State<CandlestickChart>
   CandlestickChartData? oldData;
   int? oldDataHashCode;
 
-  double? xPosition;
+  Offset? position;
 
   void _adjustOldData() {
     oldData ??= data.copyWith(
@@ -67,12 +67,12 @@ class _CandlestickChartState extends State<CandlestickChart>
     );
   }
 
-  void _clearXPosition([dynamic details]) {
-    setState(() => xPosition = null);
+  void _clearPosition([dynamic details]) {
+    setState(() => position = null);
   }
 
-  void _setXPosition(dynamic details) {
-    setState(() => xPosition = details.localPosition.dx);
+  void _setPosition(dynamic details) {
+    setState(() => position = details.localPosition);
   }
 
   void _startAnimation() {
@@ -145,7 +145,7 @@ class _CandlestickChartState extends State<CandlestickChart>
                 widget.settings,
                 oldData!,
                 oldDataHashCode!,
-                xPosition,
+                position,
                 _valueAnimation.value,
               ),
               size: Size(
@@ -159,16 +159,16 @@ class _CandlestickChartState extends State<CandlestickChart>
         if (widget.settings.selectionEnabled) {
           if (Platform.isMobile) {
             chart = GestureDetector(
-              onHorizontalDragCancel: _clearXPosition,
-              onHorizontalDragEnd: _clearXPosition,
-              onHorizontalDragStart: _setXPosition,
-              onHorizontalDragUpdate: _setXPosition,
+              onPanCancel: _clearPosition,
+              onPanEnd: _clearPosition,
+              onPanStart: _setPosition,
+              onPanUpdate: _setPosition,
               child: chart,
             );
           } else {
             chart = MouseRegion(
-              onExit: _clearXPosition,
-              onHover: _setXPosition,
+              onExit: _clearPosition,
+              onHover: _setPosition,
               child: chart,
             );
           }
@@ -179,7 +179,7 @@ class _CandlestickChartState extends State<CandlestickChart>
             widget.data,
             widget.style,
             widget.settings,
-            xPosition,
+            position?.dx,
           ),
           size: Size(
             math.max(0, maxWidthAdjusted),
