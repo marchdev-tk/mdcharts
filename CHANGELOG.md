@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.1 - 31.07.2024
+
+* Downgraded `decimal` dependency version to `^2.3.3`.
+
 ## 6.1.0 - 31.07.2024
 
 * Changes of the `CandlestickChart`:
