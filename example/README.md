@@ -6,60 +6,12 @@ Demonstrates how to use the mdcharts package.
 
 For more info about how to use `LineChart` please refer to the example app.
 
-### Periodical monthly unidirectional ascending `LineChart` with customizable text
-
-```dart
-LineChart(
-  settings: const LineChartSettings.gridless(),
-  data: LineChartData(
-    gridType: LineChartGridType.monthly,
-    dataType: LineChartDataType.unidirectional,
-    limit: 80,
-    limitText: '80000 ₴',
-    titleBuilder: (key, value) => DateFormat.MMMMd().format(key),
-    subtitleBuilder: (key, value) => '${(value * 1000).toInt()} ₴',
-    xAxisLabelBuilder: (value) => DateFormat.MMMd().format(value),
-    data: {
-      DateTime(2022, 03, 1): 10,
-      DateTime(2022, 03, 2): 15,
-      DateTime(2022, 03, 3): 18,
-      DateTime(2022, 03, 5): 21,
-      DateTime(2022, 03, 7): 28,
-      DateTime(2022, 03, 11): 33,
-      DateTime(2022, 03, 16): 38,
-      DateTime(2022, 03, 20): 83,
-    },
-  ),
-)
-```
-
-### Periodical monthly unidirectional descending `LineChart`
-
-```dart
-LineChart(
-  settings: const LineChartSettings.gridless(),
-  data: LineChartData(
-    gridType: LineChartGridType.monthly,
-    dataType: LineChartDataType.unidirectional,
-    data: {
-      DateTime(2022, 03, 2): 83,
-      DateTime(2022, 03, 3): 76,
-      DateTime(2022, 03, 6): 65,
-      DateTime(2022, 03, 9): 29,
-      DateTime(2022, 03, 11): 15,
-      DateTime(2022, 03, 20): 10,
-    },
-  ),
-)
-```
-
-### Periodical monthly bidirectional `LineChart` with custom filling, tooltip and visible grid
+### Periodical monthly `LineChart` with custom filling, tooltip and visible grid
 
 ```dart
 LineChart(
   data: LineChartData(
     gridType: LineChartGridType.monthly,
-    dataType: LineChartDataType.bidirectional,
     limit: 90,
     data: {
       DateTime(2022, 02, 2): 10,
@@ -201,6 +153,10 @@ CandlestickChart(
       DateTime(2022, 7, 04): const CandlestickData(low: 200, high: 250, bid: 200, ask: 250),
       DateTime(2022, 7, 05): const CandlestickData(low: 220, high: 250, bid: 230, ask: 230),
       DateTime(2022, 7, 06): const CandlestickData(low: 250, high: 350, bid: 250, ask: 250),
+    },
+    subtitleBuilder: (key, value) {
+      final doubleValue = CandlestickChartData.getSelectedValueFromData(value);
+      return doubleValue.toString();
     },
   ),
 )

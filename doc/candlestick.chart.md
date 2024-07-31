@@ -14,12 +14,13 @@
 * ### Max Value 
 
   * `predefinedMaxValue` - predefined max value for the chart.
-  * `maxValueRoundingMap` - rounding map for the maxValue that is used by beautification function of Y axis labels.
+  * `roundingMap` - rounding map that is used by beautification function of Y axis labels.
 
 * ### Tooltip builders
 
   * `titleBuilder` - builds title of the tooltip based on `DateTime` key and/or `double` value from provided data.
   * `subtitleBuilder` - builds subtitle of the tooltip based on `DateTime` key and/or `double` value from provided data.
+    For retrieval of currently hovered/dragged Y axis value (could be one of `CandlestickData` fields) use `CandlestickChartData.getSelectedValueFromData`. 
 
 * ### Label builder
 

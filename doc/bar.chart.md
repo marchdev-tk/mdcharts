@@ -9,7 +9,7 @@
 * ### Max Value 
 
   * `predefinedMaxValue` - predefined max value for the chart.
-  * `maxValueRoundingMap` - rounding map for the maxValue that is used by beautification function of Y axis labels.
+  * `roundingMap` - rounding map that is used by beautification function of Y axis labels.
 
 * ### Selection
 

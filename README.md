@@ -42,4 +42,3 @@ Feel free to post a feature requests or report a bug [here](https://github.com/m
 * Impl common Grid and Axis styles/settings/painters for BarChart
 * Impl common styles/settings/painters for Arc-based charts
 * Add MdDate to all charts (with unit-tests)
-* Add ability to accept custom painters (paint funcs) (requires ENORMOUS amount of time)
