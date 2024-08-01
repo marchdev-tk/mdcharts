@@ -97,7 +97,10 @@ class GridAxisUtils {
       adjustedMap = Map.fromEntries([
         ...adjustedMap.entries,
         for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(sourceMap.keys.elementAt(i), adjustedMap.values.last),
+          MapEntry(
+            sourceMap.keys.elementAt(i),
+            adjustedMap.values.lastOrNull ?? defaultValue,
+          ),
       ]);
     }
 
