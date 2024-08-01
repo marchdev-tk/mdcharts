@@ -43,7 +43,7 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.showDropLine = true,
     super.showTooltip = true,
     this.selectionEnabled = true,
-  });
+  }) : super.gridless();
 
   /// Whether interactive selection is enabled or not.
   ///

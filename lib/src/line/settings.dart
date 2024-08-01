@@ -66,7 +66,7 @@ class LineChartSettings extends GridAxisSettings {
     this.showPoint = true,
     this.selectionEnabled = true,
     this.startLineFromZero = true,
-  });
+  }) : super.gridless();
 
   /// Whether to fill the space between the line and the X axis with
   /// color or gradient, which depends on provided style.

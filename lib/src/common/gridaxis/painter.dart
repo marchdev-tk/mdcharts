@@ -148,11 +148,14 @@ class GridAxisPainter extends CustomPainter {
   }
 
   void paintZeroLine(Canvas canvas, Size size) {
-    if (!settings.showZeroLine ||
-        data.minValue > 0 ||
-        data.maxValue < 0 ||
-        style.zeroLineStyle.stroke <= 0 ||
-        style.zeroLineStyle.color.alpha == 0) {
+    final canPaint =
+        style.zeroLineStyle.stroke > 0 && style.zeroLineStyle.color.alpha > 0;
+    final minValue = settings.yAxisBaseline == YAxisBaseline.axis
+        ? data.minValue
+        : data.minValueZeroBased;
+    final visible = minValue <= 0 && data.maxValue >= 0;
+
+    if (!settings.showZeroLine || !canPaint || !visible) {
       return;
     }
 

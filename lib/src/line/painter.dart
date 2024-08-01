@@ -115,14 +115,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Height of the zero point on y axis.
   double _getZeroHeight(Size size) {
-    if (settings.yAxisBaseline == YAxisBaseline.zero &&
-        data.hasNegativeMinValueZeroBased) {
-      return normalize(0) * size.height;
-    }
-
-    if (settings.yAxisBaseline == YAxisBaseline.axis &&
-        data.minValue <= 0 &&
-        data.maxValue >= 0) {
+    final minValue = settings.yAxisBaseline == YAxisBaseline.axis
+        ? data.minValue
+        : data.minValueZeroBased;
+    if (minValue <= 0 && data.maxValue >= 0) {
       return normalize(0) * size.height;
     }
 

@@ -150,6 +150,12 @@ class GridAxisSettings {
   /// Defaults to `true`.
   final bool showTooltip;
 
+  /// Whether a chart is gridless or not.
+  bool get isGridless =>
+      xAxisDivisions == 0 &&
+      yAxisDivisions == 0 &&
+      axisDivisionEdges == AxisDivisionEdges.none;
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   GridAxisSettings copyWith({

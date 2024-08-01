@@ -129,7 +129,9 @@ class GridAxisUtils {
   /// {@template GridAxisUtils.getRoundedDivisionSize}
   /// Rounding method that calculates and rounds Y axis division size.
   ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
+  /// **Please note**: if [GridAxisSettings.yAxisBaseline] is
+  /// [YAxisBaseline.zero] and [GridAxisSettings.yAxisDivisions] is `0`, then
+  /// `division size` will be calculated as for [YAxisBaseline.axis].
   /// {@endtemplate}
   double getRoundedDivisionSize(
     GridAxisCacheHolder cache,
@@ -143,12 +145,18 @@ class GridAxisUtils {
 
     late double divisionSize;
 
-    if (settings.yAxisBaseline == YAxisBaseline.axis) {
-      var size = div(data.totalValue, settings.yAxisDivisions);
+    if (settings.yAxisBaseline == YAxisBaseline.axis ||
+        settings.yAxisDivisions == 0) {
+      var yDivisions = settings.yAxisDivisions;
+      if (settings.yAxisDivisions == 0) {
+        yDivisions = 1;
+      }
+      var size = div(data.totalValue, yDivisions);
       divisionSize = size;
     }
 
-    if (settings.yAxisBaseline == YAxisBaseline.zero) {
+    if (settings.yAxisBaseline == YAxisBaseline.zero &&
+        settings.yAxisDivisions > 0) {
       // TODO: fix for values less than 1
 
       final yDivisions = settings.yAxisDivisions + 1;
@@ -183,10 +191,29 @@ class GridAxisUtils {
   }
 
   /// {@template GridAxisUtils.getRoundedMinValue}
-  /// Rounding method that rounds [data.minValue] to achieve beautified value
-  /// so, it could be multiplied by [settings.yAxisDivisions].
+  /// Rounding method that rounds [data.minValue] or [data.minValueZeroBased]
+  /// (based on the [GridAxisSettings.yAxisBaseline]) to achieve beautified
+  /// value so, it could be multiplied by [settings.yAxisDivisions].
   ///
-  /// Note that this will be used only if [data.hasNegativeMinValue] is `true`.
+  /// **Please note**: if [GridAxisSettings.yAxisBaseline] is
+  /// [YAxisBaseline.zero] and [GridAxisSettings.yAxisDivisions] is `0`, then
+  /// `min value` will be calculated as for [YAxisBaseline.axis].
+  ///
+  /// `Example 1`:
+  /// - `Input`:
+  ///    - `yAxisDivisions` is `2` (2 division lines results with 3 chunks of
+  ///       chart)
+  ///    - `maxValue` is `83` (from data)
+  /// - `Output`:
+  ///    - `75`
+  ///
+  /// `Example 2`:
+  /// - `Input`:
+  ///    - `yAxisDivisions` is `2` (2 division lines results with 3 chunks of
+  ///      chart)
+  ///    - `maxValue` is `-83` (from data)
+  /// - `Output`:
+  ///    - `-90`
   /// {@endtemplate}
   double getRoundedMinValue(
     GridAxisCacheHolder cache,
@@ -199,18 +226,20 @@ class GridAxisUtils {
     }
 
     double minValue = 0;
-    if (settings.yAxisBaseline == YAxisBaseline.zero &&
-        data.hasNegativeMinValueZeroBased) {
-      final size = getRoundedDivisionSize(cache, data, settings);
-      final divisions = (data.minValueZeroBased.abs() / size).ceil();
-      minValue = -size * divisions;
-    }
-    if (settings.yAxisBaseline == YAxisBaseline.axis) {
+    if (settings.yAxisBaseline == YAxisBaseline.axis ||
+        settings.yAxisDivisions == 0) {
       minValue = utils.getFloorRoundedValue(
         data.roundingMap,
         data.minValue,
         0,
       );
+    }
+    if (settings.yAxisBaseline == YAxisBaseline.zero &&
+        data.hasNegativeMinValueZeroBased &&
+        settings.yAxisDivisions > 0) {
+      final size = getRoundedDivisionSize(cache, data, settings);
+      final divisions = (data.minValueZeroBased.abs() / size).ceil();
+      minValue = -size * divisions;
     }
     cache.saveRoundedMinValue(data.hashCode, minValue);
 
@@ -221,11 +250,25 @@ class GridAxisUtils {
   /// Rounding method that rounds [data.maxValue] so, it could be divided by
   /// [settings.yAxisDivisions] with beautified integer chunks.
   ///
-  /// Example:
-  /// - yAxisDivisions = 2 (so 2 division lines results with 3 chunks of chart);
-  /// - maxValue = 83 (from data).
+  /// **Please note**: if [GridAxisSettings.yAxisBaseline] is
+  /// [YAxisBaseline.zero] and [GridAxisSettings.yAxisDivisions] is `0`, then
+  /// `max value` will be calculated as for [YAxisBaseline.axis].
   ///
-  /// So, based on these values maxValue will be rounded to `90`.
+  /// `Example 1`:
+  /// - `Input`:
+  ///    - `yAxisDivisions` is `2` (2 division lines results with 3 chunks of
+  ///       chart)
+  ///    - `maxValue` is `83` (from data)
+  /// - `Output`:
+  ///    - `90`
+  ///
+  /// `Example 2`:
+  /// - `Input`:
+  ///    - `yAxisDivisions` is `2` (2 division lines results with 3 chunks of
+  ///      chart)
+  ///    - `maxValue` is `-83` (from data)
+  /// - `Output`:
+  ///    - `-75`
   /// {@endtemplate}
   double getRoundedMaxValue(
     GridAxisCacheHolder cache,
@@ -239,7 +282,8 @@ class GridAxisUtils {
 
     double maxValue;
     if (settings.yAxisBaseline == YAxisBaseline.zero &&
-        data.hasNegativeMinValueZeroBased) {
+        data.hasNegativeMinValueZeroBased &&
+        settings.yAxisDivisions > 0) {
       final size = getRoundedDivisionSize(cache, data, settings);
       final divisions = (data.maxValue.abs() / size).ceil();
       maxValue = size * divisions;
