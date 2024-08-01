@@ -3,6 +3,7 @@
 ## 6.1.2 - 01.08.2024
 
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
+  * Fixed painting issue of gridless settings constructor (issue [#10](https://github.com/marchdev-tk/mdcharts/issues/10))
   * Fixed incorrect painting If all data is zero (issue [#11](https://github.com/marchdev-tk/mdcharts/issues/11)).
   * Fixed an issue of map adjuster (issue [#12](https://github.com/marchdev-tk/mdcharts/issues/12)).
 
