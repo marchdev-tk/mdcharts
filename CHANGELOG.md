@@ -4,6 +4,7 @@
 
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
   * Fixed incorrect painting If all data is zero (issue [#11](https://github.com/marchdev-tk/mdcharts/issues/11)).
+  * Fixed an issue of map adjuster (issue [#12](https://github.com/marchdev-tk/mdcharts/issues/12)).
 
 ## 6.1.1 - 31.07.2024
 
