@@ -177,6 +177,23 @@ class _GeneralDataSetupGroup extends StatelessWidget {
     return randomizedData;
   }
 
+  Map<DateTime, double> getBurndownRandomizedData() {
+    final year = DateTime.now().year;
+    final month = Random().nextInt(12) + 1;
+    final days = Random().nextInt(20) + 8;
+    final randomizedData = <DateTime, double>{};
+    for (var i = 1, maxValue = 10000; i < days; i++) {
+      if (maxValue == 0) {
+        break;
+      }
+      final value = Random().nextInt(maxValue);
+      maxValue = value;
+      randomizedData[DateTime(year, month, i)] = value.toDouble();
+    }
+
+    return randomizedData;
+  }
+
   Map<DateTime, double> getIotaData() {
     final year = DateTime.now().year;
     final month = Random().nextInt(12) + 1;
@@ -236,6 +253,13 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 _data.add(_data.value.copyWith(data: randomizedData));
               },
               title: const Text('Randomize with Mixed Data'),
+            ),
+            Button(
+              onPressed: () {
+                final randomizedData = getBurndownRandomizedData();
+                _data.add(_data.value.copyWith(data: randomizedData));
+              },
+              title: const Text('Randomize with Burndown Data'),
             ),
             Button(
               onPressed: () {
