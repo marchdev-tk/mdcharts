@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.1.2 - 01.08.2024
+
+* Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
+  * Fixed incorrect painting If all data is zero (issue [#11](https://github.com/marchdev-tk/mdcharts/issues/11)).
+
 ## 6.1.1 - 31.07.2024
 
 * Downgraded `decimal` dependency version to `^2.3.3`.
