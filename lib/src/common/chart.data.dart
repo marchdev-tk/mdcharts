@@ -67,9 +67,13 @@ abstract class ChartData<T> {
   /// It checks for [data] length to be greater than or equal to 1.
   bool get canDraw => data.isNotEmpty;
 
-  /// Checks whether every data entry is less than or equal to `0` or not.
-  bool get isNegative => data.entries.every((e) =>
-      minValuePredicate(e.value) <= 0 && maxValuePredicate(e.value) <= 0);
+  /// Checks whether every data entry is less than or equal to `0` and any of
+  /// it strictly less than `0` or not.
+  bool get isNegative =>
+      data.entries.every((e) =>
+          minValuePredicate(e.value) <= 0 && maxValuePredicate(e.value) <= 0) &&
+      data.entries.any((e) =>
+          minValuePredicate(e.value) < 0 && maxValuePredicate(e.value) < 0);
 
   /// Predicate that must be resolved with max value of the provided data type [T].
   double maxValuePredicate(T value);

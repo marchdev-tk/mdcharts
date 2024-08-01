@@ -24,7 +24,7 @@ double getCeilRoundedValue(
   int yAxisDivisions,
 ) {
   if (initalValue == 0) {
-    return 0;
+    return roundingMap.entries.first.value.toDouble();
   }
 
   if (initalValue < 0) {
