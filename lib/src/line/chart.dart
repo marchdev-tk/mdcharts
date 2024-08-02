@@ -119,6 +119,11 @@ class _LineChartState extends State<LineChart>
       stream: _yAxisLabelWidth.distinct(),
       initialData: _yAxisLabelWidth.value,
       builder: (context, snapshot) {
+        if (widget.settings.yAxisLayout == YAxisLayout.displace &&
+            snapshot.requireData == 0) {
+          return Container();
+        }
+
         var spacing = .0;
         var displaceInset = .0;
         var maxWidthAdjusted = maxWidth;

@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.1.3 - 02.08.2024
+
+* Changes of the `CandlestickChart`:
+* Changes of the `LineChart`:
+  * Fixed an issue of `YAxisLayout.displace` initial painting without a displacement (issue [#13](https://github.com/marchdev-tk/mdcharts/issues/13)).
+
 ## 6.1.2 - 01.08.2024
 
 * Changes of the `LineChart`:
