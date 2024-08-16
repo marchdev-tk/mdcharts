@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.1.4 - 16.08.2024
+
+* Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
+  * Fixed `GirdAxisUtils.adjustMap`.
+
 ## 6.1.3 - 02.08.2024
 
 * Changes of the `CandlestickChart`:
