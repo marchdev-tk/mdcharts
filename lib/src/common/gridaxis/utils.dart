@@ -78,30 +78,38 @@ class GridAxisUtils {
   /// Adjusts or creates [mapToAdjust] based on [sourceMap].
   ///
   /// It is needed for animation smoothness.
-  Map<DateTime, T> adjustMap<T>(
+  Map<DateTime, T> adjustMap<T extends Object>(
     Map<DateTime, T> sourceMap,
     Map<DateTime, T>? mapToAdjust,
     T defaultValue,
   ) {
-    Map<DateTime, T> adjustedMap;
-    if (mapToAdjust != null) {
-      adjustedMap = Map.of(mapToAdjust);
-    } else {
-      adjustedMap = {
-        for (var i = 0; i < sourceMap.length; i++)
-          sourceMap.keys.elementAt(i): defaultValue,
-      };
-    }
+    final adjustedMap = {
+      for (var i = 0; i < sourceMap.length; i++)
+        sourceMap.keys.elementAt(i): defaultValue,
+    };
 
-    if (adjustedMap.length <= sourceMap.length) {
-      adjustedMap = Map.fromEntries([
-        ...adjustedMap.entries,
-        for (var i = adjustedMap.length; i < sourceMap.length; i++)
-          MapEntry(
-            sourceMap.keys.elementAt(i),
-            adjustedMap.values.lastOrNull ?? defaultValue,
-          ),
-      ]);
+    for (var entry in sourceMap.entries) {
+      if (mapToAdjust == null) {
+        adjustedMap[entry.key] = defaultValue;
+        continue;
+      }
+
+      T value;
+
+      if (entry.key.isBefore(mapToAdjust.keys.first)) {
+        value = mapToAdjust.values.firstOrNull ?? defaultValue;
+      } else if (entry.key.isAfter(mapToAdjust.keys.last)) {
+        value = mapToAdjust.values.lastOrNull ?? defaultValue;
+      } else if (mapToAdjust[entry.key] != null) {
+        value = mapToAdjust[entry.key]!;
+      } else {
+        final list = [...mapToAdjust.keys, entry.key]..sort();
+        final indexOfEntry = list.indexOf(entry.key);
+        final prevValue = mapToAdjust[list[(indexOfEntry - 1)]]!;
+        value = prevValue;
+      }
+
+      adjustedMap[entry.key] = value;
     }
 
     return adjustedMap;
