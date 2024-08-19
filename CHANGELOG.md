@@ -3,6 +3,7 @@
 ## 6.2.0 - 19.08.2024
 
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
+  * Added `defaultDivisionInterval` to `GridAxisSettings`.
   * Fixed `GirdAxisUtils.adjustMap`.
 
 ## 6.1.4 - 16.08.2024
