@@ -19,6 +19,7 @@ enum LimitLabelSnapPosition {
 class LineChartSettings extends GridAxisSettings {
   /// Constructs an instance of [LineChartSettings].
   const LineChartSettings({
+    super.defaultDivisionInterval = 100,
     super.xAxisDivisions = 3,
     super.yAxisDivisions = 2,
     super.xAxisLabelQuantity,
@@ -42,10 +43,11 @@ class LineChartSettings extends GridAxisSettings {
     this.showPoint = true,
     this.selectionEnabled = true,
     this.startLineFromZero = true,
-  });
+  }) : super();
 
   /// Constructs an instance of [LineChartSettings] without grids.
   const LineChartSettings.gridless({
+    super.defaultDivisionInterval = 100,
     super.xAxisLabelQuantity,
     super.showAxisX = true,
     super.showAxisXSelectedLabelIfConcealed = false,
@@ -109,6 +111,7 @@ class LineChartSettings extends GridAxisSettings {
   @override
   LineChartSettings copyWith({
     bool allowNullXAxisLabelQuantity = false,
+    double? defaultDivisionInterval,
     int? xAxisDivisions,
     int? yAxisDivisions,
     int? xAxisLabelQuantity,
@@ -134,6 +137,8 @@ class LineChartSettings extends GridAxisSettings {
     bool? startLineFromZero,
   }) =>
       LineChartSettings(
+        defaultDivisionInterval:
+            defaultDivisionInterval ?? this.defaultDivisionInterval,
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
         xAxisLabelQuantity: allowNullXAxisLabelQuantity
@@ -166,21 +171,7 @@ class LineChartSettings extends GridAxisSettings {
 
   @override
   int get hashCode =>
-      xAxisDivisions.hashCode ^
-      yAxisDivisions.hashCode ^
-      xAxisLabelQuantity.hashCode ^
-      axisDivisionEdges.hashCode ^
-      showAxisX.hashCode ^
-      showAxisXSelectedLabelIfConcealed.hashCode ^
-      showAxisY.hashCode ^
-      showAxisXLabels.hashCode ^
-      showAxisYLabels.hashCode ^
-      showAxisXLabelSelection.hashCode ^
-      yAxisLayout.hashCode ^
-      yAxisLabelSpacing.hashCode ^
-      showZeroLine.hashCode ^
-      showDropLine.hashCode ^
-      showTooltip.hashCode ^
+      super.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
@@ -192,22 +183,7 @@ class LineChartSettings extends GridAxisSettings {
   @override
   bool operator ==(Object other) =>
       other is LineChartSettings &&
-      xAxisDivisions == other.xAxisDivisions &&
-      yAxisDivisions == other.yAxisDivisions &&
-      xAxisLabelQuantity == other.xAxisLabelQuantity &&
-      axisDivisionEdges == other.axisDivisionEdges &&
-      showAxisX == other.showAxisX &&
-      showAxisXSelectedLabelIfConcealed ==
-          other.showAxisXSelectedLabelIfConcealed &&
-      showAxisY == other.showAxisY &&
-      showAxisXLabels == other.showAxisXLabels &&
-      showAxisYLabels == other.showAxisYLabels &&
-      showAxisXLabelSelection == other.showAxisXLabelSelection &&
-      yAxisLayout == other.yAxisLayout &&
-      yAxisLabelSpacing == other.yAxisLabelSpacing &&
-      showZeroLine == other.showZeroLine &&
-      showDropLine == other.showDropLine &&
-      showTooltip == other.showTooltip &&
+      super == other &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&

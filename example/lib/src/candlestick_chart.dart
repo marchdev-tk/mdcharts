@@ -306,6 +306,12 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
           title: 'General Settings',
           children: [
             IntListTile(
+              value: data.defaultDivisionInterval.toInt(),
+              onChanged: (value) => _settings.add(
+                  data.copyWith(defaultDivisionInterval: value.toDouble())),
+              title: const Text('defaultDivisionInterval'),
+            ),
+            IntListTile(
               value: data.xAxisDivisions,
               onChanged: (value) =>
                   _settings.add(data.copyWith(xAxisDivisions: value)),

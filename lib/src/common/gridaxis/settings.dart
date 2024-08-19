@@ -8,6 +8,7 @@ import 'package:mdcharts/src/_internal.dart';
 class GridAxisSettings {
   /// Constructs an instance of [GridAxisSettings].
   const GridAxisSettings({
+    this.defaultDivisionInterval = 100,
     this.xAxisDivisions = 3,
     this.yAxisDivisions = 2,
     this.xAxisLabelQuantity,
@@ -24,10 +25,11 @@ class GridAxisSettings {
     this.showZeroLine = false,
     this.showDropLine = true,
     this.showTooltip = true,
-  });
+  }) : assert(defaultDivisionInterval > 0);
 
   /// Constructs an instance of [GridAxisSettings] without grids.
   const GridAxisSettings.gridless({
+    this.defaultDivisionInterval = 100,
     this.xAxisLabelQuantity,
     this.showAxisX = true,
     this.showAxisXSelectedLabelIfConcealed = false,
@@ -41,9 +43,17 @@ class GridAxisSettings {
     this.showZeroLine = false,
     this.showDropLine = true,
     this.showTooltip = true,
-  })  : xAxisDivisions = 0,
+  })  : assert(defaultDivisionInterval > 0),
+        xAxisDivisions = 0,
         yAxisDivisions = 0,
         axisDivisionEdges = AxisDivisionEdges.none;
+
+  /// Default value of the interval between divisions of the Y axis.
+  ///
+  /// Defaults to `100`.
+  ///
+  /// **Note**: value must be greater than `0`.
+  final double defaultDivisionInterval;
 
   /// Divisions of the X axis or the quantity of the grid lines on X axis.
   ///
@@ -160,6 +170,7 @@ class GridAxisSettings {
   /// arguments.
   GridAxisSettings copyWith({
     bool allowNullXAxisLabelQuantity = false,
+    double? defaultDivisionInterval,
     int? xAxisDivisions,
     int? yAxisDivisions,
     int? xAxisLabelQuantity,
@@ -178,6 +189,8 @@ class GridAxisSettings {
     bool? showTooltip,
   }) =>
       GridAxisSettings(
+        defaultDivisionInterval:
+            defaultDivisionInterval ?? this.defaultDivisionInterval,
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
         xAxisLabelQuantity: allowNullXAxisLabelQuantity
@@ -202,6 +215,7 @@ class GridAxisSettings {
 
   @override
   int get hashCode =>
+      defaultDivisionInterval.hashCode ^
       xAxisDivisions.hashCode ^
       yAxisDivisions.hashCode ^
       xAxisLabelQuantity.hashCode ^
@@ -222,6 +236,7 @@ class GridAxisSettings {
   @override
   bool operator ==(Object other) =>
       other is GridAxisSettings &&
+      defaultDivisionInterval == other.defaultDivisionInterval &&
       xAxisDivisions == other.xAxisDivisions &&
       yAxisDivisions == other.yAxisDivisions &&
       xAxisLabelQuantity == other.xAxisLabelQuantity &&

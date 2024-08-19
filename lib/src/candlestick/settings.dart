@@ -8,6 +8,7 @@ import 'package:mdcharts/src/_internal.dart';
 class CandlestickChartSettings extends GridAxisSettings {
   /// Constructs an instance of [CandlestickChartSettings].
   const CandlestickChartSettings({
+    super.defaultDivisionInterval = 100,
     super.xAxisDivisions = 3,
     super.yAxisDivisions = 2,
     super.xAxisLabelQuantity,
@@ -25,10 +26,11 @@ class CandlestickChartSettings extends GridAxisSettings {
     super.showDropLine = true,
     super.showTooltip = true,
     this.selectionEnabled = true,
-  });
+  }) : super();
 
   /// Constructs an instance of [CandlestickChartSettings] without grids.
   const CandlestickChartSettings.gridless({
+    super.defaultDivisionInterval = 100,
     super.xAxisLabelQuantity,
     super.showAxisX = true,
     super.showAxisXSelectedLabelIfConcealed = false,
@@ -55,6 +57,7 @@ class CandlestickChartSettings extends GridAxisSettings {
   @override
   CandlestickChartSettings copyWith({
     bool allowNullXAxisLabelQuantity = false,
+    double? defaultDivisionInterval,
     int? xAxisDivisions,
     int? yAxisDivisions,
     int? xAxisLabelQuantity,
@@ -74,6 +77,8 @@ class CandlestickChartSettings extends GridAxisSettings {
     bool? selectionEnabled,
   }) =>
       CandlestickChartSettings(
+        defaultDivisionInterval:
+            defaultDivisionInterval ?? this.defaultDivisionInterval,
         xAxisDivisions: xAxisDivisions ?? this.xAxisDivisions,
         yAxisDivisions: yAxisDivisions ?? this.yAxisDivisions,
         xAxisLabelQuantity: allowNullXAxisLabelQuantity
@@ -98,42 +103,11 @@ class CandlestickChartSettings extends GridAxisSettings {
       );
 
   @override
-  int get hashCode =>
-      xAxisDivisions.hashCode ^
-      yAxisDivisions.hashCode ^
-      xAxisLabelQuantity.hashCode ^
-      axisDivisionEdges.hashCode ^
-      showAxisX.hashCode ^
-      showAxisXSelectedLabelIfConcealed.hashCode ^
-      showAxisY.hashCode ^
-      showAxisXLabels.hashCode ^
-      showAxisYLabels.hashCode ^
-      showAxisXLabelSelection.hashCode ^
-      yAxisLayout.hashCode ^
-      yAxisLabelSpacing.hashCode ^
-      showZeroLine.hashCode ^
-      showDropLine.hashCode ^
-      showTooltip.hashCode ^
-      selectionEnabled.hashCode;
+  int get hashCode => super.hashCode ^ selectionEnabled.hashCode;
 
   @override
   bool operator ==(Object other) =>
       other is CandlestickChartSettings &&
-      xAxisDivisions == other.xAxisDivisions &&
-      yAxisDivisions == other.yAxisDivisions &&
-      xAxisLabelQuantity == other.xAxisLabelQuantity &&
-      axisDivisionEdges == other.axisDivisionEdges &&
-      showAxisX == other.showAxisX &&
-      showAxisXSelectedLabelIfConcealed ==
-          other.showAxisXSelectedLabelIfConcealed &&
-      showAxisY == other.showAxisY &&
-      showAxisXLabels == other.showAxisXLabels &&
-      showAxisYLabels == other.showAxisYLabels &&
-      showAxisXLabelSelection == other.showAxisXLabelSelection &&
-      yAxisLayout == other.yAxisLayout &&
-      yAxisLabelSpacing == other.yAxisLabelSpacing &&
-      showZeroLine == other.showZeroLine &&
-      showDropLine == other.showDropLine &&
-      showTooltip == other.showTooltip &&
+      super == other &&
       selectionEnabled == other.selectionEnabled;
 }
