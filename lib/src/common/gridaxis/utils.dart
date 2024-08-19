@@ -89,7 +89,7 @@ class GridAxisUtils {
     };
 
     for (var entry in sourceMap.entries) {
-      if (mapToAdjust == null) {
+      if (mapToAdjust == null || mapToAdjust.isEmpty) {
         adjustedMap[entry.key] = defaultValue;
         continue;
       }
