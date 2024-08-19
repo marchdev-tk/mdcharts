@@ -38,6 +38,7 @@
 
 ## Settings
 
+* `defaultDivisionInterval` - default value of the interval between divisions of the Y axis, defaults to `100`.
 * `xAxisDivisions` - quantity of the X axis divisions, defaults to `3`.
 * `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
 * `xAxisLabelQuantity` - quantity of the X axis labels to draw, defaults to `null`.
