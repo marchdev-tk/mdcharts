@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.2.1 - 19.08.2024
+
+* Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
+  * Added extra condition (if data is default alongside with empty data) for painting `GridAxisSettings.defaultDivisionInterval`.
+
 ## 6.2.0 - 19.08.2024
 
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):

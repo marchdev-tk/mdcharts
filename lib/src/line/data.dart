@@ -66,6 +66,9 @@ class LineChartData extends GridAxisData<double> {
   @override
   double minValuePredicate(double value) => value;
 
+  @override
+  bool get isDefault => data.values.every((v) => v == 0);
+
   /// {@macro ChartData.maxValue}
   /// (Omitting [limit] value)
   ///

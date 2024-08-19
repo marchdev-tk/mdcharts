@@ -97,7 +97,7 @@ class GridAxisPainter extends CustomPainter {
       }
 
       double labelValue;
-      if (data.data.isEmpty) {
+      if (data.data.isEmpty || data.isDefault) {
         labelValue =
             mult(math.max(settings.defaultDivisionInterval, 1), yEnd - i - 1);
       } else if (data.isNegative) {

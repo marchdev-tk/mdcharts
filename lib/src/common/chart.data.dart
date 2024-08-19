@@ -67,6 +67,9 @@ abstract class ChartData<T> {
   /// It checks for [data] length to be greater than or equal to 1.
   bool get canDraw => data.isNotEmpty;
 
+  /// Checks whether every data entry is a default value ot not.
+  bool get isDefault;
+
   /// Checks whether every data entry is less than or equal to `0` and any of
   /// it strictly less than `0` or not.
   bool get isNegative =>

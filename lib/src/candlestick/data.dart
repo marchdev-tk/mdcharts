@@ -146,6 +146,10 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
   @override
   double minValuePredicate(CandlestickData value) => value.low;
 
+  @override
+  bool get isDefault =>
+      data.values.every((v) => v == const CandlestickData.zero());
+
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   CandlestickChartData copyWith({
