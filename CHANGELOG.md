@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.0 - 29.08.2024
+
+**BREAKING CHANGES**:
+  * Updated dependancies
+  * Updated sdk constraints to `dart 3.5` / `flutter 3.24.0`
+
 ## 6.2.1 - 19.08.2024
 
 * Changes of the `GridAxis` based charts (`LineChart`/`CandlestickChart`):
