@@ -16,13 +16,14 @@ abstract class ChartData<T> {
     this.roundingMap = defaultRoundingMap,
   });
 
-  static const Map<num, num> defaultRoundingMap = {
-    1: 0.001,
-    100: 5,
-    1000: 10,
-    10000: 100,
-    100000: 1000,
-    1000000: 10000,
+  static const Map<String, num> defaultRoundingMap = {
+    '1': 0.001,
+    '10': 1,
+    '100': 5,
+    '1000': 10,
+    '10000': 100,
+    '100000': 1000,
+    '1000000': 10000,
   };
 
   /// Map of the values that corresponds to the dates.
@@ -60,7 +61,7 @@ abstract class ChartData<T> {
   /// omitting this simple rule may cause malfunctioning of rounding function.
   /// As a sample of correctly formed map [defaultRoundingMap] could be
   /// used.
-  final Map<num, num> roundingMap;
+  final Map<String, num> roundingMap;
 
   /// Checks whether chart could be drawned or not.
   ///

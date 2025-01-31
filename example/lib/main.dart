@@ -24,6 +24,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'MDCharts Demo',
       theme: ThemeData(
+        useMaterial3: false,
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),

@@ -228,7 +228,7 @@ class LineChartData extends GridAxisData<double> {
     bool allowNullLimitText = false,
     Map<DateTime, double>? data,
     double? predefinedMaxValue,
-    Map<num, num>? roundingMap,
+    Map<String, num>? roundingMap,
     double? limit,
     String? limitText,
     TooltipBuilder? titleBuilder,

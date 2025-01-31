@@ -7,11 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
 import 'package:mdcharts/src/_internal.dart' as utils
-    show
-        getCeilRoundedValue,
-        getFloorRoundedValue,
-        normalize,
-        normalizeInverted;
+    show getCeilRoundedValue, normalize, normalizeInverted;
 
 class GridAxisUtils {
   const GridAxisUtils._();
@@ -155,11 +151,8 @@ class GridAxisUtils {
 
     if (settings.yAxisBaseline == YAxisBaseline.axis ||
         settings.yAxisDivisions == 0) {
-      var yDivisions = settings.yAxisDivisions;
-      if (settings.yAxisDivisions == 0) {
-        yDivisions = 1;
-      }
-      var size = div(data.totalValue, yDivisions);
+      final yDivisions = settings.yAxisDivisions + 1;
+      final size = div(data.totalValue, yDivisions);
       divisionSize = size;
     }
 
@@ -233,21 +226,20 @@ class GridAxisUtils {
       return cachedMinValue;
     }
 
+    final divisionSize = getRoundedDivisionSize(cache, data, settings);
+
     double minValue = 0;
     if (settings.yAxisBaseline == YAxisBaseline.axis ||
         settings.yAxisDivisions == 0) {
-      minValue = utils.getFloorRoundedValue(
-        data.roundingMap,
-        data.minValue,
-        0,
-      );
+      final complement = getRoundingComplement(data.roundingMap, divisionSize);
+      minValue = floorRoundValue(complement, data.minValue, 0);
     }
     if (settings.yAxisBaseline == YAxisBaseline.zero &&
         data.hasNegativeMinValueZeroBased &&
         settings.yAxisDivisions > 0) {
-      final size = getRoundedDivisionSize(cache, data, settings);
-      final divisions = (data.minValueZeroBased.abs() / size).ceil();
-      minValue = -size * divisions;
+      // TODO(!!!)
+      final divisions = (data.minValueZeroBased.abs() / divisionSize).ceil();
+      minValue = -divisionSize * divisions;
     }
     cache.saveRoundedMinValue(data.hashCode, minValue);
 
@@ -288,19 +280,18 @@ class GridAxisUtils {
       return cachedMaxValue;
     }
 
+    final divisionSize = getRoundedDivisionSize(cache, data, settings);
+
     double maxValue;
     if (settings.yAxisBaseline == YAxisBaseline.zero &&
         data.hasNegativeMinValueZeroBased &&
         settings.yAxisDivisions > 0) {
-      final size = getRoundedDivisionSize(cache, data, settings);
-      final divisions = (data.maxValue.abs() / size).ceil();
-      maxValue = size * divisions;
+      // TODO(!!!)
+      final divisions = (data.maxValue.abs() / divisionSize).ceil();
+      maxValue = divisionSize * divisions;
     } else {
-      maxValue = utils.getCeilRoundedValue(
-        data.roundingMap,
-        data.maxValue,
-        settings.yAxisDivisions,
-      );
+      final complement = getRoundingComplement(data.roundingMap, divisionSize);
+      maxValue = ceilRoundValue(complement, data.maxValue, 0);
     }
     cache.saveRoundedMaxValue(data.hashCode, maxValue);
 

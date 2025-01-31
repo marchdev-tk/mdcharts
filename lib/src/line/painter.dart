@@ -75,18 +75,6 @@ class LineChartPainter extends CustomPainter {
     return typedData;
   }
 
-  /// {@macro GridAxisUtils.getRoundedDivisionSize}
-  double get roundedDivisionSize =>
-      GridAxisUtils().getRoundedDivisionSize(cache, data, settings);
-
-  /// {@macro GridAxisUtils.getRoundedMinValue}
-  double get roundedMinValue =>
-      GridAxisUtils().getRoundedMinValue(cache, data, settings);
-
-  /// {@macro GridAxisUtils.getRoundedMaxValue}
-  double get roundedMaxValue =>
-      GridAxisUtils().getRoundedMaxValue(cache, data, settings);
-
   /// Normalization method.
   ///
   /// For more info refer to [GridAxisUtils.normalize].
@@ -113,6 +101,12 @@ class LineChartPainter extends CustomPainter {
     );
   }
 
+  /// Retrieves data entry index.
+  ///
+  /// For more info refer to [GridAxisUtils.getSelectedIndex].
+  int? getSelectedIndex(Size size) =>
+      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
+
   /// Height of the zero point on y axis.
   double _getZeroHeight(Size size) {
     final minValue = settings.yAxisBaseline == YAxisBaseline.axis
@@ -124,12 +118,6 @@ class LineChartPainter extends CustomPainter {
 
     return size.height;
   }
-
-  /// Retrieves data entry index.
-  ///
-  /// For more info refer to [GridAxisUtils.getSelectedIndex].
-  int? getSelectedIndex(Size size) =>
-      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
 
   Offset _getPoint(Size size, [int? precalculatedSelectedIndex]) {
     if (!data.canDraw) {

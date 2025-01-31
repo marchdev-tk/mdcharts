@@ -156,7 +156,7 @@ class CandlestickChartData extends GridAxisData<CandlestickData> {
     bool allowNullPredefinedMaxValue = false,
     Map<DateTime, CandlestickData>? data,
     double? predefinedMaxValue,
-    Map<num, num>? roundingMap,
+    Map<String, num>? roundingMap,
     TooltipBuilder? titleBuilder,
     TooltipBuilder? subtitleBuilder,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,

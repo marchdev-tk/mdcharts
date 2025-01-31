@@ -75,7 +75,7 @@ class BarChartData {
   /// omitting this simple rule may cause malfunctioning of rounding function.
   /// As a sample of correctly formed map [ChartData.defaultRoundingMap]
   /// could be used.
-  final Map<num, num> roundingMap;
+  final Map<String, num> roundingMap;
 
   /// Text builder for the tooltip title.
   ///
@@ -146,7 +146,7 @@ class BarChartData {
     Map<DateTime, List<double>>? data,
     DateTime? initialSelectedPeriod,
     double? predefinedMaxValue,
-    Map<num, num>? roundingMap,
+    Map<String, num>? roundingMap,
     TooltipBuilder<List<double>>? titleBuilder,
     TooltipBuilder<List<double>>? subtitleBuilder,
     RichLabelBuilder<DateTime>? xAxisLabelBuilder,

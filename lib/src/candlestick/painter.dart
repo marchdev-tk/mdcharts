@@ -49,18 +49,6 @@ class CandlestickChartPainter extends CustomPainter {
   /// animation.
   final double valueCoef;
 
-  /// {@macro GridAxisUtils.getRoundedDivisionSize}
-  double get roundedDivisionSize =>
-      GridAxisUtils().getRoundedDivisionSize(cache, data, settings);
-
-  /// {@macro GridAxisUtils.getRoundedMinValue}
-  double get roundedMinValue =>
-      GridAxisUtils().getRoundedMinValue(cache, data, settings);
-
-  /// {@macro GridAxisUtils.getRoundedMaxValue}
-  double get roundedMaxValue =>
-      GridAxisUtils().getRoundedMaxValue(cache, data, settings);
-
   /// Normalization method.
   ///
   /// For more info refer to [GridAxisUtils.normalize].
