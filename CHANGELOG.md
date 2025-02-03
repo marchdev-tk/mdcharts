@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.4 - 03.02.2025
+
+* Fixed dependencies to support `flutter 3.24.0`.
+
 ## 6.3.3 - 03.02.2025
 
 * Fixed changelog 😊.
@@ -22,7 +26,7 @@
 ## 6.3.0 - 29.08.2024
 
 **BREAKING CHANGES**:
-  * Updated dependancies.
+  * Updated dependencies.
   * Updated sdk constraints to `dart 3.5` / `flutter 3.24.0`.
 
 ## 6.2.1 - 19.08.2024
