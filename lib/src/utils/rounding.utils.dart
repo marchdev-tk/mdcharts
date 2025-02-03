@@ -40,7 +40,7 @@ double ceilRoundValue(
 
   final complement = roundingComplement;
 
-  if (initalValue.abs() < 1) {
+  if (complement < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 
@@ -86,7 +86,7 @@ double floorRoundValue(
 
   final complement = roundingComplement;
 
-  if (initalValue.abs() < 1) {
+  if (complement < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 
@@ -95,7 +95,7 @@ double floorRoundValue(
       multiplier = mult(multiplier, 10);
     }
 
-    rounded = rounded.ceilToDouble();
+    rounded = rounded.floorToDouble();
 
     while (rounded % 1 != 0) {
       rounded = sub(rounded, mult(complement, multiplier));
