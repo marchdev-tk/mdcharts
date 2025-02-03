@@ -4,8 +4,7 @@
 
 import 'decimal.utils.dart';
 
-// TODO(!!!): add docs
-
+/// Gets rounding complement based on [roundingMap] for [initalValue].
 double getRoundingComplement(
   Map<String, num> roundingMap,
   double initalValue,
@@ -22,10 +21,10 @@ double getRoundingComplement(
   return complement.toDouble();
 }
 
+/// Rounding method that ceils [initalValue] using provided [roundingComplement].
 double ceilRoundValue(
   double roundingComplement,
   double initalValue,
-  int yAxisDivisions,
 ) {
   if (initalValue == 0) {
     return roundingComplement;
@@ -35,15 +34,13 @@ double ceilRoundValue(
     final roundedValue = floorRoundValue(
       roundingComplement,
       initalValue.abs(),
-      yAxisDivisions,
     );
     return -roundedValue;
   }
 
-  final yDivisions = yAxisDivisions + 1;
   final complement = roundingComplement;
 
-  if (initalValue < 1) {
+  if (initalValue.abs() < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 
@@ -54,7 +51,7 @@ double ceilRoundValue(
 
     rounded = rounded.ceilToDouble();
 
-    while (rounded % yDivisions != 0) {
+    while (rounded % 1 != 0) {
       rounded = add(rounded, mult(complement, multiplier));
     }
 
@@ -63,17 +60,17 @@ double ceilRoundValue(
 
   var rounded = sub(add(initalValue, complement), initalValue % complement);
 
-  while (rounded % yDivisions != 0) {
+  while (rounded % 1 != 0) {
     rounded = add(rounded, complement);
   }
 
   return rounded;
 }
 
+/// Rounding method that floors [initalValue] using provided [roundingComplement].
 double floorRoundValue(
   double roundingComplement,
   double initalValue,
-  int yAxisDivisions,
 ) {
   if (initalValue == 0) {
     return 0;
@@ -83,15 +80,13 @@ double floorRoundValue(
     final roundedValue = ceilRoundValue(
       roundingComplement,
       initalValue.abs(),
-      yAxisDivisions,
     );
     return -roundedValue;
   }
 
-  final yDivisions = yAxisDivisions + 1;
   final complement = roundingComplement;
 
-  if (initalValue < 1) {
+  if (initalValue.abs() < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 
@@ -102,7 +97,7 @@ double floorRoundValue(
 
     rounded = rounded.ceilToDouble();
 
-    while (rounded % yDivisions != 0) {
+    while (rounded % 1 != 0) {
       rounded = sub(rounded, mult(complement, multiplier));
     }
 
@@ -111,7 +106,7 @@ double floorRoundValue(
 
   var rounded = sub(initalValue, initalValue % complement);
 
-  while (rounded % yDivisions != 0) {
+  while (rounded % 1 != 0) {
     rounded = sub(rounded, complement);
   }
 
@@ -153,7 +148,7 @@ double getCeilRoundedValue(
   final yDivisions = yAxisDivisions + 1;
   final complement = getRoundingComplement(roundingMap, initalValue);
 
-  if (initalValue < 1) {
+  if (initalValue.abs() < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 
@@ -215,7 +210,7 @@ double getFloorRoundedValue(
   final yDivisions = yAxisDivisions + 1;
   final complement = getRoundingComplement(roundingMap, initalValue);
 
-  if (initalValue < 1) {
+  if (initalValue.abs() < 1) {
     var rounded = initalValue;
     var multiplier = 1.0;
 

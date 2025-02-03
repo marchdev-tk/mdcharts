@@ -232,12 +232,11 @@ class GridAxisUtils {
     if (settings.yAxisBaseline == YAxisBaseline.axis ||
         settings.yAxisDivisions == 0) {
       final complement = getRoundingComplement(data.roundingMap, divisionSize);
-      minValue = floorRoundValue(complement, data.minValue, 0);
+      minValue = floorRoundValue(complement, data.minValue);
     }
     if (settings.yAxisBaseline == YAxisBaseline.zero &&
         data.hasNegativeMinValueZeroBased &&
         settings.yAxisDivisions > 0) {
-      // TODO(!!!)
       final divisions = (data.minValueZeroBased.abs() / divisionSize).ceil();
       minValue = -divisionSize * divisions;
     }
@@ -286,12 +285,11 @@ class GridAxisUtils {
     if (settings.yAxisBaseline == YAxisBaseline.zero &&
         data.hasNegativeMinValueZeroBased &&
         settings.yAxisDivisions > 0) {
-      // TODO(!!!)
       final divisions = (data.maxValue.abs() / divisionSize).ceil();
       maxValue = divisionSize * divisions;
     } else {
       final complement = getRoundingComplement(data.roundingMap, divisionSize);
-      maxValue = ceilRoundValue(complement, data.maxValue, 0);
+      maxValue = ceilRoundValue(complement, data.maxValue);
     }
     cache.saveRoundedMaxValue(data.hashCode, maxValue);
 
