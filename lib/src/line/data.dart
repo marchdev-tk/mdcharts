@@ -89,7 +89,7 @@ class LineChartData extends GridAxisData<double> {
       return predefinedMaxValue!;
     }
 
-    final max = math.max(data.values.max, .0);
+    final max = math.max(maxDataValue, .0);
     if (limit == null || max > limit!) {
       return max;
     }

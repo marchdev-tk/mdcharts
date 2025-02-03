@@ -85,7 +85,11 @@ abstract class ChartData<T> {
   /// {@template ChartData.maxValue}
   /// Determines max value for chart to draw.
   ///
-  /// If [predefinedMaxValue] is set, then it will be used as max value.
+  /// If you want to get pure [data]'s max value, consider using [maxDataValue]
+  /// getter.
+  ///
+  /// **Please note**: if [predefinedMaxValue] is set, then it will be used as
+  /// max value.
   /// {@endtemplate}
   double get maxValue {
     if (!canDraw) {
@@ -100,8 +104,14 @@ abstract class ChartData<T> {
       return predefinedMaxValue!;
     }
 
-    return data.values.map(maxValuePredicate).max;
+    return maxDataValue;
   }
+
+  /// Calculates [data]'s max value.
+  ///
+  /// **Please note**: this getter return `pure` [data]'s max value based on
+  /// [maxValuePredicate] implementation.
+  double get maxDataValue => data.values.map(maxValuePredicate).max;
 
   /// Predicate that must be resolved with min value of the provided data type [T].
   double minValuePredicate(T value);
