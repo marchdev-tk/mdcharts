@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.2 - 03.02.2025
+
+* Fixed `BarChart` static analysis issues.
+
 ## 6.3.1 - 03.02.2025
 
 **BREAKING CHANGES** of the `GridAxis` based charts:
