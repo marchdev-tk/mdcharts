@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.5 - 03.02.2025
+
+* Fixed rounding utils.
+
 ## 6.3.4 - 03.02.2025
 
 * Fixed dependencies to support `flutter 3.24.0`.
