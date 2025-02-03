@@ -286,7 +286,6 @@ class _BarChartState extends State<BarChart>
         return child;
 
       case BarFit.none:
-      default:
         return ScrollConfiguration(
           behavior: AdaptiveScrollBehavior(),
           child: SingleChildScrollView(

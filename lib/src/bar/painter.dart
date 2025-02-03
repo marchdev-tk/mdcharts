@@ -623,7 +623,6 @@ class BarChartBarPainter extends CustomPainter {
         break;
 
       case BarBorder.none:
-      default:
     }
   }
 
