@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.3 - 03.02.2025
+
+* Fixed changelog 😊.
+
 ## 6.3.2 - 03.02.2025
 
 * Fixed `BarChart` static analysis issues.
