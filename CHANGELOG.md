@@ -1,10 +1,20 @@
 # Changelog
 
+## 6.3.1 - 03.02.2025
+
+**BREAKING CHANGES** of the `GridAxis` based charts:
+  * Key type changed from `num` to `String` for `roundingMap`.
+* Changes of the:
+  * Fixed decimal utils.
+  * Reimplemented min and max rounding behaviour for `YAxisBaseline.axis` type.
+  * Added `ChartData.maxDataValue`.
+* Fixed Material3 theme issue.
+
 ## 6.3.0 - 29.08.2024
 
 **BREAKING CHANGES**:
-  * Updated dependancies
-  * Updated sdk constraints to `dart 3.5` / `flutter 3.24.0`
+  * Updated dependancies.
+  * Updated sdk constraints to `dart 3.5` / `flutter 3.24.0`.
 
 ## 6.2.1 - 19.08.2024
 
