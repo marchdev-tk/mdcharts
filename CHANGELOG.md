@@ -6,9 +6,10 @@
 
 ## 6.3.1 - 03.02.2025
 
-**BREAKING CHANGES** of the `GridAxis` based charts:
+* **BREAKING CHANGES** of the `GridAxis` based charts:
   * Key type changed from `num` to `String` for `roundingMap`.
-* Changes of the:
+
+* Other changes of the `GridAxis` based charts:
   * Fixed decimal utils.
   * Reimplemented min and max rounding behaviour for `YAxisBaseline.axis` type.
   * Added `ChartData.maxDataValue`.
