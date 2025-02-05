@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.6 - 05.02.2025
+
+* Fixed the double inaccuracy issue.
+
 ## 6.3.5 - 03.02.2025
 
 * Fixed rounding utils.
