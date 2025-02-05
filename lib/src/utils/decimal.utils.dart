@@ -27,7 +27,7 @@ double add(num a, num b) {
 double _adjustPrecision(double value) {
   final rounded = value.roundToDouble();
 
-  if ((rounded - value).abs() < 0.0000000000001) {
+  if ((rounded - value).abs() < 0.00000001) {
     return rounded;
   }
 
