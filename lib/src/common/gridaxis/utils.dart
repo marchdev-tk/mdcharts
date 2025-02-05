@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:mdcharts/src/_internal.dart';
 import 'package:mdcharts/src/_internal.dart' as utils
-    show getCeilRoundedValue, normalize, normalizeInverted;
+    show normalize, normalizeInverted;
 
 class GridAxisUtils {
   const GridAxisUtils._();
@@ -184,8 +184,17 @@ class GridAxisUtils {
       }
     }
 
-    final roundedSize =
-        utils.getCeilRoundedValue(data.roundingMap, divisionSize, 0);
+    // TODO: implement new method to calculate all 3 params at the same time
+    // ! (divisionSize, minValue, maxValue)
+    final complement = getRoundingComplement(data.roundingMap, divisionSize);
+    var roundedSize = ceilRoundValue(complement, divisionSize);
+    if (settings.yAxisBaseline == YAxisBaseline.axis ||
+        settings.yAxisDivisions == 0) {
+      final minValue = floorRoundValue(complement, data.minValue);
+      if (minValue + roundedSize * 4 < data.maxValue) {
+        roundedSize += complement;
+      }
+    }
     cache.saveRoundedDivisionSize(data.hashCode, roundedSize);
 
     return roundedSize;

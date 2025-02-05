@@ -127,6 +127,7 @@ double floorRoundValue(
 /// - maxValue = -83 (from data).
 ///
 /// So, based on these values maxValue will be rounded to `-75`.
+@Deprecated('Use conjunction of getRoundingComplement and ceilRoundValue')
 double getCeilRoundedValue(
   Map<String, num> roundingMap,
   double initalValue,
@@ -189,6 +190,7 @@ double getCeilRoundedValue(
 /// - maxValue = -83 (from data).
 ///
 /// So, based on these values maxValue will be rounded to `-90`.
+@Deprecated('Use conjunction of getRoundingComplement and floorRoundValue')
 double getFloorRoundedValue(
   Map<String, num> roundingMap,
   double initalValue,
