@@ -3,6 +3,7 @@
 ## 6.3.6 - 05.02.2025
 
 * Fixed the double inaccuracy issue.
+* Fixed issue of `YAxisBaseline.axis` type charts with relativity of divisionSize, minValue and maxValue (that caused charts upper boundary to obscure peak values).
 
 ## 6.3.5 - 03.02.2025
 
