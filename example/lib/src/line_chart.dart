@@ -465,6 +465,14 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               keyboardType: TextInputType.number,
               title: const Text('xAxisLabelQuantity'),
             ),
+            IntListTile(
+              value: data.yAxisLabelSpacing.toInt(),
+              onChanged: (value) {
+                final doubleValue = value.toDouble();
+                _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
+              },
+              title: const Text('yAxisLabelSpacing'),
+            ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
               value: data.showAxisX,
@@ -478,6 +486,13 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
               onChanged: (value) => _settings.add(data.copyWith(
                   showAxisXSelectedLabelIfConcealed: value == true)),
               title: const Text('showAxisXSelectedLabelIfConcealed'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisXLabelSelection,
+              onChanged: (value) => _settings
+                  .add(data.copyWith(showAxisXLabelSelection: value == true)),
+              title: const Text('showAxisXLabelSelection'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
@@ -502,21 +517,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showAxisXLabelSelection,
-              onChanged: (value) => _settings
-                  .add(data.copyWith(showAxisXLabelSelection: value == true)),
-              title: const Text('showAxisXLabelSelection'),
-            ),
-            IntListTile(
-              value: data.yAxisLabelSpacing.toInt(),
-              onChanged: (value) {
-                final doubleValue = value.toDouble();
-                _settings.add(data.copyWith(yAxisLabelSpacing: doubleValue));
-              },
-              title: const Text('yAxisLabelSpacing'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
               value: data.showZeroLine,
               onChanged: (value) =>
                   _settings.add(data.copyWith(showZeroLine: value == true)),
@@ -524,10 +524,17 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showDropLine,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showDropLine: value == true)),
-              title: const Text('showDropLine'),
+              value: data.showAxisXDropLine,
+              onChanged: (value) => _settings
+                  .add(data.copyWith(showAxisXDropLine: value == true)),
+              title: const Text('showAxisXDropLine'),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.trailing,
+              value: data.showAxisYDropLine,
+              onChanged: (value) => _settings
+                  .add(data.copyWith(showAxisYDropLine: value == true)),
+              title: const Text('showAxisYDropLine'),
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,

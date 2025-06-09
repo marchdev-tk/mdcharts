@@ -176,6 +176,7 @@ class GridAxisPainter extends CustomPainter {
     Canvas canvas,
     Size size,
     GridAxisData data,
+    GridAxisSettings settings,
     DropLineStyle dropLineStyle,
     Offset point,
   ) {
@@ -186,37 +187,38 @@ class GridAxisPainter extends CustomPainter {
     final dashWidth = dropLineStyle.dashSize;
     final gapWidth = dropLineStyle.gapSize;
 
-    final pathX = Path();
-    final pathY = Path();
+    if (settings.showAxisXDropLine) {
+      final pathX = Path();
+      pathX.moveTo(0, point.dy);
+      final countX = (point.dx / (dashWidth + gapWidth)).ceil();
+      for (var i = 1; i <= countX; i++) {
+        if (i == countX) {
+          pathX.lineTo(point.dx, point.dy);
+          break;
+        }
 
-    pathX.moveTo(0, point.dy);
-    pathY.moveTo(point.dx, size.height);
-
-    final countX = (point.dx / (dashWidth + gapWidth)).ceil();
-    for (var i = 1; i <= countX; i++) {
-      if (i == countX) {
-        pathX.lineTo(point.dx, point.dy);
-        break;
+        pathX.relativeLineTo(dashWidth, 0);
+        pathX.relativeMoveTo(gapWidth, 0);
       }
-
-      pathX.relativeLineTo(dashWidth, 0);
-      pathX.relativeMoveTo(gapWidth, 0);
+      canvas.drawPath(pathX, dropLineStyle.getXAxisPaint(pathX.getBounds()));
     }
 
-    final countY =
-        ((size.height - point.dy) / (dashWidth + gapWidth)).ceil().abs();
-    for (var i = 1; i <= countY; i++) {
-      if (i == countY) {
-        pathY.lineTo(point.dx, point.dy);
-        break;
+    if (settings.showAxisYDropLine) {
+      final pathY = Path();
+      pathY.moveTo(point.dx, size.height);
+      final countY =
+          ((size.height - point.dy) / (dashWidth + gapWidth)).ceil().abs();
+      for (var i = 1; i <= countY; i++) {
+        if (i == countY) {
+          pathY.lineTo(point.dx, point.dy);
+          break;
+        }
+
+        pathY.relativeLineTo(0, -dashWidth);
+        pathY.relativeMoveTo(0, -gapWidth);
       }
-
-      pathY.relativeLineTo(0, -dashWidth);
-      pathY.relativeMoveTo(0, -gapWidth);
+      canvas.drawPath(pathY, dropLineStyle.getYAxisPaint(pathY.getBounds()));
     }
-
-    canvas.drawPath(pathX, dropLineStyle.getXAxisPaint(pathX.getBounds()));
-    canvas.drawPath(pathY, dropLineStyle.getYAxisPaint(pathY.getBounds()));
   }
 
   /// Tooltip painter.

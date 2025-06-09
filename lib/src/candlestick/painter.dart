@@ -142,6 +142,7 @@ class CandlestickChartPainter extends CustomPainter {
       canvas,
       size,
       data,
+      settings,
       style.dropLineStyle,
       point,
     );

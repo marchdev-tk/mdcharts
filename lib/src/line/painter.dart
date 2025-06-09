@@ -307,6 +307,7 @@ class LineChartPainter extends CustomPainter {
       canvas,
       size,
       data,
+      settings,
       style.dropLineStyle,
       point,
     );

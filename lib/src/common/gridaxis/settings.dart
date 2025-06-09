@@ -13,17 +13,18 @@ class GridAxisSettings {
     this.yAxisDivisions = 2,
     this.xAxisLabelQuantity,
     this.axisDivisionEdges = AxisDivisionEdges.none,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
+    this.showAxisX = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
+    this.showAxisXLabelSelection = false,
+    this.showAxisY = true,
+    this.showAxisXLabels = true,
+    this.showAxisYLabels = true,
     this.showZeroLine = false,
-    this.showDropLine = true,
+    this.showAxisXDropLine = true,
+    this.showAxisYDropLine = true,
     this.showTooltip = true,
   }) : assert(defaultDivisionInterval > 0);
 
@@ -31,17 +32,18 @@ class GridAxisSettings {
   const GridAxisSettings.gridless({
     this.defaultDivisionInterval = 100,
     this.xAxisLabelQuantity,
-    this.showAxisX = true,
-    this.showAxisXSelectedLabelIfConcealed = false,
-    this.showAxisY = true,
-    this.showAxisXLabels = true,
-    this.showAxisYLabels = true,
-    this.showAxisXLabelSelection = false,
     this.yAxisLayout = YAxisLayout.overlay,
     this.yAxisBaseline = YAxisBaseline.zero,
     this.yAxisLabelSpacing = 0,
+    this.showAxisX = true,
+    this.showAxisXSelectedLabelIfConcealed = false,
+    this.showAxisXLabelSelection = false,
+    this.showAxisY = true,
+    this.showAxisXLabels = true,
+    this.showAxisYLabels = true,
     this.showZeroLine = false,
-    this.showDropLine = true,
+    this.showAxisXDropLine = true,
+    this.showAxisYDropLine = true,
     this.showTooltip = true,
   })  : assert(defaultDivisionInterval > 0),
         xAxisDivisions = 0,
@@ -95,38 +97,6 @@ class GridAxisSettings {
   /// Defaults to [AxisDivisionEdges.none].
   final AxisDivisionEdges axisDivisionEdges;
 
-  /// Whether to show X axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisX;
-
-  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
-  /// label is concealed in normal circumstances.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXSelectedLabelIfConcealed;
-
-  /// Whether to show Y axis or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisY;
-
-  /// Whether to show X axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisXLabels;
-
-  /// Whether to show Y axis labels or not.
-  ///
-  /// Defaults to `true`.
-  final bool showAxisYLabels;
-
-  /// Whether to paint with selected style currently selected X axis label or
-  /// not.
-  ///
-  /// Defaults to `false`.
-  final bool showAxisXLabelSelection;
-
   /// Layout type of the Y axis labels.
   ///
   /// Defaults to [YAxisLayout.overlay].
@@ -145,20 +115,60 @@ class GridAxisSettings {
   /// Defaults to `0`.
   final double yAxisLabelSpacing;
 
+  /// Whether to show X axis or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisX;
+
+  /// Whether to show X axis labels or not if [xAxisLabelQuantity] is set and
+  /// label is concealed in normal circumstances.
+  ///
+  /// Defaults to `false`.
+  final bool showAxisXSelectedLabelIfConcealed;
+
+  /// Whether to paint with selected style currently selected X axis label or
+  /// not.
+  ///
+  /// Defaults to `false`.
+  final bool showAxisXLabelSelection;
+
+  /// Whether to show Y axis or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisY;
+
+  /// Whether to show X axis labels or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisXLabels;
+
+  /// Whether to show Y axis labels or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisYLabels;
+
   /// Wether to show zero line or not.
   ///
   /// Defaults to `false`.
   final bool showZeroLine;
 
-  /// Whether to show drop lines beneath the selected item or not.
+  /// Whether to X axis show drop lines beneath the selected item or not.
   ///
   /// Defaults to `true`.
-  final bool showDropLine;
+  final bool showAxisXDropLine;
+
+  /// Whether to show Y axis drop lines beneath the selected item or not.
+  ///
+  /// Defaults to `true`.
+  final bool showAxisYDropLine;
 
   /// Whether to show tooltip over the selected item or not.
   ///
   /// Defaults to `true`.
   final bool showTooltip;
+
+  // Whether a chart is has drop line or not.
+  bool get showDropLine => showAxisXDropLine || showAxisYDropLine;
 
   /// Whether a chart is gridless or not.
   bool get isGridless =>
@@ -175,17 +185,18 @@ class GridAxisSettings {
     int? yAxisDivisions,
     int? xAxisLabelQuantity,
     AxisDivisionEdges? axisDivisionEdges,
-    bool? showAxisX,
-    bool? showAxisXSelectedLabelIfConcealed,
-    bool? showAxisY,
-    bool? showAxisXLabels,
-    bool? showAxisYLabels,
-    bool? showAxisXLabelSelection,
     YAxisLayout? yAxisLayout,
     YAxisBaseline? yAxisBaseline,
     double? yAxisLabelSpacing,
+    bool? showAxisX,
+    bool? showAxisXSelectedLabelIfConcealed,
+    bool? showAxisXLabelSelection,
+    bool? showAxisY,
+    bool? showAxisXLabels,
+    bool? showAxisYLabels,
     bool? showZeroLine,
-    bool? showDropLine,
+    bool? showAxisXDropLine,
+    bool? showAxisYDropLine,
     bool? showTooltip,
   }) =>
       GridAxisSettings(
@@ -197,19 +208,20 @@ class GridAxisSettings {
             ? xAxisLabelQuantity
             : xAxisLabelQuantity ?? this.xAxisLabelQuantity,
         axisDivisionEdges: axisDivisionEdges ?? this.axisDivisionEdges,
-        showAxisX: showAxisX ?? this.showAxisX,
-        showAxisXSelectedLabelIfConcealed: showAxisXSelectedLabelIfConcealed ??
-            this.showAxisXSelectedLabelIfConcealed,
-        showAxisY: showAxisY ?? this.showAxisY,
-        showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
-        showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
-        showAxisXLabelSelection:
-            showAxisXLabelSelection ?? this.showAxisXLabelSelection,
         yAxisLayout: yAxisLayout ?? this.yAxisLayout,
         yAxisBaseline: yAxisBaseline ?? this.yAxisBaseline,
         yAxisLabelSpacing: yAxisLabelSpacing ?? this.yAxisLabelSpacing,
+        showAxisX: showAxisX ?? this.showAxisX,
+        showAxisXSelectedLabelIfConcealed: showAxisXSelectedLabelIfConcealed ??
+            this.showAxisXSelectedLabelIfConcealed,
+        showAxisXLabelSelection:
+            showAxisXLabelSelection ?? this.showAxisXLabelSelection,
+        showAxisY: showAxisY ?? this.showAxisY,
+        showAxisXLabels: showAxisXLabels ?? this.showAxisXLabels,
+        showAxisYLabels: showAxisYLabels ?? this.showAxisYLabels,
         showZeroLine: showZeroLine ?? this.showZeroLine,
-        showDropLine: showDropLine ?? this.showDropLine,
+        showAxisXDropLine: showAxisXDropLine ?? this.showAxisXDropLine,
+        showAxisYDropLine: showAxisYDropLine ?? this.showAxisYDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
       );
 
@@ -220,17 +232,18 @@ class GridAxisSettings {
       yAxisDivisions.hashCode ^
       xAxisLabelQuantity.hashCode ^
       axisDivisionEdges.hashCode ^
-      showAxisX.hashCode ^
-      showAxisXSelectedLabelIfConcealed.hashCode ^
-      showAxisY.hashCode ^
-      showAxisXLabels.hashCode ^
-      showAxisYLabels.hashCode ^
-      showAxisXLabelSelection.hashCode ^
       yAxisLayout.hashCode ^
       yAxisBaseline.hashCode ^
       yAxisLabelSpacing.hashCode ^
+      showAxisX.hashCode ^
+      showAxisXSelectedLabelIfConcealed.hashCode ^
+      showAxisXLabelSelection.hashCode ^
+      showAxisY.hashCode ^
+      showAxisXLabels.hashCode ^
+      showAxisYLabels.hashCode ^
       showZeroLine.hashCode ^
-      showDropLine.hashCode ^
+      showAxisXDropLine.hashCode ^
+      showAxisYDropLine.hashCode ^
       showTooltip.hashCode;
 
   @override
@@ -241,17 +254,18 @@ class GridAxisSettings {
       yAxisDivisions == other.yAxisDivisions &&
       xAxisLabelQuantity == other.xAxisLabelQuantity &&
       axisDivisionEdges == other.axisDivisionEdges &&
-      showAxisX == other.showAxisX &&
-      showAxisXSelectedLabelIfConcealed ==
-          other.showAxisXSelectedLabelIfConcealed &&
-      showAxisY == other.showAxisY &&
-      showAxisXLabels == other.showAxisXLabels &&
-      showAxisYLabels == other.showAxisYLabels &&
-      showAxisXLabelSelection == other.showAxisXLabelSelection &&
       yAxisLayout == other.yAxisLayout &&
       yAxisBaseline == other.yAxisBaseline &&
       yAxisLabelSpacing == other.yAxisLabelSpacing &&
+      showAxisX == other.showAxisX &&
+      showAxisXSelectedLabelIfConcealed ==
+          other.showAxisXSelectedLabelIfConcealed &&
+      showAxisXLabelSelection == other.showAxisXLabelSelection &&
+      showAxisY == other.showAxisY &&
+      showAxisXLabels == other.showAxisXLabels &&
+      showAxisYLabels == other.showAxisYLabels &&
       showZeroLine == other.showZeroLine &&
-      showDropLine == other.showDropLine &&
+      showAxisXDropLine == other.showAxisXDropLine &&
+      showAxisYDropLine == other.showAxisYDropLine &&
       showTooltip == other.showTooltip;
 }
