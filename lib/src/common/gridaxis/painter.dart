@@ -205,8 +205,8 @@ class GridAxisPainter extends CustomPainter {
       pathY.relativeMoveTo(0, -gapWidth);
     }
 
-    canvas.drawPath(pathX, dropLineStyle.paint);
-    canvas.drawPath(pathY, dropLineStyle.paint);
+    canvas.drawPath(pathX, dropLineStyle.getXAxisPaint(pathX.getBounds()));
+    canvas.drawPath(pathY, dropLineStyle.getYAxisPaint(pathY.getBounds()));
   }
 
   /// Tooltip painter.

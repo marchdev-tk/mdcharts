@@ -804,17 +804,156 @@ class _DropLineStyleSetupGroup extends StatelessWidget {
           title: 'Drop Line Style',
           children: [
             ColorListTile(
-              value: data.dropLineStyle.color,
+              value: data.dropLineStyle.color ?? Colors.transparent,
               onChanged: (value) {
                 _style.add(
                   data.copyWith(
                     dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullXAxisGradient: true,
+                      allowNullYAxisGradient: true,
                       color: value,
+                      xAxisGradient: null,
+                      yAxisGradient: null,
                     ),
                   ),
                 );
               },
               title: const Text('color'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullColor: true,
+                      color: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear color'),
+            ),
+            ColorListTile(
+              value: data.dropLineStyle.xAxisGradient?.colors.first ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullColor: true,
+                      color: null,
+                      xAxisGradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [
+                          value,
+                          data.dropLineStyle.xAxisGradient?.colors.last ??
+                              Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisGradient first color'),
+            ),
+            ColorListTile(
+              value: data.dropLineStyle.xAxisGradient?.colors.last ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullColor: true,
+                      color: null,
+                      xAxisGradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [
+                          data.dropLineStyle.xAxisGradient?.colors.first ??
+                              Colors.transparent,
+                          value,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('xAxisGradient last color'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullXAxisGradient: true,
+                      xAxisGradient: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear xAxisGradient'),
+            ),
+            ColorListTile(
+              value: data.dropLineStyle.yAxisGradient?.colors.first ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullColor: true,
+                      color: null,
+                      yAxisGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          value,
+                          data.dropLineStyle.yAxisGradient?.colors.last ??
+                              Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('yAxisGradient first color'),
+            ),
+            ColorListTile(
+              value: data.dropLineStyle.yAxisGradient?.colors.last ??
+                  Colors.transparent,
+              onChanged: (value) {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullColor: true,
+                      color: null,
+                      yAxisGradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          data.dropLineStyle.yAxisGradient?.colors.first ??
+                              Colors.transparent,
+                          value,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              title: const Text('yAxisGradient last color'),
+            ),
+            Button(
+              onPressed: () {
+                _style.add(
+                  data.copyWith(
+                    dropLineStyle: data.dropLineStyle.copyWith(
+                      allowNullYAxisGradient: true,
+                      yAxisGradient: null,
+                    ),
+                  ),
+                );
+              },
+              title: const Text('Clear yAxisGradient'),
             ),
             IntListTile(
               value: data.dropLineStyle.stroke.toInt(),

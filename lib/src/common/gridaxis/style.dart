@@ -352,6 +352,8 @@ class DropLineStyle {
   /// Constructs an instance of [DropLineStyle].
   const DropLineStyle({
     this.color = const Color(0xFFFFFFFF),
+    this.xAxisGradient,
+    this.yAxisGradient,
     this.stroke = 1,
     this.dashSize = 2,
     this.gapSize = 2,
@@ -360,7 +362,17 @@ class DropLineStyle {
   /// Color of the drop line.
   ///
   /// Defaults to `0xFFFFFFFF`.
-  final Color color;
+  final Color? color;
+
+  /// X Axis Gradient of the drop line.
+  ///
+  /// Defaults to `null`.
+  final Gradient? xAxisGradient;
+
+  /// Y Axis Gradient of the drop line.
+  ///
+  /// Defaults to `null`.
+  final Gradient? yAxisGradient;
 
   /// Stroke of the drop line.
   ///
@@ -380,26 +392,76 @@ class DropLineStyle {
   /// Creates a copy of the current object with new values specified in
   /// arguments.
   DropLineStyle copyWith({
+    bool allowNullColor = false,
+    bool allowNullXAxisGradient = false,
+    bool allowNullYAxisGradient = false,
     Color? color,
+    Gradient? xAxisGradient,
+    Gradient? yAxisGradient,
     double? stroke,
     double? dashSize,
     double? gapSize,
   }) =>
       DropLineStyle(
-        color: color ?? this.color,
+        color: allowNullColor ? color : color ?? this.color,
+        xAxisGradient: allowNullXAxisGradient
+            ? xAxisGradient
+            : xAxisGradient ?? this.xAxisGradient,
+        yAxisGradient: allowNullYAxisGradient
+            ? yAxisGradient
+            : yAxisGradient ?? this.yAxisGradient,
         stroke: stroke ?? this.stroke,
         dashSize: dashSize ?? this.dashSize,
         gapSize: gapSize ?? this.gapSize,
       );
 
-  /// Gets a [Paint] for the drop line drawing.
-  Paint get paint => Paint()
-    ..isAntiAlias = true
-    ..filterQuality = FilterQuality.medium
-    ..style = PaintingStyle.stroke
-    ..strokeCap = StrokeCap.butt
-    ..strokeWidth = stroke
-    ..color = color;
+  /// Gets a [Paint] for the X asix drop line drawing.
+  Paint getXAxisPaint([Rect? bounds]) {
+    final paint = Paint()
+      ..isAntiAlias = true
+      ..filterQuality = FilterQuality.medium
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = stroke;
+
+    if (color != null) {
+      paint.color = color!;
+    }
+    if (xAxisGradient != null) {
+      assert(
+        bounds != null,
+        'bounds must not be null if xAxisGradient not null',
+      );
+
+      paint.shader = xAxisGradient!.createShader(bounds!);
+    }
+
+    return paint;
+  }
+
+  /// Gets a [Paint] for the Y asix drop line drawing.
+  Paint getYAxisPaint([Rect? bounds]) {
+    final paint = Paint()
+      ..isAntiAlias = true
+      ..filterQuality = FilterQuality.medium
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = stroke;
+
+    if (color != null) {
+      paint.color = color!;
+    }
+    if (yAxisGradient != null) {
+      assert(
+        bounds != null,
+        'bounds must not be null if yAxisGradient not null',
+      );
+
+      paint.shader = yAxisGradient!.createShader(bounds!);
+    }
+
+    return paint;
+  }
 
   @override
   int get hashCode =>
