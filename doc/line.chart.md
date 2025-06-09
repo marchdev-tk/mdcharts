@@ -56,6 +56,7 @@
 * `showAxisXDropLine` - whether to show X axis drop line or not, defaults to `true`.
 * `showAxisYDropLine` - whether to show Y axis drop line or not, defaults to `true`.
 * `showTooltip` - whether to show tooltip or not, defaults to `true`.
+* `lineType` - type of connection between the line points, defaults to `LineType.plain`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
 * `lineShadow` - whether to draw shadow beneath the line or not, defaults to `true`.
 * `altitudeLine` - whether to draw the altitude line or not, defaults to `true`.

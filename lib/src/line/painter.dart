@@ -7,6 +7,22 @@ import 'package:mdcharts/src/_internal.dart';
 
 import 'cache.dart';
 
+class _LineData {
+  const _LineData({
+    required this.initialY,
+    required this.x,
+    required this.y,
+    required this.path,
+    required this.pathSelected,
+  });
+
+  final double initialY;
+  final double x;
+  final double y;
+  final Path path;
+  final Path? pathSelected;
+}
+
 /// Main painter of the [LineChart].
 class LineChartPainter extends CustomPainter {
   /// Constructs an instance of [LineChartPainter].
@@ -153,6 +169,122 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
+    final lineData = switch (settings.lineType) {
+      LineType.plain => _getPlainLineData(size),
+      LineType.curved => _getCurvedLineData(size),
+    };
+    final initialY = lineData.initialY;
+    final x = lineData.x;
+    final y = lineData.y;
+    final path = lineData.path;
+    final pathSelected = lineData.pathSelected;
+
+    if (settings.lineFilling) {
+      final dy = style.lineStyle.stroke / 2;
+      final gradientPath = path.shift(Offset(0, -dy));
+
+      // finishing path to create valid gradient/color fill
+      if (data.isNegative) {
+        gradientPath.lineTo(x, 0);
+        gradientPath.lineTo(0, 0);
+      } else {
+        gradientPath.lineTo(x, size.height);
+        gradientPath.lineTo(0, size.height);
+      }
+      gradientPath.lineTo(0, initialY - dy);
+
+      canvas.drawPath(
+        gradientPath,
+        style.lineStyle.getFillPaint(gradientPath.getBounds()),
+      );
+    }
+
+    if (settings.altitudeLine) {
+      canvas.drawLine(
+        Offset(x, y),
+        Offset(x, size.height),
+        style.lineStyle.altitudeLinePaint,
+      );
+    }
+
+    if (settings.lineShadow) {
+      final shadowPath = path.shift(const Offset(0, 2));
+      canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
+    }
+
+    if (pathSelected != null) {
+      canvas.drawPath(path, style.lineStyle.lineInactivePaint);
+      canvas.drawPath(pathSelected, style.lineStyle.linePaint);
+    } else {
+      canvas.drawPath(path, style.lineStyle.linePaint);
+    }
+  }
+
+  _LineData _getCurvedLineData(Size size) {
+    final selectedIndex = getSelectedIndex(size);
+    final widthFraction = size.width / data.xAxisDivisions;
+    final map = _typedData;
+    final oldMap = adjustMap(map, cache.getTypedData(oldDataHashCode));
+    final zeroHeight = _getZeroHeight(size);
+    final path = Path();
+
+    Path? pathSelected;
+
+    double initialY = zeroHeight;
+    double x = 0;
+    double y = 0;
+    Offset? prevPoint;
+    for (var i = 0; i < map.length; i++) {
+      final value = map.entries.elementAt(i).value;
+      final oldValue = oldMap.entries.elementAt(i).value;
+
+      final normalizedOldY = normalizeOld(oldValue);
+      final normalizedY = normalize(value);
+      final animatedY =
+          normalizedOldY + (normalizedY - normalizedOldY) * valueCoef;
+
+      x = widthFraction * i;
+      y = animatedY * size.height;
+      final currentPoint = Offset(x, y);
+
+      if (i == 0) {
+        if (!settings.startLineFromZero) {
+          initialY = y;
+        }
+        path.moveTo(currentPoint.dx, initialY);
+      } else {
+        final midX = (prevPoint!.dx + currentPoint.dx) / 2;
+
+        final controlPoint1 = Offset(midX, prevPoint.dy);
+        final controlPoint2 = Offset(midX, currentPoint.dy);
+
+        path.cubicTo(
+          controlPoint1.dx,
+          controlPoint1.dy,
+          controlPoint2.dx,
+          controlPoint2.dy,
+          currentPoint.dx,
+          currentPoint.dy,
+        );
+      }
+
+      prevPoint = currentPoint;
+
+      if (selectedXPosition != null && selectedIndex! == i) {
+        pathSelected = Path.from(path);
+      }
+    }
+
+    return _LineData(
+      initialY: initialY,
+      x: x,
+      y: y,
+      path: path,
+      pathSelected: pathSelected,
+    );
+  }
+
+  _LineData _getPlainLineData(Size size) {
     final selectedIndex = getSelectedIndex(size);
     final widthFraction = size.width / data.xAxisDivisions;
     final map = _typedData;
@@ -195,45 +327,13 @@ class LineChartPainter extends CustomPainter {
       }
     }
 
-    if (settings.lineFilling) {
-      final dy = style.lineStyle.stroke / 2;
-      final gradientPath = path.shift(Offset(0, -dy));
-
-      // finishing path to create valid gradient/color fill
-      if (data.isNegative) {
-        gradientPath.lineTo(x, 0);
-        gradientPath.lineTo(0, 0);
-      } else {
-        gradientPath.lineTo(x, size.height);
-        gradientPath.lineTo(0, size.height);
-      }
-      gradientPath.lineTo(0, initialY - dy);
-
-      canvas.drawPath(
-        gradientPath,
-        style.lineStyle.getFillPaint(gradientPath.getBounds()),
-      );
-    }
-
-    if (settings.altitudeLine) {
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(x, size.height),
-        style.lineStyle.altitudeLinePaint,
-      );
-    }
-
-    if (settings.lineShadow) {
-      final shadowPath = path.shift(const Offset(0, 2));
-      canvas.drawPath(shadowPath, style.lineStyle.shadowPaint);
-    }
-
-    if (pathSelected != null) {
-      canvas.drawPath(path, style.lineStyle.lineInactivePaint);
-      canvas.drawPath(pathSelected, style.lineStyle.linePaint);
-    } else {
-      canvas.drawPath(path, style.lineStyle.linePaint);
-    }
+    return _LineData(
+      initialY: initialY,
+      x: x,
+      y: y,
+      path: path,
+      pathSelected: pathSelected,
+    );
   }
 
   /// Limit line painter.

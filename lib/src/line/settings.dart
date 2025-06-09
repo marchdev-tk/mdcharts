@@ -4,17 +4,30 @@
 
 import 'package:mdcharts/src/_internal.dart';
 
+/// Type of connection between this line points.
+enum LineType {
+  /// Connections between the line points will be plain.
+  ///
+  /// Default type.
+  plain,
+
+  /// Connections between the line points will be curved.
+  ///
+  /// **Please note**: it is not yet fully functional, use at your own risk.
+  curved,
+}
+
 /// How point should be painted.
 enum PointPaintingType {
-  /// Will be painted for current (idle) state or selected state.
+  /// Point will be painted for current (idle) state or selected state.
   ///
-  /// Default behavior.
+  /// Default type.
   always,
 
-  /// Will be painted for selected state.
+  /// Point will be painted for selected state.
   selection,
 
-  /// Will not be painter.
+  /// Point will not be painted.
   none,
 }
 
@@ -51,6 +64,7 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXDropLine = true,
     super.showAxisYDropLine = true,
     super.showTooltip = true,
+    this.lineType = LineType.plain,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
@@ -77,6 +91,7 @@ class LineChartSettings extends GridAxisSettings {
     super.showAxisXDropLine = true,
     super.showAxisYDropLine = true,
     super.showTooltip = true,
+    this.lineType = LineType.plain,
     this.lineFilling = true,
     this.lineShadow = true,
     this.altitudeLine = true,
@@ -85,6 +100,11 @@ class LineChartSettings extends GridAxisSettings {
     this.selectionEnabled = true,
     this.startLineFromZero = true,
   }) : super.gridless();
+
+  /// Type of connection between the line points.
+  ///
+  /// Defaults to [LineType.plain].
+  final LineType lineType;
 
   /// Whether to fill the space between the line and the X axis with
   /// color or gradient, which depends on provided style.
@@ -145,6 +165,7 @@ class LineChartSettings extends GridAxisSettings {
     bool? showAxisXDropLine,
     bool? showAxisYDropLine,
     bool? showTooltip,
+    LineType? lineType,
     bool? lineFilling,
     bool? lineShadow,
     bool? altitudeLine,
@@ -177,6 +198,7 @@ class LineChartSettings extends GridAxisSettings {
         showAxisXDropLine: showAxisXDropLine ?? this.showAxisXDropLine,
         showAxisYDropLine: showAxisYDropLine ?? this.showAxisYDropLine,
         showTooltip: showTooltip ?? this.showTooltip,
+        lineType: lineType ?? this.lineType,
         lineFilling: lineFilling ?? this.lineFilling,
         lineShadow: lineShadow ?? this.lineShadow,
         altitudeLine: altitudeLine ?? this.altitudeLine,
@@ -190,6 +212,7 @@ class LineChartSettings extends GridAxisSettings {
   @override
   int get hashCode =>
       super.hashCode ^
+      lineType.hashCode ^
       lineFilling.hashCode ^
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
@@ -202,6 +225,7 @@ class LineChartSettings extends GridAxisSettings {
   bool operator ==(Object other) =>
       other is LineChartSettings &&
       super == other &&
+      lineType == other.lineType &&
       lineFilling == other.lineFilling &&
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
