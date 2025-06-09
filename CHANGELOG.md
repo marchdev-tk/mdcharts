@@ -1,5 +1,17 @@
 # Changelog
 
+## 6.4.0 - 09.06.2025
+
+* **BREAKING CHANGES** of the `LineChart`:
+  * Added `PointPaintingType` to `LineChartSettings` instead of `LineChartSettings.showPoint`.
+
+* **BREAKING CHANGES** of the `GridAxis` based charts:
+  * Divided `GridAxisSettings.showDropLine` into `GridAxisSettings.showAxisXDropLine` and `GridAxisSettings.showAxisYDropLine`.
+
+* Other changes of the `GridAxis` based charts:
+  * Added `DropLineStyle.xAxisGradient` and `DropLineStyle.yAxisGradient` to drop line.
+  * Fixed drop line painter.
+
 ## 6.3.6 - 05.02.2025
 
 * Fixed the double inaccuracy issue.
