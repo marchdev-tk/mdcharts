@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.4.2 - 09.06.2025
+
+* Changes of the `LineChart`:
+  * Added `LineChartData.onSelectionChanged` callback.
+
 ## 6.4.1 - 09.06.2025
 
 * Updated readme files to reflect recent changes.
