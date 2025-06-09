@@ -167,7 +167,7 @@ class GridAxisSettings {
   /// Defaults to `true`.
   final bool showTooltip;
 
-  // Whether a chart is has drop line or not.
+  /// Whether a chart is has drop line or not.
   bool get showDropLine => showAxisXDropLine || showAxisYDropLine;
 
   /// Whether a chart is gridless or not.

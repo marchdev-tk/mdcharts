@@ -76,6 +76,8 @@ class LineChartExample extends StatelessWidget {
         SetupDivider(),
         _LimitLabelSnapPositionSetupGroup(),
         SetupDivider(),
+        _PointPaintingTypeSetupGroup(),
+        SetupDivider(),
         _GridStyleSetupGroup(),
         SetupDivider(),
         _AxisStyleSetupGroup(),
@@ -566,13 +568,6 @@ class _GeneralSettingsSetupGroup extends StatelessWidget {
             ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.trailing,
-              value: data.showPoint,
-              onChanged: (value) =>
-                  _settings.add(data.copyWith(showPoint: value == true)),
-              title: const Text('showPoint'),
-            ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.trailing,
               value: data.selectionEnabled,
               onChanged: (value) =>
                   _settings.add(data.copyWith(selectionEnabled: value == true)),
@@ -704,6 +699,36 @@ class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
                 onChanged: (value) =>
                     _settings.add(data.copyWith(limitLabelSnapPosition: value)),
                 title: Text(LimitLabelSnapPosition.values[i].name),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PointPaintingTypeSetupGroup extends StatelessWidget {
+  const _PointPaintingTypeSetupGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<LineChartSettings>(
+      stream: _settings,
+      initialData: _settings.value,
+      builder: (context, settings) {
+        final data = settings.requireData;
+
+        return SetupGroup(
+          title: '└─ Point Painting Type',
+          children: [
+            for (var i = 0; i < PointPaintingType.values.length; i++)
+              RadioListTile<PointPaintingType>(
+                controlAffinity: ListTileControlAffinity.trailing,
+                groupValue: data.pointPaintingType,
+                value: PointPaintingType.values[i],
+                onChanged: (value) =>
+                    _settings.add(data.copyWith(pointPaintingType: value)),
+                title: Text(PointPaintingType.values[i].name),
               ),
           ],
         );

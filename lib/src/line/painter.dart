@@ -315,7 +315,10 @@ class LineChartPainter extends CustomPainter {
 
   /// Point painter.
   void paintPoint(Canvas canvas, Size size) {
-    if (!data.canDraw || !settings.showPoint) {
+    if (!data.canDraw ||
+        settings.pointPaintingType == PointPaintingType.none ||
+        settings.pointPaintingType == PointPaintingType.selection &&
+            selectedXPosition == null) {
       return;
     }
 

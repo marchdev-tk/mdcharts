@@ -4,6 +4,20 @@
 
 import 'package:mdcharts/src/_internal.dart';
 
+/// How point should be painted.
+enum PointPaintingType {
+  /// Will be painted for current (idle) state or selected state.
+  ///
+  /// Default behavior.
+  always,
+
+  /// Will be painted for selected state.
+  selection,
+
+  /// Will not be painter.
+  none,
+}
+
 /// Snap position options of limit label.
 enum LimitLabelSnapPosition {
   /// Snap to Y axis.
@@ -41,7 +55,7 @@ class LineChartSettings extends GridAxisSettings {
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
-    this.showPoint = true,
+    this.pointPaintingType = PointPaintingType.always,
     this.selectionEnabled = true,
     this.startLineFromZero = true,
   }) : super();
@@ -67,7 +81,7 @@ class LineChartSettings extends GridAxisSettings {
     this.lineShadow = true,
     this.altitudeLine = true,
     this.limitLabelSnapPosition = LimitLabelSnapPosition.axis,
-    this.showPoint = true,
+    this.pointPaintingType = PointPaintingType.always,
     this.selectionEnabled = true,
     this.startLineFromZero = true,
   }) : super.gridless();
@@ -93,10 +107,10 @@ class LineChartSettings extends GridAxisSettings {
   /// Defaults to [LimitLabelSnapPosition.axis].
   final LimitLabelSnapPosition limitLabelSnapPosition;
 
-  /// Whether to show current or selected point or not.
+  /// Painting type of the point.
   ///
-  /// Defaults to `true`.
-  final bool showPoint;
+  /// Defaults to [PointPaintingType.always].
+  final PointPaintingType pointPaintingType;
 
   /// Whether interactive selection is enabled or not.
   ///
@@ -135,7 +149,7 @@ class LineChartSettings extends GridAxisSettings {
     bool? lineShadow,
     bool? altitudeLine,
     LimitLabelSnapPosition? limitLabelSnapPosition,
-    bool? showPoint,
+    PointPaintingType? pointPaintingType,
     bool? selectionEnabled,
     bool? startLineFromZero,
   }) =>
@@ -168,7 +182,7 @@ class LineChartSettings extends GridAxisSettings {
         altitudeLine: altitudeLine ?? this.altitudeLine,
         limitLabelSnapPosition:
             limitLabelSnapPosition ?? this.limitLabelSnapPosition,
-        showPoint: showPoint ?? this.showPoint,
+        pointPaintingType: pointPaintingType ?? this.pointPaintingType,
         selectionEnabled: selectionEnabled ?? this.selectionEnabled,
         startLineFromZero: startLineFromZero ?? this.startLineFromZero,
       );
@@ -180,7 +194,7 @@ class LineChartSettings extends GridAxisSettings {
       lineShadow.hashCode ^
       altitudeLine.hashCode ^
       limitLabelSnapPosition.hashCode ^
-      showPoint.hashCode ^
+      pointPaintingType.hashCode ^
       selectionEnabled.hashCode ^
       startLineFromZero.hashCode;
 
@@ -192,7 +206,7 @@ class LineChartSettings extends GridAxisSettings {
       lineShadow == other.lineShadow &&
       altitudeLine == other.altitudeLine &&
       limitLabelSnapPosition == other.limitLabelSnapPosition &&
-      showPoint == other.showPoint &&
+      pointPaintingType == other.pointPaintingType &&
       selectionEnabled == other.selectionEnabled &&
       startLineFromZero == other.startLineFromZero;
 }
