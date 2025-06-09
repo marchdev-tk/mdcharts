@@ -43,23 +43,24 @@
 * `yAxisDivisions` - quantity of the Y axis divisions, defaults to `2`.
 * `xAxisLabelQuantity` - quantity of the X axis labels to draw, defaults to `null`.
 * `axisDivisionEdges` - axis division edges, defaults to `AxisDivisionEdges.none`.
-* `showAxisX` - whether to show X axis or not, defaults to `true`.
-* `showAxisXSelectedLabelIfConcealed` - whether to show selected label if it is concealed by `xAxisLabelQuantity`, defaults to `false`.
-* `showAxisY` - whether to show Y axis or not, defaults to `true`.
-* `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
-* `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
-* `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
 * `yAxisLayout` - layout type of the Y axis labels, defaults to `YAxisLayout.overlay`.
 * `yAxisBaseline` - baseline of the Y axis label values, defaults to `YAxisBaseline.zero`.
 * `yAxisLabelSpacing` - spacing between the Y axis labels and chart itself, defaults to `0`.
+* `showAxisX` - whether to show X axis or not, defaults to `true`.
+* `showAxisXSelectedLabelIfConcealed` - whether to show selected label if it is concealed by `xAxisLabelQuantity`, defaults to `false`.
+* `showAxisXLabelSelection` - whether to paint with selected style currently selected X axis label or not, defaults to `false`.
+* `showAxisY` - whether to show Y axis or not, defaults to `true`.
+* `showAxisXLabels` - whether to show labels on the X axis or not, defaults to `true`.
+* `showAxisYLabels` - whether to show labels on the Y axis or not, defaults to `true`.
 * `showZeroLine` - whether to show zero line or not, defaults to `false`.
-* `showDropLine` - whether to show drop line or not, defaults to `true`.
+* `showAxisXDropLine` - whether to show X axis drop line or not, defaults to `true`.
+* `showAxisYDropLine` - whether to show Y axis drop line or not, defaults to `true`.
 * `showTooltip` - whether to show tooltip or not, defaults to `true`.
 * `lineFilling` - whether to fill chart between the line and the X axis or not, defaults to `true`.
 * `lineShadow` - whether to draw shadow beneath the line or not, defaults to `true`.
 * `altitudeLine` - whether to draw the altitude line or not, defaults to `true`.
 * `limitLabelSnapPosition` - snap position options of limit label, defaults to `LimitLabelSnapPosition.axis`.
-* `showPoint` - whether to show point or not, defaults to `true`.
+* `pointPaintingType` - painting type of the point, defaults to `PointPaintingType.always`.
 * `selectionEnabled` - whether selection enabled or not, defaults to `true`.
 * `startLineFromZero` - whether to start the line from zero point or not, defaults to `true`.
 
