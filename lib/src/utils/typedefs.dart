@@ -18,3 +18,6 @@ typedef RichLabelBuilder<T> = TextSpan Function(T value, TextStyle style);
 
 /// Signature for indexed predicate.
 typedef IndexedPredicate = bool Function(int index);
+
+/// Signature for changed selection callback with key as an argument.
+typedef KeyedSelectionChanged<T> = void Function(T key);

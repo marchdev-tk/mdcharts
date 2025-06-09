@@ -104,8 +104,13 @@ class LineChartPainter extends CustomPainter {
   /// Retrieves data entry index.
   ///
   /// For more info refer to [GridAxisUtils.getSelectedIndex].
-  int? getSelectedIndex(Size size) =>
-      GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
+  int? getSelectedIndex(Size size) {
+    final index =
+        GridAxisUtils().getSelectedIndex(size, selectedXPosition, data);
+    data.onSelectionChanged
+        ?.call(index != null ? data.typedData.keys.elementAt(index) : null);
+    return index;
+  }
 
   /// Height of the zero point on y axis.
   double _getZeroHeight(Size size) {

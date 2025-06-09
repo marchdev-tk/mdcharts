@@ -41,10 +41,17 @@ class LineChartData extends GridAxisData<double> {
     super.yAxisLabelBuilder = GridAxisData.defaultYAxisLabelBuilder,
     super.titleBuilder,
     super.subtitleBuilder,
+    this.onSelectionChanged,
     this.limit,
     this.limitText,
     this.gridType = LineChartGridType.monthly,
   });
+
+  /// Callbacks that reports that selected item has changed.
+  ///
+  /// **Please note**: this callback will be triggered multiple times even with
+  /// same values (this is subject to change in future iterations).
+  final KeyedSelectionChanged<DateTime?>? onSelectionChanged;
 
   /// Optional limit, corresponds to the limit line on the chart. It is
   /// designed to be as a notifier of overuse.
@@ -229,6 +236,7 @@ class LineChartData extends GridAxisData<double> {
     Map<DateTime, double>? data,
     double? predefinedMaxValue,
     Map<String, num>? roundingMap,
+    KeyedSelectionChanged<DateTime?>? onSelectionChanged,
     double? limit,
     String? limitText,
     TooltipBuilder? titleBuilder,
@@ -243,6 +251,7 @@ class LineChartData extends GridAxisData<double> {
             ? predefinedMaxValue
             : predefinedMaxValue ?? this.predefinedMaxValue,
         roundingMap: roundingMap ?? this.roundingMap,
+        onSelectionChanged: onSelectionChanged ?? this.onSelectionChanged,
         limit: allowNullLimit ? limit : limit ?? this.limit,
         limitText: allowNullLimitText ? limitText : limitText ?? this.limitText,
         titleBuilder: titleBuilder ?? this.titleBuilder,
