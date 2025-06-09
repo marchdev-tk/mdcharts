@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.4.1 - 09.06.2025
+
+* Updated readme files to reflect recent changes.
+
 ## 6.4.0 - 09.06.2025
 
 * **BREAKING CHANGES** of the `LineChart`:
