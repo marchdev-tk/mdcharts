@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.5.0 - 10.06.2025
+
+* Changes of the `LineChart`:
+  * Added `LineType` to `LineChartSettings` with `LineType.plain` (old) and `LineType.curved` (new) options.
+
 ## 6.4.2 - 09.06.2025
 
 * Changes of the `LineChart`:
