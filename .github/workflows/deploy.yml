@@ -1,0 +1,49 @@
+name: Flutter Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+
+# Explanation of the concurrency group:
+# The 'group' value is dynamically determined based on the context of the workflow trigger.
+# - If the workflow is triggered by a push to the 'main' branch (github.ref == 'refs/heads/main'),
+#   it uses the group name 'auto-deploy'. This groups all main branch workflows together, allowing
+#   newer runs to cancel in-progress runs, ensuring only the latest push to main is deployed.
+# - For pull requests, the group name is set to a unique value for each run using the format
+#   'pr-{run_id}'. This ensures that workflows triggered by pull requests each have their own 
+#   concurrency group, so they don't cancel each other and are not affected by main branch workflows.
+
+      
+
+jobs:
+  build_web:
+    name: Build Flutter Web, Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          # channel: "master"
+          cache: true
+      - name: cd example
+        run: cd example
+
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Build Flutter Web
+        run: flutter build web --profile --base-href "/mdcharts/"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          # publish_dir: ./build/web_wasm
