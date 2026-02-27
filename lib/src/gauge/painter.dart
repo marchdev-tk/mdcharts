@@ -7,8 +7,8 @@ import 'dart:ui';
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/_internal.dart';
 
+import '../_internal.dart';
 import 'cache.dart';
 
 /// Main painter of the [GaugeChart].

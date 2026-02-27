@@ -5,7 +5,8 @@
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../_internal.dart';
 
 /// Data for the [BarChart].
 class BarChartData {
@@ -130,7 +131,7 @@ class BarChartData {
       return predefinedMaxValue!;
     }
 
-    final values = [for (var value in data.values) ...value];
+    final values = [for (final value in data.values) ...value];
     final max = values.max;
 
     return max;

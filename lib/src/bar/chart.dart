@@ -6,9 +6,9 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:mdcharts/src/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../_internal.dart';
 import 'painter.dart';
 import 'utils.dart';
 
@@ -344,7 +344,7 @@ class _BarChartState extends State<BarChart>
   Widget _buildContent(BoxConstraints constraints) {
     final maxVisibleContentWidth =
         constraints.maxWidth - (widget.padding?.horizontal ?? 0);
-    var maxWidth = _getChartWidth(maxVisibleContentWidth);
+    final maxWidth = _getChartWidth(maxVisibleContentWidth);
 
     Widget chart = _buildContentBarAlignmentAdjuster(
       maxWidth: maxWidth,

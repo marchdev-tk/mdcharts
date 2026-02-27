@@ -2,9 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/widgets.dart';
-import 'package:mdcharts/src/_internal.dart';
+import 'dart:async';
 
+import 'package:flutter/widgets.dart';
+
+import '../_internal.dart';
 import 'cache.dart';
 import 'painter.dart';
 
@@ -44,7 +46,7 @@ class _DonutChartState extends State<DonutChart>
       return;
     }
 
-    _valueController.forward(from: 0);
+    unawaited(_valueController.forward(from: 0));
     await Future.delayed(_animationDuaration);
   }
 

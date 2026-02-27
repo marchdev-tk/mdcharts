@@ -5,9 +5,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/_internal.dart';
-import 'package:mdcharts/src/_internal.dart' as utils
-    show normalize, normalizeInverted;
+
+import '../../_internal.dart' as utils show normalize, normalizeInverted;
+import '../../_internal.dart';
 
 class GridAxisUtils {
   const GridAxisUtils._();
@@ -84,7 +84,7 @@ class GridAxisUtils {
         sourceMap.keys.elementAt(i): defaultValue,
     };
 
-    for (var entry in sourceMap.entries) {
+    for (final entry in sourceMap.entries) {
       if (mapToAdjust == null || mapToAdjust.isEmpty) {
         adjustedMap[entry.key] = defaultValue;
         continue;

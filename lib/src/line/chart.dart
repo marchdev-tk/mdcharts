@@ -6,9 +6,9 @@ import 'dart:math' as math;
 
 import 'package:cross_platform/cross_platform.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mdcharts/src/_internal.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../_internal.dart';
 import 'cache.dart';
 import 'painter.dart';
 

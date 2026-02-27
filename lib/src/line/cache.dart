@@ -4,8 +4,9 @@
 
 import 'dart:ui';
 
-import 'package:mdcharts/src/_internal.dart';
 import 'package:meta/meta.dart';
+
+import '../_internal.dart';
 
 @internal
 final class LineChartCacheHolder extends GridAxisCacheHolder {

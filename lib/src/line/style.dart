@@ -5,7 +5,8 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/painting.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../_internal.dart';
 
 /// Contains various customization options for the [LineChart].
 class LineChartStyle extends GridAxisStyle {

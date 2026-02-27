@@ -3,7 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../../_internal.dart';
 
 /// Data for the [GridAxis].
 abstract class GridAxisData<T> extends ChartData<T> {

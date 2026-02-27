@@ -12,7 +12,7 @@ abstract base class MDCacheHolder {
     if (oldDataHashCode != null) {
       final boundedHash = _dataHashes[oldDataHashCode];
       if (boundedHash != -1) {
-        for (var data in datas) {
+        for (final data in datas) {
           data.remove(boundedHash);
         }
         _dataHashes.remove(boundedHash);
@@ -24,7 +24,7 @@ abstract base class MDCacheHolder {
 
   /// Clears all cached data.
   void clear() {
-    for (var data in datas) {
+    for (final data in datas) {
       data.clear();
     }
     _dataHashes.clear();

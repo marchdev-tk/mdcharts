@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/_internal.dart';
 
+import '../_internal.dart';
 import 'cache.dart';
 
 class _LineData {

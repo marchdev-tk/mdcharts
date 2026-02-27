@@ -3,7 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../_internal.dart';
 
 /// Represents the data for a single candlestick in a financial chart.
 class CandlestickData {

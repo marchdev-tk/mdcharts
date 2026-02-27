@@ -6,7 +6,8 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../_internal.dart';
 
 /// Type of the line chart.
 ///

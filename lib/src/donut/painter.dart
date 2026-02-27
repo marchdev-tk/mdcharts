@@ -6,8 +6,8 @@ import 'dart:math' show Point, max, pi, sqrt;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mdcharts/src/_internal.dart';
 
+import '../_internal.dart';
 import 'cache.dart';
 
 class DonutPainter extends CustomPainter {

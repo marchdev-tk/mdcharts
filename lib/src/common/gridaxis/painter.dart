@@ -6,7 +6,8 @@ import 'dart:math' as math;
 
 import 'package:flinq/flinq.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mdcharts/src/_internal.dart';
+
+import '../../_internal.dart';
 
 /// Grid and Axis painter of the [GridAxis].
 class GridAxisPainter extends CustomPainter {

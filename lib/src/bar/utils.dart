@@ -4,7 +4,7 @@
 
 import 'dart:math' as math;
 
-import 'package:mdcharts/src/_internal.dart';
+import '../_internal.dart';
 
 class BarChartBarMetrics {
   const BarChartBarMetrics({
@@ -74,7 +74,7 @@ class BarChartUtils {
     var itemSpacing = settings.itemSpacing;
     var itemWidth = getItemWidth(data, settings, style);
     var maxChartWidth = getChartWidth(-1, data, settings, style);
-    var maxScreenWidth = getChartWidth(maxWidth, data, settings, style);
+    final maxScreenWidth = getChartWidth(maxWidth, data, settings, style);
 
     if (settings.fit == BarFit.contain) {
       double getChartWidthLocal(double itemWidth, double itemSpacing) =>
@@ -140,7 +140,7 @@ class BarChartUtils {
 
     // other items
     else {
-      var index =
+      final index =
           (x - edgeItemWidth) ~/ (metrics.itemWidth + metrics.itemSpacing);
       // plus 1 due to exclusion of the first item
       key = data.data.keys.elementAt(index + 1);
@@ -174,7 +174,7 @@ class BarChartUtils {
     // other items
     else {
       final lastIndex = data.data.length - 1;
-      var index = (invertedX - edgeItemWidth) ~/
+      final index = (invertedX - edgeItemWidth) ~/
           (metrics.itemWidth + metrics.itemSpacing);
       // minus 1 due to exclusion of the last item
       key = data.data.keys.elementAt(lastIndex - index - 1);
@@ -208,7 +208,7 @@ class BarChartUtils {
     // other items
     else {
       final lastIndex = data.data.length - 1;
-      var index = (invertedX - edgeItemWidth) ~/
+      final index = (invertedX - edgeItemWidth) ~/
           (metrics.itemWidth + metrics.itemSpacing);
       // minus 1 due to exclusion of the last item
       key = data.data.keys.elementAt(lastIndex - index - 1);

@@ -15,10 +15,10 @@ dependencies:
     sdk: flutter
   
   # common
-  meta: ^1.15.0
+  meta: ^1.17.0
   rxdart: ^0.28.0
   decimal: ^3.0.2
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # marchdev.tk
   cross_platform: ^3.0.1
@@ -27,7 +27,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
