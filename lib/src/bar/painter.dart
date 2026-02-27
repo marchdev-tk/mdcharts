@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -121,7 +121,7 @@ class BarChartBarPainter extends CustomPainter {
     );
     if (colors.length == 1 && barItemQuantity > 1) {
       colors.add(colors.first
-          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+          .withValues(alpha: (barItemQuantity - 1) * 1 / barItemQuantity));
     }
     assert(
       selectedColors.isEmpty ||
@@ -132,7 +132,7 @@ class BarChartBarPainter extends CustomPainter {
     );
     if (selectedColors.length == 1 && barItemQuantity > 1) {
       selectedColors.add(selectedColors.first
-          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+          .withValues(alpha: (barItemQuantity - 1) * 1 / barItemQuantity));
     }
     assert(
       borderColors.isEmpty ||
@@ -143,7 +143,7 @@ class BarChartBarPainter extends CustomPainter {
     );
     if (borderColors.length == 1 && barItemQuantity > 1) {
       borderColors.add(borderColors.first
-          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+          .withValues(alpha: (barItemQuantity - 1) * 1 / barItemQuantity));
     }
     assert(
       selectedBorderColors.isEmpty ||
@@ -154,7 +154,7 @@ class BarChartBarPainter extends CustomPainter {
     );
     if (selectedBorderColors.length == 1 && barItemQuantity > 1) {
       selectedBorderColors.add(selectedBorderColors.first
-          .withOpacity((barItemQuantity - 1) * 1 / barItemQuantity));
+          .withValues(alpha: (barItemQuantity - 1) * 1 / barItemQuantity));
     }
 
     switch (settings.alignment) {
@@ -450,7 +450,7 @@ class BarChartBarPainter extends CustomPainter {
       key,
       index,
     );
-    final isBorderColorTransparent = borderColor.alpha == 0;
+    final isBorderColorTransparent = borderColor.a == 0;
     final isZeroBar = data.data[key]![index] == 0;
     final paintableBorder = canPaintBorder(size, key, index);
 

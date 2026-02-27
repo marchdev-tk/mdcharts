@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -147,7 +147,7 @@ class _GeneralDataSetupGroup extends StatelessWidget {
             ),
             Button(
               onPressed: () {
-                final gridColor = Colors.white.withOpacity(0.1);
+                final gridColor = Colors.white.withValues(alpha: 0.1);
                 final bar1Color = blend(
                   Colors.white,
                   Colors.blue,
@@ -155,9 +155,10 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                   intensityGreen: 0.2,
                   intensityBlue: 0.2,
                 );
-                final bar2Color = bar1Color.withOpacity(0.3);
+                final bar2Color = bar1Color.withValues(alpha: 0.3);
                 const selectedBar1Color = Colors.white;
-                final selectedBar2Color = selectedBar1Color.withOpacity(0.8);
+                final selectedBar2Color =
+                    selectedBar1Color.withValues(alpha: 0.8);
                 final barWidth = _counter % 2 == 0
                     ? MediaQuery.of(context).size.width * 0.207
                     : 40.0;
@@ -364,19 +365,21 @@ class _IteractionTypeSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Interaction Type',
-          children: [
-            for (var i = 0; i < InteractionType.values.length; i++)
-              RadioListTile<InteractionType>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.interaction,
-                value: InteractionType.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(interaction: value)),
-                title: Text(InteractionType.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(interaction: value)),
+          groupValue: data.interaction,
+          child: SetupGroup(
+            title: '└─ Interaction Type',
+            children: [
+              for (var i = 0; i < InteractionType.values.length; i++)
+                RadioListTile<InteractionType>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: InteractionType.values[i],
+                  title: Text(InteractionType.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -394,19 +397,20 @@ class _BarAlignmentSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Bar Alignment',
-          children: [
-            for (var i = 0; i < BarAlignment.values.length; i++)
-              RadioListTile<BarAlignment>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.alignment,
-                value: BarAlignment.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(alignment: value)),
-                title: Text(BarAlignment.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) => _settings.add(data.copyWith(alignment: value)),
+          groupValue: data.alignment,
+          child: SetupGroup(
+            title: '└─ Bar Alignment',
+            children: [
+              for (var i = 0; i < BarAlignment.values.length; i++)
+                RadioListTile<BarAlignment>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: BarAlignment.values[i],
+                  title: Text(BarAlignment.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -424,18 +428,20 @@ class _BarFitSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Bar Fit',
-          children: [
-            for (var i = 0; i < BarFit.values.length; i++)
-              RadioListTile<BarFit>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.fit,
-                value: BarFit.values[i],
-                onChanged: (value) => _settings.add(data.copyWith(fit: value)),
-                title: Text(BarFit.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) => _settings.add(data.copyWith(fit: value)),
+          groupValue: data.fit,
+          child: SetupGroup(
+            title: '└─ Bar Fit',
+            children: [
+              for (var i = 0; i < BarFit.values.length; i++)
+                RadioListTile<BarFit>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: BarFit.values[i],
+                  title: Text(BarFit.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -453,19 +459,21 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Y Axis Layout',
-          children: [
-            for (var i = 0; i < YAxisLayout.values.length; i++)
-              RadioListTile<YAxisLayout>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.yAxisLayout,
-                value: YAxisLayout.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(yAxisLayout: value)),
-                title: Text(YAxisLayout.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(yAxisLayout: value)),
+          groupValue: data.yAxisLayout,
+          child: SetupGroup(
+            title: '└─ Y Axis Layout',
+            children: [
+              for (var i = 0; i < YAxisLayout.values.length; i++)
+                RadioListTile<YAxisLayout>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: YAxisLayout.values[i],
+                  title: Text(YAxisLayout.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -483,19 +491,21 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Axis Division Edges',
-          children: [
-            for (var i = 0; i < AxisDivisionEdges.values.length; i++)
-              RadioListTile<AxisDivisionEdges>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.axisDivisionEdges,
-                value: AxisDivisionEdges.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(axisDivisionEdges: value)),
-                title: Text(AxisDivisionEdges.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(axisDivisionEdges: value)),
+          groupValue: data.axisDivisionEdges,
+          child: SetupGroup(
+            title: '└─ Axis Division Edges',
+            children: [
+              for (var i = 0; i < AxisDivisionEdges.values.length; i++)
+                RadioListTile<AxisDivisionEdges>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: AxisDivisionEdges.values[i],
+                  title: Text(AxisDivisionEdges.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -864,26 +874,28 @@ class _BardBorderSetupGroup extends StatelessWidget {
       builder: (context, style) {
         final data = style.requireData;
 
-        return SetupGroup(
-          title: '└─ Bar Borders',
-          children: [
-            for (var i = 0; i < BarBorder.values.length; i++)
-              RadioListTile<BarBorder>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.barStyle.border,
-                value: BarBorder.values[i],
-                onChanged: (value) {
-                  _style.add(
-                    data.copyWith(
-                      barStyle: data.barStyle.copyWith(
-                        border: value,
-                      ),
-                    ),
-                  );
-                },
-                title: Text(AxisDivisionEdges.values[i].name),
+        return RadioGroup(
+          onChanged: (value) {
+            _style.add(
+              data.copyWith(
+                barStyle: data.barStyle.copyWith(
+                  border: value,
+                ),
               ),
-          ],
+            );
+          },
+          groupValue: data.barStyle.border,
+          child: SetupGroup(
+            title: '└─ Bar Borders',
+            children: [
+              for (var i = 0; i < BarBorder.values.length; i++)
+                RadioListTile<BarBorder>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: BarBorder.values[i],
+                  title: Text(AxisDivisionEdges.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -1024,10 +1036,10 @@ Color blend(
   double intensityBlue = 1,
 }) {
   final color = Color.fromARGB(
-    (input2.alpha + input2.alpha) ~/ 2,
-    (input2.red + input2.red) ~/ 2,
-    (input2.green + input2.green) ~/ 2,
-    (input2.blue + input2.blue) ~/ 2,
+    (input2.a + input2.a) ~/ 2,
+    (input2.r + input2.r) ~/ 2,
+    (input2.g + input2.g) ~/ 2,
+    (input2.b + input2.b) ~/ 2,
   );
   return color;
 }

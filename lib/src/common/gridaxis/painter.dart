@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -152,7 +152,7 @@ class GridAxisPainter extends CustomPainter {
 
   void paintZeroLine(Canvas canvas, Size size) {
     final canPaint =
-        style.zeroLineStyle.stroke > 0 && style.zeroLineStyle.color.alpha > 0;
+        style.zeroLineStyle.stroke > 0 && style.zeroLineStyle.color.a > 0;
     final minValue = settings.yAxisBaseline == YAxisBaseline.axis
         ? data.minValue
         : data.minValueZeroBased;

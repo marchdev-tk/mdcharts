@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -163,7 +163,7 @@ class SetupDivider extends StatelessWidget {
     return Container(
       height: 8,
       width: double.infinity,
-      color: Colors.white.withOpacity(0.2),
+      color: Colors.white.withValues(alpha: 0.2),
     );
   }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -435,19 +435,21 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Y Axis Layout',
-          children: [
-            for (var i = 0; i < YAxisLayout.values.length; i++)
-              RadioListTile<YAxisLayout>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.yAxisLayout,
-                value: YAxisLayout.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(yAxisLayout: value)),
-                title: Text(YAxisLayout.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(yAxisLayout: value)),
+          groupValue: data.yAxisLayout,
+          child: SetupGroup(
+            title: '└─ Y Axis Layout',
+            children: [
+              for (var i = 0; i < YAxisLayout.values.length; i++)
+                RadioListTile<YAxisLayout>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: YAxisLayout.values[i],
+                  title: Text(YAxisLayout.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -465,19 +467,21 @@ class _YAxisBasisSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Y Axis Baseline',
-          children: [
-            for (var i = 0; i < YAxisBaseline.values.length; i++)
-              RadioListTile<YAxisBaseline>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.yAxisBaseline,
-                value: YAxisBaseline.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(yAxisBaseline: value)),
-                title: Text(YAxisBaseline.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(yAxisBaseline: value)),
+          groupValue: data.yAxisBaseline,
+          child: SetupGroup(
+            title: '└─ Y Axis Baseline',
+            children: [
+              for (var i = 0; i < YAxisBaseline.values.length; i++)
+                RadioListTile<YAxisBaseline>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: YAxisBaseline.values[i],
+                  title: Text(YAxisBaseline.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -495,19 +499,21 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Axis Division Edges',
-          children: [
-            for (var i = 0; i < AxisDivisionEdges.values.length; i++)
-              RadioListTile<AxisDivisionEdges>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.axisDivisionEdges,
-                value: AxisDivisionEdges.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(axisDivisionEdges: value)),
-                title: Text(AxisDivisionEdges.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(axisDivisionEdges: value)),
+          groupValue: data.axisDivisionEdges,
+          child: SetupGroup(
+            title: '└─ Axis Division Edges',
+            children: [
+              for (var i = 0; i < AxisDivisionEdges.values.length; i++)
+                RadioListTile<AxisDivisionEdges>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: AxisDivisionEdges.values[i],
+                  title: Text(AxisDivisionEdges.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );

@@ -93,7 +93,7 @@ BEGIN
             VALUE "FileDescription", "mdcharts_example" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "mdcharts_example" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 march.dev. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (c) 2022-2026 march.dev. All rights reserved." "\0"
             VALUE "OriginalFilename", "mdcharts_example.exe" "\0"
             VALUE "ProductName", "mdcharts_example" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

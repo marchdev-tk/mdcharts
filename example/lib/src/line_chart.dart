@@ -1,4 +1,4 @@
-// Copyright (c) 2025, the MarchDev Toolkit project authors. Please see the AUTHORS file
+// Copyright (c) 2022-2026, the MarchDev Toolkit project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -289,11 +289,11 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                 );
                 final style = LineChartStyle(
                   gridStyle: GridStyle.same(
-                    color: materialColor.withOpacity(0.1),
+                    color: materialColor.withValues(alpha: 0.1),
                     stroke: 0.5,
                   ),
                   axisStyle: AxisStyle(
-                    color: materialColor.withOpacity(0.1),
+                    color: materialColor.withValues(alpha: 0.1),
                     stroke: 0.5,
                     xAxisLabelTopMargin: 6,
                     xAxisLabelStyle: const TextStyle(
@@ -306,27 +306,27 @@ class _GeneralDataSetupGroup extends StatelessWidget {
                       height: 16 / 11,
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: materialColor.withOpacity(0.2),
+                      color: materialColor.withValues(alpha: 0.2),
                     ),
                   ),
                   lineStyle: LineChartLineStyle(
                     color: chartColor,
-                    colorInactive: chartColor.withOpacity(0.2),
-                    altitudeLineColor: materialColor.withOpacity(0.1),
+                    colorInactive: chartColor.withValues(alpha: 0.2),
+                    altitudeLineColor: materialColor.withValues(alpha: 0.1),
                     fillGradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        chartColor.withOpacity(0.5),
-                        chartColor.withOpacity(0.12),
-                        chartColor.withOpacity(0.08),
-                        chartColor.withOpacity(0.01),
+                        chartColor.withValues(alpha: 0.5),
+                        chartColor.withValues(alpha: 0.12),
+                        chartColor.withValues(alpha: 0.08),
+                        chartColor.withValues(alpha: 0.01),
                       ],
                       stops: const [0.0604, 0.3353, 0.6102, 1],
                     ),
                   ),
                   dropLineStyle: DropLineStyle(
-                    color: materialColor.withOpacity(0.5),
+                    color: materialColor.withValues(alpha: 0.5),
                   ),
                   pointStyle: LineChartPointStyle(
                     innerColor: materialColor,
@@ -407,19 +407,21 @@ class _GridTypeSetupGroup extends StatelessWidget {
       stream: _data,
       initialData: _data.value,
       builder: (context, data) {
-        return SetupGroup(
-          title: '└─ Grid Type',
-          children: [
-            for (var i = 0; i < LineChartGridType.values.length; i++)
-              RadioListTile<LineChartGridType>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.requireData.gridType,
-                value: LineChartGridType.values[i],
-                onChanged: (value) =>
-                    _data.add(data.requireData.copyWith(gridType: value)),
-                title: Text(LineChartGridType.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _data.add(data.requireData.copyWith(gridType: value)),
+          groupValue: data.requireData.gridType,
+          child: SetupGroup(
+            title: '└─ Grid Type',
+            children: [
+              for (var i = 0; i < LineChartGridType.values.length; i++)
+                RadioListTile<LineChartGridType>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: LineChartGridType.values[i],
+                  title: Text(LineChartGridType.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -598,19 +600,21 @@ class _YAxisLayoutSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Y Axis Layout',
-          children: [
-            for (var i = 0; i < YAxisLayout.values.length; i++)
-              RadioListTile<YAxisLayout>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.yAxisLayout,
-                value: YAxisLayout.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(yAxisLayout: value)),
-                title: Text(YAxisLayout.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(yAxisLayout: value)),
+          groupValue: data.yAxisLayout,
+          child: SetupGroup(
+            title: '└─ Y Axis Layout',
+            children: [
+              for (var i = 0; i < YAxisLayout.values.length; i++)
+                RadioListTile<YAxisLayout>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: YAxisLayout.values[i],
+                  title: Text(YAxisLayout.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -628,19 +632,21 @@ class _YAxisBasisSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Y Axis Baseline',
-          children: [
-            for (var i = 0; i < YAxisBaseline.values.length; i++)
-              RadioListTile<YAxisBaseline>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.yAxisBaseline,
-                value: YAxisBaseline.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(yAxisBaseline: value)),
-                title: Text(YAxisBaseline.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(yAxisBaseline: value)),
+          groupValue: data.yAxisBaseline,
+          child: SetupGroup(
+            title: '└─ Y Axis Baseline',
+            children: [
+              for (var i = 0; i < YAxisBaseline.values.length; i++)
+                RadioListTile<YAxisBaseline>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: YAxisBaseline.values[i],
+                  title: Text(YAxisBaseline.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -658,19 +664,21 @@ class _AxisDivisionsEdgesSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Axis Division Edges',
-          children: [
-            for (var i = 0; i < AxisDivisionEdges.values.length; i++)
-              RadioListTile<AxisDivisionEdges>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.axisDivisionEdges,
-                value: AxisDivisionEdges.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(axisDivisionEdges: value)),
-                title: Text(AxisDivisionEdges.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(axisDivisionEdges: value)),
+          groupValue: data.axisDivisionEdges,
+          child: SetupGroup(
+            title: '└─ Axis Division Edges',
+            children: [
+              for (var i = 0; i < AxisDivisionEdges.values.length; i++)
+                RadioListTile<AxisDivisionEdges>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: AxisDivisionEdges.values[i],
+                  title: Text(AxisDivisionEdges.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -688,19 +696,21 @@ class _LimitLabelSnapPositionSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Limit Label Snap Position',
-          children: [
-            for (var i = 0; i < LimitLabelSnapPosition.values.length; i++)
-              RadioListTile<LimitLabelSnapPosition>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.limitLabelSnapPosition,
-                value: LimitLabelSnapPosition.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(limitLabelSnapPosition: value)),
-                title: Text(LimitLabelSnapPosition.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(limitLabelSnapPosition: value)),
+          groupValue: data.limitLabelSnapPosition,
+          child: SetupGroup(
+            title: '└─ Limit Label Snap Position',
+            children: [
+              for (var i = 0; i < LimitLabelSnapPosition.values.length; i++)
+                RadioListTile<LimitLabelSnapPosition>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: LimitLabelSnapPosition.values[i],
+                  title: Text(LimitLabelSnapPosition.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
@@ -718,19 +728,21 @@ class _PointPaintingTypeSetupGroup extends StatelessWidget {
       builder: (context, settings) {
         final data = settings.requireData;
 
-        return SetupGroup(
-          title: '└─ Point Painting Type',
-          children: [
-            for (var i = 0; i < PointPaintingType.values.length; i++)
-              RadioListTile<PointPaintingType>(
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: data.pointPaintingType,
-                value: PointPaintingType.values[i],
-                onChanged: (value) =>
-                    _settings.add(data.copyWith(pointPaintingType: value)),
-                title: Text(PointPaintingType.values[i].name),
-              ),
-          ],
+        return RadioGroup(
+          onChanged: (value) =>
+              _settings.add(data.copyWith(pointPaintingType: value)),
+          groupValue: data.pointPaintingType,
+          child: SetupGroup(
+            title: '└─ Point Painting Type',
+            children: [
+              for (var i = 0; i < PointPaintingType.values.length; i++)
+                RadioListTile<PointPaintingType>(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  value: PointPaintingType.values[i],
+                  title: Text(PointPaintingType.values[i].name),
+                ),
+            ],
+          ),
         );
       },
     );
