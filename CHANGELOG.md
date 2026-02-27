@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.6.0 - 27.02.2026
+
+* Updated deps to latest.
+
 ## 6.5.0 - 10.06.2025
 
 * Changes of the `LineChart`:
