@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.6.1 - 28.02.2026
+
+* Fixed `ZeroLineStyle` issue.
+
 ## 6.6.0 - 27.02.2026
 
 * Updated deps to latest.
