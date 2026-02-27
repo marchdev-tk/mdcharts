@@ -9,6 +9,7 @@ export 'src/common.dart'
     show
         GridStyle,
         AxisStyle,
+        ZeroLineStyle,
         TooltipStyle,
         DropLineStyle
     hide
